@@ -14,7 +14,7 @@
     <script type="module">
       import htm from 'https://cdn.jsdelivr.net/npm/htm@3.1.1/dist/htm.module.js'
       const html = htm.bind(React.createElement)
-      const {useState, useEffect} = React
+      const {useState, useEffect, useMemo} = React
 
       const LS_KEY = 'todo-list-items'
 
@@ -37,8 +37,18 @@
         const remove = id => setItems(prev => prev.filter(i => i.id !== id))
         const clearDone = () => setItems(prev => prev.filter(i => !i.done))
 
-        const filtered = items.filter(i => (filter === 'all' ? true : filter === 'open' ? !i.done : i.done))
-        const stats = {total: items.length, open: items.filter(i => !i.done).length, done: items.filter(i => i.done).length}
+        const filtered = useMemo(
+          () => items.filter(i => (filter === 'all' ? true : filter === 'open' ? !i.done : i.done)),
+          [items, filter]
+        )
+        const stats = useMemo(
+          () => ({
+            total: items.length,
+            open: items.filter(i => !i.done).length,
+            done: items.filter(i => i.done).length,
+          }),
+          [items]
+        )
 
         return html`
           <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800 p-6">
