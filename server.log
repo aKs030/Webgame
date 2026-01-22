@@ -1,0 +1,11 @@
+
+> my-three-app@0.0.0 dev
+> vite
+
+
+  VITE v5.4.21  ready in 231 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+11:19:31 AM [vite] page reload index.html
