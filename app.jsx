@@ -1,14 +1,21 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
+import PhysicsSandbox from "./PhysicsSandbox";
 import "./index.css"; // Stelle sicher, dass Tailwind oder dein CSS eingebunden ist
 
 export default function App() {
+  const [view, setView] = useState("home"); // 'home' | 'physics-sandbox'
+
+  if (view === "physics-sandbox") {
+    return <PhysicsSandbox onBack={() => setView("home")} />;
+  }
+
   return (
     <div className="min-h-screen h-screen w-full overflow-y-scroll snap-y snap-mandatory">
       <Section id={1} bgColor="from-indigo-900 via-indigo-700 to-indigo-600" objectType="torus" title="Section 1 - Torus" />
       <Section id={2} bgColor="from-emerald-900 via-emerald-700 to-emerald-600" objectType="sphere" title="Section 2 - Sphere" />
       <Section id={3} bgColor="from-rose-900 via-rose-700 to-rose-600" objectType="box" title="Section 3 - Box" />
-      <Section id={4} bgColor="from-purple-900 via-purple-700 to-purple-600" objectType="apps" title="Mini Apps" />
+      <Section id={4} bgColor="from-purple-900 via-purple-700 to-purple-600" objectType="apps" title="Mini Apps" setView={setView} />
 
       <div className="fixed right-6 top-1/2 transform -translate-y-1/2 z-40 space-y-3">
         <Indicator index={1} />
@@ -20,7 +27,7 @@ export default function App() {
   );
 }
 
-function Section({ id, bgColor, objectType, title }) {
+function Section({ id, bgColor, objectType, title, setView }) {
   const mountRef = useRef(null);
 
   useEffect(() => {
@@ -115,9 +122,9 @@ function Section({ id, bgColor, objectType, title }) {
                 Entdecke unsere Sammlung von interaktiven Mini-Apps und Experimenten.
               </p>
               <div className="flex flex-wrap gap-3 justify-center md:justify-start">
-                <a href="/apps/physics-sandbox/dist/index.html" className="px-5 py-3 bg-white text-indigo-900 font-bold rounded-full shadow-lg hover:bg-indigo-50 hover:scale-105 transition transform">
+                <button onClick={() => setView("physics-sandbox")} className="px-5 py-3 bg-white text-indigo-900 font-bold rounded-full shadow-lg hover:bg-indigo-50 hover:scale-105 transition transform">
                   Physics Sandbox (Neu!)
-                </a>
+                </button>
                 <a href="/apps/todo-liste/index.html" className="px-5 py-3 bg-white/10 border border-white/20 text-white font-bold rounded-full hover:bg-white/20 hover:scale-105 transition transform">
                   To-Do Liste
                 </a>
