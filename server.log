@@ -1,0 +1,18 @@
+
+> my-three-app@0.0.0 dev
+> vite
+
+
+  VITE v5.4.21  ready in 231 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+11:19:31 AM [vite] page reload index.html
+12:42:55 PM [vite] page reload apps/physics-sandbox/dist/assets/index-CfmKvScR.js
+12:42:55 PM [vite] hmr update /apps/physics-sandbox/dist/assets/index-CIRntdzn.css?direct
+12:42:55 PM [vite] page reload apps/physics-sandbox/dist/index.html
+12:42:57 PM [vite] page reload apps/physics-sandbox/index.html
+12:44:06 PM [vite] page reload app.jsx
+12:44:28 PM [vite] ✨ new dependencies optimized: matter-js, lucide-react
+12:44:28 PM [vite] ✨ optimized dependencies changed. reloading
