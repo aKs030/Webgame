@@ -1,13 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import PhysicsSandbox from "./PhysicsSandbox";
+import CameraPlayground from "./CameraPlayground";
 import "./index.css"; // Stelle sicher, dass Tailwind oder dein CSS eingebunden ist
 
 export default function App() {
-  const [view, setView] = useState("home"); // 'home' | 'physics-sandbox'
+  const [view, setView] = useState("home"); // 'home' | 'physics-sandbox' | 'camera-playground'
 
   if (view === "physics-sandbox") {
     return <PhysicsSandbox onBack={() => setView("home")} />;
+  }
+
+  if (view === "camera-playground") {
+    return <CameraPlayground onBack={() => setView("home")} />;
   }
 
   return (
@@ -124,6 +129,9 @@ function Section({ id, bgColor, objectType, title, setView }) {
               <div className="flex flex-wrap gap-3 justify-center md:justify-start">
                 <button onClick={() => setView("physics-sandbox")} className="px-5 py-3 bg-white text-indigo-900 font-bold rounded-full shadow-lg hover:bg-indigo-50 hover:scale-105 transition transform">
                   Physics Sandbox (Neu!)
+                </button>
+                <button onClick={() => setView("camera-playground")} className="px-5 py-3 bg-white text-indigo-900 font-bold rounded-full shadow-lg hover:bg-indigo-50 hover:scale-105 transition transform">
+                  Camera Playground (Neu!)
                 </button>
                 <a href="/apps/todo-liste/index.html" className="px-5 py-3 bg-white/10 border border-white/20 text-white font-bold rounded-full hover:bg-white/20 hover:scale-105 transition transform">
                   To-Do Liste
