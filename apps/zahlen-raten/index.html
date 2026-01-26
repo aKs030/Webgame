@@ -5,16 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Zahlen Raten | Abdulkerim Sesli</title>
     <meta name="description" content="Errate die Zahl zwischen 1 und 100" />
-    <script crossorigin src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/index.css" />
   </head>
   <body>
     <div id="root"></div>
     <script type="module">
-      import htm from 'https://cdn.jsdelivr.net/npm/htm@3.1.1/dist/htm.module.js'
+      import React, { useState } from 'react'
+      import ReactDOM from 'react-dom/client'
+      import htm from 'htm'
+
       const html = htm.bind(React.createElement)
-      const {useState} = React
 
       function NumberGuessing() {
         const [targetNumber, setTargetNumber] = useState(() => Math.floor(Math.random() * 100) + 1)
