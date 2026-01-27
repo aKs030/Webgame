@@ -2,7 +2,13 @@
   "name": "snake",
   "version": "1.0.0",
   "description": "Kleines Snake‑Spiel (Canvas) — Lernprojekt für Spiel‑Loop und Kollisionserkennung.",
-  "keywords": ["game", "snake", "canvas", "javascript", "html"],
+  "keywords": [
+    "game",
+    "snake",
+    "canvas",
+    "javascript",
+    "html"
+  ],
   "category": "game",
   "author": "Abdulkerim Sesli",
   "license": "MIT",
