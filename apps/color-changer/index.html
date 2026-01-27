@@ -1,128 +1,278 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="de">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Color Changer | Abdulkerim Sesli</title>
-    <meta name="description" content="Zufällige Farben generieren, kopieren und Verlauf verwalten" />
-    <link rel="stylesheet" href="/index.css" />
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module">
-      import React, { useState, useEffect } from 'react'
-      import ReactDOM from 'react-dom/client'
-      import htm from 'htm'
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Changer</title>
+    <meta name="description" content="Zufällige Farben generieren, kopieren und Verlauf verwalten">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-color: #ffffff;
+        }
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-color);
+            box-sizing: border-box;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        h1 { margin: 0; font-size: 2rem; }
+        .back-btn {
+            text-decoration: none;
+            color: white;
+            background: var(--glass-bg);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+        .back-btn:hover { background: rgba(255,255,255,0.2); }
 
-      const html = htm.bind(React.createElement)
+        .color-display {
+            height: 220px;
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            padding: 1.5rem;
+            transition: background 0.3s;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
+        }
+        .color-info {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(5px);
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            color: white;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .hex-code { font-family: monospace; font-size: 1.5rem; font-weight: bold; }
+        .label { font-size: 0.8rem; opacity: 0.7; }
 
-      const LS_KEY = 'color-changer-history'
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: white;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-weight: 500;
+        }
+        .btn:hover { background: rgba(255,255,255,0.2); }
 
-      function randomHex() {
-        const r = Math.floor(Math.random() * 256)
-          .toString(16)
-          .padStart(2, '0')
-        const g = Math.floor(Math.random() * 256)
-          .toString(16)
-          .padStart(2, '0')
-        const b = Math.floor(Math.random() * 256)
-          .toString(16)
-          .padStart(2, '0')
-        return `#${r}${g}${b}`
-      }
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            opacity: 0.8;
+        }
+        .clear-btn {
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.5);
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .clear-btn:hover { color: white; }
 
-      function ColorChangerApp() {
-        const [color, setColor] = useState(() => randomHex())
-        const [history, setHistory] = useState(() => JSON.parse(localStorage.getItem(LS_KEY) || '[]'))
+        .history-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 0.5rem;
+        }
+        .history-item {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            border: 1px solid var(--glass-border);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .history-item:hover { transform: scale(1.1); z-index: 10; border-color: white; }
 
-        useEffect(() => {
-          localStorage.setItem(LS_KEY, JSON.stringify(history.slice(0, 15)))
-        }, [history])
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        .toast.show { opacity: 1; }
+    </style>
+</head>
+<body>
 
-        const pick = c => {
-          setColor(c)
-          setHistory(prev => [c, ...prev.filter(x => x !== c)].slice(0, 15))
+<div class="container">
+    <header>
+        <h1>Color Changer</h1>
+        <a href="../../index.html" class="back-btn">← Zurück</a>
+    </header>
+
+    <div class="color-display" id="color-display">
+        <div class="color-info">
+            <div class="hex-code" id="hex-code">#FFFFFF</div>
+            <div class="label">Aktuelle Farbe</div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="btn" onclick="generateColor()">Neue Farbe</button>
+        <button class="btn" onclick="copyColor()">Kopieren</button>
+        <button class="btn" onclick="pickColor('#ffffff')">Weiß</button>
+    </div>
+
+    <div class="history-header">
+        <span>Letzte Farben</span>
+        <button class="clear-btn" onclick="clearHistory()">Leeren</button>
+    </div>
+
+    <div class="history-grid" id="history-grid">
+        <!-- History items will be here -->
+    </div>
+
+    <p style="margin-top: 2rem; font-size: 0.85rem; opacity: 0.6; text-align: center;">
+        Tipp: Klicke auf eine Farbe in der Historie, um sie wiederherzustellen.
+    </p>
+</div>
+
+<div class="toast" id="toast">Kopiert!</div>
+
+<script>
+    const LS_KEY = 'color-changer-history';
+    let currentColor = '#ffffff';
+    let history = [];
+
+    try {
+        history = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
+    } catch (e) {
+        history = [];
+    }
+
+    function randomHex() {
+        const r = Math.floor(Math.random() * 256).toString(16).padStart(2, '0');
+        const g = Math.floor(Math.random() * 256).toString(16).padStart(2, '0');
+        const b = Math.floor(Math.random() * 256).toString(16).padStart(2, '0');
+        return `#${r}${g}${b}`;
+    }
+
+    function generateColor() {
+        pickColor(randomHex());
+    }
+
+    function pickColor(color) {
+        currentColor = color;
+        updateUI();
+        addToHistory(color);
+    }
+
+    function addToHistory(color) {
+        // Remove existing if present to move to top
+        history = history.filter(c => c !== color);
+        history.unshift(color);
+        history = history.slice(0, 15);
+        saveHistory();
+        renderHistory();
+    }
+
+    function saveHistory() {
+        localStorage.setItem(LS_KEY, JSON.stringify(history));
+    }
+
+    function clearHistory() {
+        history = [];
+        saveHistory();
+        renderHistory();
+    }
+
+    function updateUI() {
+        document.getElementById('color-display').style.background = currentColor;
+        document.getElementById('hex-code').textContent = currentColor;
+    }
+
+    function renderHistory() {
+        const grid = document.getElementById('history-grid');
+        grid.innerHTML = '';
+
+        if (history.length === 0) {
+            grid.innerHTML = '<div style="grid-column: span 6; color: rgba(255,255,255,0.4); text-align: center; padding: 1rem;">Noch keine Farben.</div>';
+            return;
         }
 
-        const generate = () => {
-          const c = randomHex()
-          pick(c)
-        }
+        history.forEach(color => {
+            const btn = document.createElement('div');
+            btn.className = 'history-item';
+            btn.style.background = color;
+            btn.title = color;
+            btn.onclick = () => pickColor(color);
+            grid.appendChild(btn);
+        });
+    }
 
-        const copyToClipboard = async () => {
-          try {
-            await navigator.clipboard.writeText(color)
-            alert(`${color} kopiert!`)
-          } catch (e) {
-            alert('Kopieren nicht möglich')
-          }
-        }
+    function copyColor() {
+        navigator.clipboard.writeText(currentColor).then(() => {
+            showToast(`${currentColor} kopiert!`);
+        }).catch(() => {
+            showToast('Fehler beim Kopieren');
+        });
+    }
 
-        const clearHistory = () => setHistory([])
+    function showToast(msg) {
+        const toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+    }
 
-        return html`
-          <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 to-cyan-900 p-6">
-            <div className="w-full max-w-2xl bg-white/5 backdrop-blur-lg p-6 rounded-2xl border border-white/10">
-              <div className="flex justify-between items-center mb-6">
-                <h1 className="text-3xl font-bold text-white">Color Changer</h1>
-                <a href="//" className="px-3 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg">← Zurück</a>
-              </div>
+    // Init
+    if (history.length > 0) {
+        // Restore last color but don't re-add to history immediately to avoid dups on refresh logic
+        currentColor = history[0];
+        updateUI();
+        renderHistory();
+    } else {
+        generateColor();
+    }
 
-              <div className="rounded-xl overflow-hidden mb-6 shadow-lg border border-white/10">
-                <div style=${{background: color, height: '220px'}} className="flex items-end p-6">
-                  <div className="bg-white/10 p-3 rounded-lg text-white">
-                    <div className="text-xl font-mono">${color}</div>
-                    <div className="text-sm text-white/60">Aktuelle Farbe</div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex gap-3 mb-6">
-                <button onClick=${generate} className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg">Neue Farbe</button>
-                <button onClick=${copyToClipboard} className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg">
-                  Kopieren
-                </button>
-                <button onClick=${() => pick('#ffffff')} className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg">
-                  Weiß
-                </button>
-              </div>
-
-              <div className="mb-4 flex items-center justify-between">
-                <h3 className="text-white/80">Letzte Farben</h3>
-                <div className="flex gap-2">
-                  <button onClick=${clearHistory} className="text-sm text-white/50 hover:text-white">Leeren</button>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-6 gap-2">
-                ${history.length === 0
-                  ? html`
-                      <div className="text-white/50 col-span-6">Keine Farben gespeichert — klicke auf "Neue Farbe".</div>
-                    `
-                  : history.map(
-                      (c, i) => html`
-                        <button
-                          key=${i}
-                          onClick=${() => pick(c)}
-                          title=${c}
-                          style=${{background: c}}
-                          className="h-16 rounded-lg border border-white/10 shadow-sm"></button>
-                      `
-                    )}
-              </div>
-
-              <div className="mt-6 text-sm text-white/60">
-                Tipp: Farben mit einem Klick kopieren oder in der Historie auswählen. Die letzten 15 Farben bleiben erhalten.
-              </div>
-            </div>
-          </div>
-        `
-      }
-
-      const root = ReactDOM.createRoot(document.getElementById('root'))
-      root.render(html`
-        <${ColorChangerApp} />
-      `)
-    </script>
-  </body>
+</script>
+</body>
 </html>

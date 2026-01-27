@@ -1,0 +1,14 @@
+{
+  "name": "zahlen-raten",
+  "version": "1.0.0",
+  "description": "Logik-Spiel: Errate die geheime Zahl zwischen 1 und 100",
+  "keywords": ["puzzle", "logic", "guessing", "numbers", "math"],
+  "category": "puzzle",
+  "author": "Abdulkerim Sesli",
+  "license": "MIT",
+  "homepage": "https://www.abdulkerimsesli.de/projekte/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aKs030/Webgame.git"
+  }
+}

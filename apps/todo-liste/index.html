@@ -1,131 +1,310 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="de">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>To-Do Liste | Abdulkerim Sesli</title>
-    <meta name="description" content="Einfache To-Do App mit Filter und Statistik" />
-    <link rel="stylesheet" href="/index.css" />
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module">
-      import React, { useState, useEffect, useMemo } from 'react'
-      import ReactDOM from 'react-dom/client'
-      import htm from 'htm'
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do Liste</title>
+    <meta name="description" content="Einfache To-Do App mit Filter und Statistik">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-color: #ffffff;
+            --primary: #6366f1;
+        }
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-color);
+            box-sizing: border-box;
+        }
+        .container {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        h1 { margin: 0; font-size: 2rem; }
+        .back-btn {
+            text-decoration: none;
+            color: white;
+            background: var(--glass-bg);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+        .back-btn:hover { background: rgba(255,255,255,0.1); }
 
-      const html = htm.bind(React.createElement)
+        .input-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 1rem;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
+            color: white;
+            font-size: 1rem;
+            outline: none;
+        }
+        input[type="text"]::placeholder { color: rgba(255,255,255,0.3); }
+        input[type="text"]:focus { border-color: var(--primary); }
 
-      const LS_KEY = 'todo-list-items'
+        button.add-btn {
+            padding: 0 1.5rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button.add-btn:hover { background: #4f46e5; }
 
-      function TodoApp() {
-        const [items, setItems] = useState(() => JSON.parse(localStorage.getItem(LS_KEY) || '[]'))
-        const [text, setText] = useState('')
-        const [filter, setFilter] = useState('all') // all, open, done
+        .filters {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        .filter-btn {
+            background: transparent;
+            border: none;
+            color: rgba(255,255,255,0.6);
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .filter-btn:hover { color: white; background: rgba(255,255,255,0.05); }
+        .filter-btn.active { background: rgba(255,255,255,0.1); color: white; font-weight: 500; }
 
-        useEffect(() => {
-          localStorage.setItem(LS_KEY, JSON.stringify(items))
-        }, [items])
-
-        const add = () => {
-          if (!text.trim()) return
-          setItems(prev => [{id: Date.now(), text: text.trim(), done: false}, ...prev])
-          setText('')
+        .stats {
+            margin-left: auto;
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.5);
         }
 
-        const toggle = id => setItems(prev => prev.map(i => (i.id === id ? {...i, done: !i.done} : i)))
-        const remove = id => setItems(prev => prev.filter(i => i.id !== id))
-        const clearDone = () => setItems(prev => prev.filter(i => !i.done))
+        .todo-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 1.5rem 0;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .todo-item {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.2s;
+        }
+        .todo-item:hover { background: rgba(255,255,255,0.05); }
+        .checkbox {
+            width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 4px;
+            border: 2px solid rgba(255,255,255,0.3);
+            cursor: pointer;
+            display: grid;
+            place-items: center;
+        }
+        .todo-item.done .checkbox {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+        .todo-item.done .checkbox::after {
+            content: "✓";
+            font-size: 0.8rem;
+        }
+        .todo-text { flex: 1; word-break: break-word; }
+        .todo-item.done .todo-text { text-decoration: line-through; opacity: 0.4; }
 
-        const filtered = useMemo(
-          () => items.filter(i => (filter === 'all' ? true : filter === 'open' ? !i.done : i.done)),
-          [items, filter]
-        )
-        const stats = useMemo(
-          () => ({
-            total: items.length,
-            open: items.filter(i => !i.done).length,
-            done: items.filter(i => i.done).length,
-          }),
-          [items]
-        )
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+            padding: 0.4rem;
+            border-radius: 6px;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+        .delete-btn:hover { opacity: 1; background: rgba(239, 68, 68, 0.1); }
 
-        return html`
-          <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800 p-6">
-            <div className="w-full max-w-2xl bg-white/5 backdrop-blur-lg p-6 rounded-2xl border border-white/10">
-              <div className="flex justify-between items-center mb-6">
-                <h1 className="text-3xl font-bold text-white">To-Do Liste</h1>
-                <a href="//" className="px-3 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg">← Zurück</a>
-              </div>
+        .actions {
+            display: flex;
+            gap: 1rem;
+        }
+        .action-btn {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255,255,255,0.05);
+            color: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .action-btn:hover { background: rgba(255,255,255,0.1); }
+        .action-btn.danger { color: #fca5a5; border-color: rgba(239, 68, 68, 0.3); }
+        .action-btn.danger:hover { background: rgba(239, 68, 68, 0.1); }
+    </style>
+</head>
+<body>
 
-              <div className="flex gap-2 mb-4">
-                <input
-                  value=${text}
-                  onChange=${e => setText(e.target.value)}
-                  onKeyPress=${e => e.key === 'Enter' && add()}
-                  placeholder="Aufgabe hinzufügen..."
-                  className="flex-1 px-4 py-3 rounded-lg bg-white/10 border border-white/10 text-white" />
-                <button onClick=${add} className="px-4 py-3 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg">Hinzufügen</button>
-              </div>
+<div class="container">
+    <header>
+        <h1>To-Do Liste</h1>
+        <a href="../../index.html" class="back-btn">← Zurück</a>
+    </header>
 
-              <div className="flex gap-2 items-center mb-4 text-sm">
-                <div className="flex gap-2">
-                  <button
-                    onClick=${() => setFilter('all')}
-                    className="px-3 py-1 rounded ${filter === 'all' ? 'bg-white/10' : 'bg-transparent'} text-white">
-                    Alle
-                  </button>
-                  <button
-                    onClick=${() => setFilter('open')}
-                    className="px-3 py-1 rounded ${filter === 'open' ? 'bg-white/10' : 'bg-transparent'} text-white">
-                    Offen
-                  </button>
-                  <button
-                    onClick=${() => setFilter('done')}
-                    className="px-3 py-1 rounded ${filter === 'done' ? 'bg-white/10' : 'bg-transparent'} text-white">
-                    Erledigt
-                  </button>
-                </div>
-                <div className="ml-auto text-white/60">${stats.open} offen • ${stats.done} erledigt • ${stats.total} gesamt</div>
-              </div>
+    <div class="input-group">
+        <input type="text" id="new-task" placeholder="Neue Aufgabe hinzufügen...">
+        <button class="add-btn" onclick="addTask()">Hinzufügen</button>
+    </div>
 
-              <div className="space-y-2 mb-4">
-                ${filtered.length === 0
-                  ? html`
-                      <div className="text-white/50">Keine Aufgaben</div>
-                    `
-                  : filtered.map(
-                      item => html`
-                        <div key=${item.id} className="flex items-center gap-3 p-3 bg-white/5 rounded-lg border border-white/6">
-                          <input type="checkbox" checked=${item.done} onChange=${() => toggle(item.id)} className="w-5 h-5" />
-                          <div className="flex-1 ${item.done ? 'line-through text-white/40' : 'text-white'}">${item.text}</div>
-                          <button onClick=${() => remove(item.id)} className="text-sm text-red-400 hover:text-red-300">Löschen</button>
-                        </div>
-                      `
-                    )}
-              </div>
+    <div class="filters">
+        <button class="filter-btn active" onclick="setFilter('all')" id="filter-all">Alle</button>
+        <button class="filter-btn" onclick="setFilter('open')" id="filter-open">Offen</button>
+        <button class="filter-btn" onclick="setFilter('done')" id="filter-done">Erledigt</button>
+        <div class="stats" id="stats">0 offen • 0 erledigt</div>
+    </div>
 
-              <div className="flex gap-2">
-                <button onClick=${clearDone} className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg">
-                  Erledigte löschen
-                </button>
-                <button onClick=${() => setItems([])} className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg">
-                  Alles löschen
-                </button>
-              </div>
+    <ul class="todo-list" id="todo-list">
+        <!-- Items go here -->
+    </ul>
 
-              <div className="mt-6 text-sm text-white/60">
-                Speichert im LocalStorage. Filtere Aufgaben, markiere erledigt oder lösche sie.
-              </div>
-            </div>
-          </div>
-        `
-      }
+    <div class="actions">
+        <button class="action-btn" onclick="clearDone()">Erledigte löschen</button>
+        <button class="action-btn danger" onclick="clearAll()">Alles löschen</button>
+    </div>
 
-      const root = ReactDOM.createRoot(document.getElementById('root'))
-      root.render(html`
-        <${TodoApp} />
-      `)
-    </script>
-  </body>
+    <p style="margin-top: 1.5rem; font-size: 0.8rem; color: rgba(255,255,255,0.4); text-align: center;">
+        Deine Aufgaben werden lokal im Browser gespeichert.
+    </p>
+</div>
+
+<script>
+    const LS_KEY = 'todo-list-items';
+    let items = [];
+    let filter = 'all'; // all, open, done
+
+    try {
+        items = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
+    } catch (e) { items = []; }
+
+    function save() {
+        localStorage.setItem(LS_KEY, JSON.stringify(items));
+        render();
+    }
+
+    function addTask() {
+        const input = document.getElementById('new-task');
+        const text = input.value.trim();
+        if (!text) return;
+
+        items.unshift({ id: Date.now(), text, done: false });
+        input.value = '';
+        save();
+    }
+
+    function toggle(id) {
+        items = items.map(i => i.id === id ? { ...i, done: !i.done } : i);
+        save();
+    }
+
+    function remove(id) {
+        items = items.filter(i => i.id !== id);
+        save();
+    }
+
+    function clearDone() {
+        items = items.filter(i => !i.done);
+        save();
+    }
+
+    function clearAll() {
+        if (confirm('Wirklich alles löschen?')) {
+            items = [];
+            save();
+        }
+    }
+
+    function setFilter(f) {
+        filter = f;
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(`filter-${f}`).classList.add('active');
+        render();
+    }
+
+    function render() {
+        const list = document.getElementById('todo-list');
+        list.innerHTML = '';
+
+        const filtered = items.filter(i => {
+            if (filter === 'open') return !i.done;
+            if (filter === 'done') return i.done;
+            return true;
+        });
+
+        if (filtered.length === 0) {
+            list.innerHTML = `<div style="text-align: center; padding: 2rem; color: rgba(255,255,255,0.3);">Keine Aufgaben ${filter === 'done' ? 'erledigt' : 'vorhanden'}.</div>`;
+        } else {
+            filtered.forEach(item => {
+                const li = document.createElement('li');
+                li.className = `todo-item ${item.done ? 'done' : ''}`;
+                li.innerHTML = `
+                    <div class="checkbox" onclick="toggle(${item.id})"></div>
+                    <span class="todo-text">${escapeHtml(item.text)}</span>
+                    <button class="delete-btn" onclick="remove(${item.id})">🗑️</button>
+                `;
+                list.appendChild(li);
+            });
+        }
+
+        const openCount = items.filter(i => !i.done).length;
+        const doneCount = items.filter(i => i.done).length;
+        document.getElementById('stats').textContent = `${openCount} offen • ${doneCount} erledigt`;
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    document.getElementById('new-task').addEventListener('keypress', e => {
+        if (e.key === 'Enter') addTask();
+    });
+
+    render();
+</script>
+</body>
 </html>

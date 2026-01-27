@@ -1,0 +1,14 @@
+{
+  "name": "todo-liste",
+  "version": "1.0.0",
+  "description": "Effiziente Aufgabenverwaltung mit Filter und Persistenz",
+  "keywords": ["productivity", "todo", "tasks", "crud", "organization"],
+  "category": "productivity",
+  "author": "Abdulkerim Sesli",
+  "license": "MIT",
+  "homepage": "https://www.abdulkerimsesli.de/projekte/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aKs030/Webgame.git"
+  }
+}

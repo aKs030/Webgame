@@ -1,0 +1,14 @@
+{
+  "name": "schere-stein-papier",
+  "version": "1.0.0",
+  "description": "Klassisches Schere Stein Papier Spiel gegen den Computer",
+  "keywords": ["game", "spiel", "rock-paper-scissors", "javascript"],
+  "category": "game",
+  "author": "Abdulkerim Sesli",
+  "license": "MIT",
+  "homepage": "https://www.abdulkerimsesli.de/projekte/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aKs030/Webgame.git"
+  }
+}
