@@ -1,0 +1,14 @@
+{
+  "name": "zahlen-raten",
+  "version": "1.0.0",
+  "description": "Finde die geheime Zahl zwischen 1 und 100. Ein klassisches Ratespiel mit Hinweisen.",
+  "keywords": ["puzzle", "logic", "guessing", "numbers", "math", "brain"],
+  "category": "puzzle",
+  "author": "Abdulkerim Sesli",
+  "license": "MIT",
+  "homepage": "https://www.abdulkerimsesli.de/projekte/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aKs030/Webgame.git"
+  }
+}

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schere Stein Papier</title>
+    <meta name="description" content="Der Klassiker gegen den Computer! Wähle Schere, Stein oder Papier und tritt gegen die KI an.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .game-container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .score {
+            display: flex;
+            justify-content: space-around;
+            margin: 2rem 0;
+            font-size: 1.2rem;
+        }
+        
+        .choices {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .choice-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 1rem;
+            font-size: 3rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 80px;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .choice-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+        
+        .result {
+            margin: 2rem 0;
+            font-size: 1.5rem;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .battle {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 2rem 0;
+            font-size: 4rem;
+        }
+        
+        .vs {
+            font-size: 1.5rem;
+            opacity: 0.7;
+        }
+        
+        .reset-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 0.8rem 1.5rem;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .reset-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        @media (max-width: 480px) {
+            h1 { font-size: 2rem; }
+            .choice-btn { font-size: 2.5rem; min-width: 70px; min-height: 70px; }
+            .battle { font-size: 3rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>🎮 Schere Stein Papier</h1>
+        
+        <div class="score">
+            <div>Du: <span id="playerScore">0</span></div>
+            <div>Computer: <span id="computerScore">0</span></div>
+        </div>
+        
+        <div class="choices">
+            <button class="choice-btn" onclick="playGame('rock')">🪨</button>
+            <button class="choice-btn" onclick="playGame('paper')">📄</button>
+            <button class="choice-btn" onclick="playGame('scissors')">✂️</button>
+        </div>
+        
+        <div class="battle">
+            <div id="playerChoice">❓</div>
+            <div class="vs">VS</div>
+            <div id="computerChoice">❓</div>
+        </div>
+        
+        <div class="result" id="result">Wähle deine Waffe!</div>
+        
+        <button class="reset-btn" onclick="resetGame()">Neues Spiel</button>
+    </div>
+
+    <script>
+        let playerScore = 0;
+        let computerScore = 0;
+        
+        const choices = {
+            rock: '🪨',
+            paper: '📄',
+            scissors: '✂️'
+        };
+        
+        const choiceNames = {
+            rock: 'Stein',
+            paper: 'Papier',
+            scissors: 'Schere'
+        };
+        
+        function getComputerChoice() {
+            const options = ['rock', 'paper', 'scissors'];
+            return options[Math.floor(Math.random() * options.length)];
+        }
+        
+        function determineWinner(playerChoice, computerChoice) {
+            if (playerChoice === computerChoice) {
+                return 'tie';
+            }
+            
+            if (
+                (playerChoice === 'rock' && computerChoice === 'scissors') ||
+                (playerChoice === 'paper' && computerChoice === 'rock') ||
+                (playerChoice === 'scissors' && computerChoice === 'paper')
+            ) {
+                return 'player';
+            }
+            
+            return 'computer';
+        }
+        
+        function playGame(playerChoice) {
+            const computerChoice = getComputerChoice();
+            const winner = determineWinner(playerChoice, computerChoice);
+            
+            // Update display
+            document.getElementById('playerChoice').textContent = choices[playerChoice];
+            document.getElementById('computerChoice').textContent = choices[computerChoice];
+            
+            // Update result
+            const resultElement = document.getElementById('result');
+            if (winner === 'tie') {
+                resultElement.textContent = `Unentschieden! Beide wählten ${choiceNames[playerChoice]}.`;
+                resultElement.style.color = '#ffd700';
+            } else if (winner === 'player') {
+                playerScore++;
+                resultElement.textContent = `Du gewinnst! ${choiceNames[playerChoice]} schlägt ${choiceNames[computerChoice]}.`;
+                resultElement.style.color = '#4ade80';
+            } else {
+                computerScore++;
+                resultElement.textContent = `Computer gewinnt! ${choiceNames[computerChoice]} schlägt ${choiceNames[playerChoice]}.`;
+                resultElement.style.color = '#f87171';
+            }
+            
+            // Update score
+            document.getElementById('playerScore').textContent = playerScore;
+            document.getElementById('computerScore').textContent = computerScore;
+        }
+        
+        function resetGame() {
+            playerScore = 0;
+            computerScore = 0;
+            document.getElementById('playerScore').textContent = '0';
+            document.getElementById('computerScore').textContent = '0';
+            document.getElementById('playerChoice').textContent = '❓';
+            document.getElementById('computerChoice').textContent = '❓';
+            document.getElementById('result').textContent = 'Wähle deine Waffe!';
+            document.getElementById('result').style.color = 'white';
+        }
+    </script>
+</body>
+</html>

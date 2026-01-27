@@ -1,0 +1,14 @@
+{
+  "name": "color-changer",
+  "version": "1.0.0",
+  "description": "Dynamische Hintergrundfarben per Klick. Entdecke schöne Farbkombinationen und Gradienten.",
+  "keywords": ["ui", "design", "color", "css", "theme", "gradient", "interactive"],
+  "category": "ui",
+  "author": "Abdulkerim Sesli",
+  "license": "MIT",
+  "homepage": "https://www.abdulkerimsesli.de/projekte/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aKs030/Webgame.git"
+  }
+}
