@@ -22,14 +22,29 @@
             <div id="highscore">Highscore: 0</div>
           </div>
           <div class="controls">
-            <label for="difficulty" class="visually-hidden"
-              >Schwierigkeit</label
-            >
+            <label for="difficulty" class="visually-hidden">Schwierigkeit</label>
             <select id="difficulty" title="Schwierigkeit">
               <option value="140">Leicht</option>
               <option value="100" selected>Normal</option>
               <option value="70">Schwer</option>
             </select>
+
+            <label for="swipeSensitivity" class="visually-hidden">Swipe Empfindlichkeit</label>
+            <select id="swipeSensitivity" title="Swipe Empfindlichkeit">
+              <option value="40">Niedrig</option>
+              <option value="20" selected>Mittel</option>
+              <option value="8">Hoch</option>
+            </select>
+
+            <label class="vibrate-label"><input type="checkbox" id="vibrateToggle" /> Vibration</label>
+
+            <label for="theme" class="visually-hidden">Theme</label>
+            <select id="theme" title="Theme">
+              <option value="classic">Klassisch</option>
+              <option value="neon">Neon</option>
+              <option value="sunset">Sunset</option>
+            </select>
+
             <button id="startBtn">Start</button>
             <button id="restartBtn" disabled>Neustart</button>
           </div>
@@ -56,6 +71,22 @@
           <button class="dpad-btn down" data-dir="0,1" aria-label="Unten">
             ▼
           </button>
+        </div>
+      </div>
+
+      <div id="gameModal" class="modal" role="dialog" aria-hidden="true" aria-labelledby="modalTitle">
+        <div class="modal-content" role="document">
+          <h2 id="modalTitle">Game Over</h2>
+          <p id="modalMessage">Punkte: 0</p>
+          <div id="topScoresWrap">
+            <h3>Top Scores</h3>
+            <ol id="topScores" class="top-scores"></ol>
+          </div>
+          <div class="modal-actions">
+            <button id="modalRestart">Neustart</button>
+            <button id="modalResetHighscore" class="ghost">Highscore zurücksetzen</button>
+            <button id="modalClose" class="ghost">Schließen</button>
+          </div>
         </div>
       </div>
     </main>
