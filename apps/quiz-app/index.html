@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz App - Teste dein Wissen</title>
+    <meta name="description" content="Interaktive Quiz-App mit verschiedenen Kategorien und Schwierigkeitsgraden">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .quiz-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .quiz-header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .quiz-header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .quiz-content {
+            padding: 30px;
+        }
+
+        .category-selection, .difficulty-selection {
+            margin-bottom: 30px;
+        }
+
+        .category-selection h3, .difficulty-selection h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .category-buttons, .difficulty-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+        }
+
+        .category-btn, .difficulty-btn {
+            padding: 12px 20px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .category-btn:hover, .difficulty-btn:hover {
+            border-color: #4facfe;
+            background: #f0f9ff;
+        }
+
+        .category-btn.active, .difficulty-btn.active {
+            background: #4facfe;
+            color: white;
+            border-color: #4facfe;
+        }
+
+        .start-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .start-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .quiz-game {
+            display: none;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            height: 8px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #4facfe, #00f2fe);
+            height: 100%;
+            transition: width 0.3s ease;
+            border-radius: 4px;
+        }
+
+        .question-counter {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .question {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border-left: 5px solid #4facfe;
+        }
+
+        .question h3 {
+            font-size: 1.3rem;
+            color: #333;
+            line-height: 1.4;
+        }
+
+        .answers {
+            display: grid;
+            gap: 12px;
+        }
+
+        .answer-btn {
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            font-size: 1rem;
+        }
+
+        .answer-btn:hover {
+            border-color: #4facfe;
+            background: #f0f9ff;
+        }
+
+        .answer-btn.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .answer-btn.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .next-btn {
+            width: 100%;
+            padding: 12px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .quiz-results {
+            display: none;
+            text-align: center;
+        }
+
+        .score-display {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #4facfe;
+            margin: 20px 0;
+        }
+
+        .score-message {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .restart-btn {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .quiz-container {
+                margin: 10px;
+            }
+            
+            .quiz-header {
+                padding: 20px;
+            }
+            
+            .quiz-header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .quiz-content {
+                padding: 20px;
+            }
+            
+            .category-buttons, .difficulty-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <div class="quiz-header">
+            <h1>🧠 Quiz App</h1>
+            <p>Teste dein Wissen in verschiedenen Kategorien</p>
+        </div>
+
+        <div class="quiz-content">
+            <!-- Quiz Setup -->
+            <div class="quiz-setup">
+                <div class="category-selection">
+                    <h3>Wähle eine Kategorie:</h3>
+                    <div class="category-buttons">
+                        <button class="category-btn" data-category="allgemein">Allgemeinwissen</button>
+                        <button class="category-btn" data-category="geschichte">Geschichte</button>
+                        <button class="category-btn" data-category="wissenschaft">Wissenschaft</button>
+                        <button class="category-btn" data-category="sport">Sport</button>
+                        <button class="category-btn" data-category="geografie">Geografie</button>
+                        <button class="category-btn" data-category="technik">Technik</button>
+                    </div>
+                </div>
+
+                <div class="difficulty-selection">
+                    <h3>Wähle den Schwierigkeitsgrad:</h3>
+                    <div class="difficulty-buttons">
+                        <button class="difficulty-btn" data-difficulty="leicht">Leicht</button>
+                        <button class="difficulty-btn" data-difficulty="mittel">Mittel</button>
+                        <button class="difficulty-btn" data-difficulty="schwer">Schwer</button>
+                    </div>
+                </div>
+
+                <button class="start-btn" disabled>Quiz starten</button>
+            </div>
+
+            <!-- Quiz Game -->
+            <div class="quiz-game">
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+                <div class="question-counter"></div>
+                <div class="question">
+                    <h3 class="question-text"></h3>
+                </div>
+                <div class="answers"></div>
+                <button class="next-btn">Nächste Frage</button>
+            </div>
+
+            <!-- Quiz Results -->
+            <div class="quiz-results">
+                <h2>Quiz beendet! 🎉</h2>
+                <div class="score-display"></div>
+                <div class="score-message"></div>
+                <button class="restart-btn">Neues Quiz starten</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class QuizApp {
+            constructor() {
+                this.currentQuestion = 0;
+                this.score = 0;
+                this.selectedCategory = '';
+                this.selectedDifficulty = '';
+                this.questions = [];
+                this.totalQuestions = 10;
+                
+                this.initializeElements();
+                this.setupEventListeners();
+                this.loadQuestions();
+            }
+
+            initializeElements() {
+                this.categoryButtons = document.querySelectorAll('.category-btn');
+                this.difficultyButtons = document.querySelectorAll('.difficulty-btn');
+                this.startBtn = document.querySelector('.start-btn');
+                this.quizSetup = document.querySelector('.quiz-setup');
+                this.quizGame = document.querySelector('.quiz-game');
+                this.quizResults = document.querySelector('.quiz-results');
+                this.progressFill = document.querySelector('.progress-fill');
+                this.questionCounter = document.querySelector('.question-counter');
+                this.questionText = document.querySelector('.question-text');
+                this.answersContainer = document.querySelector('.answers');
+                this.nextBtn = document.querySelector('.next-btn');
+                this.scoreDisplay = document.querySelector('.score-display');
+                this.scoreMessage = document.querySelector('.score-message');
+                this.restartBtn = document.querySelector('.restart-btn');
+            }
+
+            setupEventListeners() {
+                this.categoryButtons.forEach(btn => {
+                    btn.addEventListener('click', () => this.selectCategory(btn));
+                });
+
+                this.difficultyButtons.forEach(btn => {
+                    btn.addEventListener('click', () => this.selectDifficulty(btn));
+                });
+
+                this.startBtn.addEventListener('click', () => this.startQuiz());
+                this.nextBtn.addEventListener('click', () => this.nextQuestion());
+                this.restartBtn.addEventListener('click', () => this.restartQuiz());
+            }
+
+            selectCategory(btn) {
+                this.categoryButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                this.selectedCategory = btn.dataset.category;
+                this.checkStartButton();
+            }
+
+            selectDifficulty(btn) {
+                this.difficultyButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                this.selectedDifficulty = btn.dataset.difficulty;
+                this.checkStartButton();
+            }
+
+            checkStartButton() {
+                if (this.selectedCategory && this.selectedDifficulty) {
+                    this.startBtn.disabled = false;
+                }
+            }
+
+            loadQuestions() {
+                // Demo-Fragen für verschiedene Kategorien
+                this.questionBank = {
+                    allgemein: {
+                        leicht: [
+                            { question: "Wie viele Kontinente gibt es?", answers: ["5", "6", "7", "8"], correct: 2 },
+                            { question: "Welche Farbe entsteht aus Rot und Gelb?", answers: ["Grün", "Orange", "Lila", "Braun"], correct: 1 },
+                            { question: "Wie heißt die Hauptstadt von Deutschland?", answers: ["München", "Hamburg", "Berlin", "Köln"], correct: 2 },
+                            { question: "Welches Tier ist das größte Säugetier?", answers: ["Elefant", "Blauwal", "Giraffe", "Nashorn"], correct: 1 },
+                            { question: "Wie viele Tage hat ein Jahr?", answers: ["364", "365", "366", "367"], correct: 1 }
+                        ],
+                        mittel: [
+                            { question: "Wer schrieb 'Romeo und Julia'?", answers: ["Goethe", "Schiller", "Shakespeare", "Dickens"], correct: 2 },
+                            { question: "Welches Element hat das Symbol 'Au'?", answers: ["Silber", "Gold", "Kupfer", "Aluminium"], correct: 1 },
+                            { question: "In welchem Jahr fiel die Berliner Mauer?", answers: ["1987", "1988", "1989", "1990"], correct: 2 },
+                            { question: "Wie heißt der längste Fluss der Welt?", answers: ["Amazonas", "Nil", "Mississippi", "Jangtse"], correct: 1 },
+                            { question: "Welcher Planet ist der Sonne am nächsten?", answers: ["Venus", "Merkur", "Erde", "Mars"], correct: 1 }
+                        ],
+                        schwer: [
+                            { question: "Wer entwickelte die Relativitätstheorie?", answers: ["Newton", "Einstein", "Hawking", "Planck"], correct: 1 },
+                            { question: "Welches ist das kleinste Land der Welt?", answers: ["Monaco", "Vatikanstadt", "San Marino", "Liechtenstein"], correct: 1 },
+                            { question: "Wie heißt die Währung von Japan?", answers: ["Won", "Yuan", "Yen", "Rupie"], correct: 2 },
+                            { question: "Welcher Ozean ist der größte?", answers: ["Atlantik", "Indischer", "Pazifik", "Arktischer"], correct: 2 },
+                            { question: "Wann wurde die UNO gegründet?", answers: ["1944", "1945", "1946", "1947"], correct: 1 }
+                        ]
+                    },
+                    geschichte: {
+                        leicht: [
+                            { question: "Wann begann der Erste Weltkrieg?", answers: ["1912", "1914", "1916", "1918"], correct: 1 },
+                            { question: "Wer war der erste Bundeskanzler Deutschlands?", answers: ["Adenauer", "Brandt", "Schmidt", "Kohl"], correct: 0 },
+                            { question: "In welchem Jahr endete der Zweite Weltkrieg?", answers: ["1944", "1945", "1946", "1947"], correct: 1 },
+                            { question: "Welches Reich gründete Karl der Große?", answers: ["Römisches Reich", "Byzantinisches Reich", "Heiliges Römisches Reich", "Fränkisches Reich"], correct: 2 },
+                            { question: "Wann wurde die DDR gegründet?", answers: ["1947", "1948", "1949", "1950"], correct: 2 }
+                        ],
+                        mittel: [
+                            { question: "Welche Revolution fand 1789 statt?", answers: ["Amerikanische", "Französische", "Russische", "Industrielle"], correct: 1 },
+                            { question: "Wer war Napoleon Bonaparte?", answers: ["König", "Kaiser", "Präsident", "General"], correct: 1 },
+                            { question: "Wann wurde das Römische Reich gegründet?", answers: ["753 v.Chr.", "509 v.Chr.", "27 v.Chr.", "476 n.Chr."], correct: 0 },
+                            { question: "Welcher Krieg dauerte 100 Jahre?", answers: ["Rosenkrieg", "Hundertjähriger Krieg", "Dreißigjähriger Krieg", "Siebenjähriger Krieg"], correct: 1 },
+                            { question: "Wer entdeckte Amerika?", answers: ["Vasco da Gama", "Christoph Kolumbus", "Magellan", "Marco Polo"], correct: 1 }
+                        ],
+                        schwer: [
+                            { question: "Wann fand die Schlacht von Waterloo statt?", answers: ["1813", "1814", "1815", "1816"], correct: 2 },
+                            { question: "Welcher Vertrag beendete den Ersten Weltkrieg?", answers: ["Versailler Vertrag", "Pariser Vertrag", "Londoner Vertrag", "Wiener Vertrag"], correct: 0 },
+                            { question: "Wer war der letzte Kaiser von Deutschland?", answers: ["Wilhelm I.", "Wilhelm II.", "Friedrich III.", "Otto von Bismarck"], correct: 1 },
+                            { question: "Wann begann die Weimarer Republik?", answers: ["1918", "1919", "1920", "1921"], correct: 1 },
+                            { question: "Welches Jahr markiert das Ende des Mittelalters?", answers: ["1453", "1492", "1500", "1517"], correct: 1 }
+                        ]
+                    },
+                    wissenschaft: {
+                        leicht: [
+                            { question: "Wie viele Planeten hat unser Sonnensystem?", answers: ["7", "8", "9", "10"], correct: 1 },
+                            { question: "Was ist H2O?", answers: ["Sauerstoff", "Wasserstoff", "Wasser", "Kohlendioxid"], correct: 2 },
+                            { question: "Welches Organ pumpt Blut durch den Körper?", answers: ["Lunge", "Herz", "Leber", "Niere"], correct: 1 },
+                            { question: "Wie nennt man Tiere, die nur Pflanzen fressen?", answers: ["Fleischfresser", "Allesfresser", "Pflanzenfresser", "Insektenfresser"], correct: 2 },
+                            { question: "Bei welcher Temperatur gefriert Wasser?", answers: ["-1°C", "0°C", "1°C", "2°C"], correct: 1 }
+                        ],
+                        mittel: [
+                            { question: "Welches Gas macht den größten Teil der Atmosphäre aus?", answers: ["Sauerstoff", "Stickstoff", "Kohlendioxid", "Wasserstoff"], correct: 1 },
+                            { question: "Wie heißt die Lehre von den Lebewesen?", answers: ["Physik", "Chemie", "Biologie", "Geologie"], correct: 2 },
+                            { question: "Was ist die Lichtgeschwindigkeit?", answers: ["300.000 km/s", "150.000 km/s", "450.000 km/s", "600.000 km/s"], correct: 0 },
+                            { question: "Welches Element ist am häufigsten im Universum?", answers: ["Helium", "Wasserstoff", "Sauerstoff", "Kohlenstoff"], correct: 1 },
+                            { question: "Wie viele Knochen hat ein erwachsener Mensch?", answers: ["196", "206", "216", "226"], correct: 1 }
+                        ],
+                        schwer: [
+                            { question: "Was besagt das Heisenbergsche Unschärfeprinzip?", answers: ["Energie-Zeit-Unschärfe", "Ort-Impuls-Unschärfe", "Masse-Energie-Äquivalenz", "Welle-Teilchen-Dualismus"], correct: 1 },
+                            { question: "Welche Konstante beschreibt die Plancksche Wirkung?", answers: ["6,626 × 10⁻³⁴ J·s", "1,602 × 10⁻¹⁹ C", "9,109 × 10⁻³¹ kg", "1,673 × 10⁻²⁷ kg"], correct: 0 },
+                            { question: "Was ist ein Quasar?", answers: ["Schwarzes Loch", "Neutronenstern", "Aktiver Galaxienkern", "Weißer Zwerg"], correct: 2 },
+                            { question: "Welche Teilchen vermitteln die starke Kernkraft?", answers: ["Photonen", "W- und Z-Bosonen", "Gluonen", "Gravitonen"], correct: 2 },
+                            { question: "Was ist die Avogadro-Konstante?", answers: ["6,022 × 10²³", "1,602 × 10⁻¹⁹", "9,109 × 10⁻³¹", "6,626 × 10⁻³⁴"], correct: 0 }
+                        ]
+                    }
+                };
+            }
+
+            startQuiz() {
+                this.currentQuestion = 0;
+                this.score = 0;
+                this.questions = this.getRandomQuestions();
+                
+                this.quizSetup.style.display = 'none';
+                this.quizGame.style.display = 'block';
+                
+                this.showQuestion();
+            }
+
+            getRandomQuestions() {
+                const categoryQuestions = this.questionBank[this.selectedCategory][this.selectedDifficulty];
+                const shuffled = [...categoryQuestions].sort(() => Math.random() - 0.5);
+                return shuffled.slice(0, Math.min(this.totalQuestions, shuffled.length));
+            }
+
+            showQuestion() {
+                const question = this.questions[this.currentQuestion];
+                
+                // Update progress
+                const progress = ((this.currentQuestion + 1) / this.questions.length) * 100;
+                this.progressFill.style.width = `${progress}%`;
+                
+                // Update counter
+                this.questionCounter.textContent = `Frage ${this.currentQuestion + 1} von ${this.questions.length}`;
+                
+                // Show question
+                this.questionText.textContent = question.question;
+                
+                // Show answers
+                this.answersContainer.innerHTML = '';
+                question.answers.forEach((answer, index) => {
+                    const button = document.createElement('button');
+                    button.className = 'answer-btn';
+                    button.textContent = answer;
+                    button.addEventListener('click', () => this.selectAnswer(index));
+                    this.answersContainer.appendChild(button);
+                });
+                
+                this.nextBtn.style.display = 'none';
+            }
+
+            selectAnswer(selectedIndex) {
+                const question = this.questions[this.currentQuestion];
+                const answerButtons = document.querySelectorAll('.answer-btn');
+                
+                // Disable all buttons
+                answerButtons.forEach(btn => btn.style.pointerEvents = 'none');
+                
+                // Show correct/incorrect
+                answerButtons.forEach((btn, index) => {
+                    if (index === question.correct) {
+                        btn.classList.add('correct');
+                    } else if (index === selectedIndex && index !== question.correct) {
+                        btn.classList.add('incorrect');
+                    }
+                });
+                
+                // Update score
+                if (selectedIndex === question.correct) {
+                    this.score++;
+                }
+                
+                // Show next button
+                setTimeout(() => {
+                    this.nextBtn.style.display = 'block';
+                }, 1000);
+            }
+
+            nextQuestion() {
+                this.currentQuestion++;
+                
+                if (this.currentQuestion < this.questions.length) {
+                    this.showQuestion();
+                } else {
+                    this.showResults();
+                }
+            }
+
+            showResults() {
+                this.quizGame.style.display = 'none';
+                this.quizResults.style.display = 'block';
+                
+                const percentage = Math.round((this.score / this.questions.length) * 100);
+                this.scoreDisplay.textContent = `${this.score}/${this.questions.length}`;
+                
+                let message = '';
+                if (percentage >= 90) {
+                    message = '🏆 Ausgezeichnet! Du bist ein wahrer Experte!';
+                } else if (percentage >= 70) {
+                    message = '👏 Sehr gut! Du kennst dich wirklich aus!';
+                } else if (percentage >= 50) {
+                    message = '👍 Nicht schlecht! Da ist noch Luft nach oben.';
+                } else {
+                    message = '📚 Übung macht den Meister! Versuch es nochmal.';
+                }
+                
+                this.scoreMessage.textContent = message;
+            }
+
+            restartQuiz() {
+                this.quizResults.style.display = 'none';
+                this.quizSetup.style.display = 'block';
+                
+                // Reset selections
+                this.categoryButtons.forEach(btn => btn.classList.remove('active'));
+                this.difficultyButtons.forEach(btn => btn.classList.remove('active'));
+                this.startBtn.disabled = true;
+                this.selectedCategory = '';
+                this.selectedDifficulty = '';
+            }
+        }
+
+        // Initialize the quiz app
+        document.addEventListener('DOMContentLoaded', () => {
+            new QuizApp();
+        });
+    </script>
+</body>
+</html>

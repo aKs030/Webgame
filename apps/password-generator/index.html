@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Generator</title>
+    <meta name="description" content="Sicherer Passwort-Generator mit anpassbaren Optionen. Erstelle starke Passwörter für maximale Sicherheit.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            padding: 1rem;
+        }
+        
+        .generator-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .password-display {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .password-output {
+            font-family: 'Courier New', monospace;
+            font-size: 1.2rem;
+            word-break: break-all;
+            min-height: 30px;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+        
+        .password-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            color: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+        
+        .options-section {
+            margin-bottom: 2rem;
+        }
+        
+        .option-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .option-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .length-control {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .length-slider {
+            flex: 1;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        .length-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        .length-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .length-display {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            font-weight: bold;
+            min-width: 60px;
+            text-align: center;
+        }
+        
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .checkbox-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .checkbox-item.checked {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+        
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 4px;
+            position: relative;
+            background: transparent;
+        }
+        
+        .checkbox.checked {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .checkbox.checked::after {
+            content: '✓';
+            position: absolute;
+            top: -2px;
+            left: 2px;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .generate-btn {
+            width: 100%;
+            background: rgba(34, 197, 94, 0.3);
+            border: 2px solid rgba(34, 197, 94, 0.5);
+            border-radius: 15px;
+            padding: 1.2rem;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+        
+        .generate-btn:hover {
+            background: rgba(34, 197, 94, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .strength-meter {
+            margin-top: 1rem;
+        }
+        
+        .strength-label {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .strength-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .strength-fill {
+            height: 100%;
+            transition: all 0.3s ease;
+            border-radius: 4px;
+        }
+        
+        .strength-weak { background: #ef4444; width: 25%; }
+        .strength-fair { background: #f59e0b; width: 50%; }
+        .strength-good { background: #10b981; width: 75%; }
+        .strength-strong { background: #059669; width: 100%; }
+        
+        .tips {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .tips-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .tips-list {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+        
+        @media (max-width: 480px) {
+            .generator-container { padding: 1.5rem; }
+            h1 { font-size: 2rem; }
+            .checkbox-group { grid-template-columns: 1fr; }
+            .length-control { flex-direction: column; }
+            .password-actions { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="generator-container">
+        <h1>🔐 Password Generator</h1>
+        
+        <div class="password-display">
+            <div class="password-output" id="passwordOutput">Klicke auf "Generieren" für ein neues Passwort</div>
+            <div class="password-actions">
+                <button class="action-btn" onclick="copyPassword()">📋 Kopieren</button>
+                <button class="action-btn" onclick="generatePassword()">🔄 Neu generieren</button>
+            </div>
+        </div>
+        
+        <div class="options-section">
+            <div class="option-group">
+                <label class="option-label">Passwort-Länge</label>
+                <div class="length-control">
+                    <input type="range" class="length-slider" id="lengthSlider" 
+                           min="4" max="50" value="16" oninput="updateLength()">
+                    <div class="length-display" id="lengthDisplay">16</div>
+                </div>
+            </div>
+            
+            <div class="option-group">
+                <label class="option-label">Zeichen-Optionen</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-item checked" onclick="toggleOption('uppercase')">
+                        <div class="checkbox checked" id="uppercaseCheck"></div>
+                        <span>Großbuchstaben (A-Z)</span>
+                    </div>
+                    <div class="checkbox-item checked" onclick="toggleOption('lowercase')">
+                        <div class="checkbox checked" id="lowercaseCheck"></div>
+                        <span>Kleinbuchstaben (a-z)</span>
+                    </div>
+                    <div class="checkbox-item checked" onclick="toggleOption('numbers')">
+                        <div class="checkbox checked" id="numbersCheck"></div>
+                        <span>Zahlen (0-9)</span>
+                    </div>
+                    <div class="checkbox-item" onclick="toggleOption('symbols')">
+                        <div class="checkbox" id="symbolsCheck"></div>
+                        <span>Symbole (!@#$%^&*)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <button class="generate-btn" onclick="generatePassword()">🎲 Passwort generieren</button>
+        
+        <div class="strength-meter">
+            <div class="strength-label">Passwort-Stärke: <span id="strengthText">-</span></div>
+            <div class="strength-bar">
+                <div class="strength-fill" id="strengthFill"></div>
+            </div>
+        </div>
+        
+        <div class="tips">
+            <div class="tips-title">💡 Sicherheitstipps:</div>
+            <div class="tips-list">
+                • Verwende mindestens 12 Zeichen<br>
+                • Mische verschiedene Zeichentypen<br>
+                • Verwende jedes Passwort nur einmal<br>
+                • Nutze einen Passwort-Manager
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let options = {
+            length: 16,
+            uppercase: true,
+            lowercase: true,
+            numbers: true,
+            symbols: false
+        };
+        
+        const characters = {
+            uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+            lowercase: 'abcdefghijklmnopqrstuvwxyz',
+            numbers: '0123456789',
+            symbols: '!@#$%^&*()_+-=[]{}|;:,.<>?'
+        };
+        
+        function updateLength() {
+            const slider = document.getElementById('lengthSlider');
+            options.length = parseInt(slider.value);
+            document.getElementById('lengthDisplay').textContent = options.length;
+        }
+        
+        function toggleOption(option) {
+            options[option] = !options[option];
+            
+            const checkboxItem = event.currentTarget;
+            const checkbox = checkboxItem.querySelector('.checkbox');
+            
+            if (options[option]) {
+                checkboxItem.classList.add('checked');
+                checkbox.classList.add('checked');
+            } else {
+                checkboxItem.classList.remove('checked');
+                checkbox.classList.remove('checked');
+            }
+            
+            // Ensure at least one option is selected
+            const hasAnyOption = options.uppercase || options.lowercase || options.numbers || options.symbols;
+            if (!hasAnyOption) {
+                options[option] = true;
+                checkboxItem.classList.add('checked');
+                checkbox.classList.add('checked');
+            }
+        }
+        
+        function generatePassword() {
+            let charset = '';
+            
+            if (options.uppercase) charset += characters.uppercase;
+            if (options.lowercase) charset += characters.lowercase;
+            if (options.numbers) charset += characters.numbers;
+            if (options.symbols) charset += characters.symbols;
+            
+            if (charset === '') {
+                document.getElementById('passwordOutput').textContent = 'Bitte wähle mindestens eine Zeichen-Option';
+                return;
+            }
+            
+            let password = '';
+            
+            // Ensure at least one character from each selected type
+            if (options.uppercase) password += getRandomChar(characters.uppercase);
+            if (options.lowercase) password += getRandomChar(characters.lowercase);
+            if (options.numbers) password += getRandomChar(characters.numbers);
+            if (options.symbols) password += getRandomChar(characters.symbols);
+            
+            // Fill the rest randomly
+            for (let i = password.length; i < options.length; i++) {
+                password += getRandomChar(charset);
+            }
+            
+            // Shuffle the password
+            password = shuffleString(password);
+            
+            document.getElementById('passwordOutput').textContent = password;
+            calculateStrength(password);
+        }
+        
+        function getRandomChar(charset) {
+            return charset.charAt(Math.floor(Math.random() * charset.length));
+        }
+        
+        function shuffleString(str) {
+            return str.split('').sort(() => Math.random() - 0.5).join('');
+        }
+        
+        function calculateStrength(password) {
+            let score = 0;
+            let feedback = '';
+            
+            // Length scoring
+            if (password.length >= 12) score += 25;
+            else if (password.length >= 8) score += 15;
+            else score += 5;
+            
+            // Character variety scoring
+            if (/[a-z]/.test(password)) score += 15;
+            if (/[A-Z]/.test(password)) score += 15;
+            if (/[0-9]/.test(password)) score += 15;
+            if (/[^A-Za-z0-9]/.test(password)) score += 20;
+            
+            // Bonus for length
+            if (password.length >= 16) score += 10;
+            
+            // Determine strength level
+            let strengthClass, strengthText;
+            if (score < 30) {
+                strengthClass = 'strength-weak';
+                strengthText = 'Schwach';
+            } else if (score < 60) {
+                strengthClass = 'strength-fair';
+                strengthText = 'Mittel';
+            } else if (score < 80) {
+                strengthClass = 'strength-good';
+                strengthText = 'Gut';
+            } else {
+                strengthClass = 'strength-strong';
+                strengthText = 'Sehr stark';
+            }
+            
+            const strengthFill = document.getElementById('strengthFill');
+            strengthFill.className = `strength-fill ${strengthClass}`;
+            document.getElementById('strengthText').textContent = strengthText;
+        }
+        
+        function copyPassword() {
+            const passwordOutput = document.getElementById('passwordOutput');
+            const password = passwordOutput.textContent;
+            
+            if (password === 'Klicke auf "Generieren" für ein neues Passwort' || 
+                password === 'Bitte wähle mindestens eine Zeichen-Option') {
+                return;
+            }
+            
+            navigator.clipboard.writeText(password).then(() => {
+                // Visual feedback
+                const originalText = passwordOutput.textContent;
+                passwordOutput.textContent = '✅ Kopiert!';
+                setTimeout(() => {
+                    passwordOutput.textContent = originalText;
+                }, 1000);
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = password;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                const originalText = passwordOutput.textContent;
+                passwordOutput.textContent = '✅ Kopiert!';
+                setTimeout(() => {
+                    passwordOutput.textContent = originalText;
+                }, 1000);
+            });
+        }
+        
+        // Generate initial password
+        generatePassword();
+    </script>
+</body>
+</html>

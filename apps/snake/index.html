@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Snake — Mini‑Game</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="container">
+    <h1>Snake 🐍</h1>
+    <div class="game-area">
+      <canvas id="game" width="400" height="400" aria-label="Snake Spiel"></canvas>
+      <div class="hud">
+        <div class="left">
+          <div id="score">Punkte: 0</div>
+          <div id="highscore">Highscore: 0</div>
+        </div>
+        <div class="controls">
+          <label for="difficulty" class="visually-hidden">Schwierigkeit</label>
+          <select id="difficulty" title="Schwierigkeit">
+            <option value="140">Leicht</option>
+            <option value="100" selected>Normal</option>
+            <option value="70">Schwer</option>
+          </select>
+          <button id="startBtn">Start</button>
+          <button id="restartBtn" disabled>Neustart</button>
+        </div>
+      </div>
+    </div>
+    <p class="hint">Benutzung: Pfeiltasten, WASD oder das On‑Screen‑DPad. Vermeide Wände und dich selbst.</p>
+
+    <div id="mobile-controls" class="mobile-controls" aria-hidden="false">
+      <div id="dpad" class="dpad" role="group" aria-label="Steuerkreuz">
+        <button class="dpad-btn up" data-dir="0,-1" aria-label="Oben">▲</button>
+        <div class="dpad-middle">
+          <button class="dpad-btn left" data-dir="-1,0" aria-label="Links">◀</button>
+          <button class="dpad-btn right" data-dir="1,0" aria-label="Rechts">▶</button>
+        </div>
+        <button class="dpad-btn down" data-dir="0,1" aria-label="Unten">▼</button>
+      </div>
+    </div>
+  </main>
+  <script src="game.js"></script>
+</body>
+</html>

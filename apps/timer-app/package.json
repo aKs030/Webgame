@@ -1,0 +1,14 @@
+{
+  "name": "timer-app",
+  "version": "1.0.0",
+  "description": "Vielseitige Timer-App mit Countdown, Stoppuhr und Pomodoro-Technik",
+  "keywords": ["timer", "countdown", "stopwatch", "pomodoro", "productivity", "utility"],
+  "category": "utility",
+  "author": "Abdulkerim Sesli",
+  "license": "MIT",
+  "homepage": "https://www.abdulkerimsesli.de/projekte/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aKs030/Webgame.git"
+  }
+}
