@@ -1,0 +1,20 @@
+{
+  "name": "typing-speed-test",
+  "version": "1.0.0",
+  "description": "Teste deine Tippgeschwindigkeit (WPM) mit zufälligen Sätzen.",
+  "keywords": [
+    "productivity",
+    "typing",
+    "wpm",
+    "speed-test",
+    "keyboard"
+  ],
+  "category": "productivity",
+  "author": "Abdulkerim Sesli",
+  "license": "MIT",
+  "homepage": "https://www.abdulkerimsesli.de/projekte/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aKs030/Webgame.git"
+  }
+}

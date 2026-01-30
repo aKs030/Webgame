@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Speed Test</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f2f5;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .stat-box {
+            display: flex;
+            flex-direction: column;
+        }
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #3498db;
+        }
+        .stat-label {
+            font-size: 0.9rem;
+            color: #777;
+        }
+        .text-display {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: #f1f3f5;
+            border-radius: 5px;
+            text-align: left;
+            user-select: none;
+            max-height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        .text-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2rem;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            resize: none;
+            height: 100px;
+            font-family: inherit;
+        }
+        .text-input:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1.1rem;
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #27ae60;
+        }
+
+        span.correct {
+            color: #27ae60;
+        }
+        span.incorrect {
+            color: #c0392b;
+            text-decoration: underline;
+        }
+        span.current {
+            background-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Typing Speed Test</h1>
+        <div class="stats">
+            <div class="stat-box">
+                <span class="stat-value" id="wpm">0</span>
+                <span class="stat-label">WPM</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-value" id="cpm">0</span>
+                <span class="stat-label">CPM</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-value" id="accuracy">100%</span>
+                <span class="stat-label">Genauigkeit</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-value" id="timer">60s</span>
+                <span class="stat-label">Zeit</span>
+            </div>
+        </div>
+
+        <div class="text-display" id="textDisplay"></div>
+
+        <textarea class="text-input" id="textInput" placeholder="Tippe hier... (Timer startet beim Tippen)"></textarea>
+
+        <button id="restartBtn">Neustart</button>
+    </div>
+
+    <script>
+        const textDisplay = document.getElementById('textDisplay');
+        const textInput = document.getElementById('textInput');
+        const wpmDisplay = document.getElementById('wpm');
+        const cpmDisplay = document.getElementById('cpm');
+        const accuracyDisplay = document.getElementById('accuracy');
+        const timerDisplay = document.getElementById('timer');
+        const restartBtn = document.getElementById('restartBtn');
+
+        // Sample texts in German
+        const texts = [
+            "Das schnelle braune Fuchs springt über den faulen Hund. Dieser Satz enthält alle Buchstaben des Alphabets und wird oft verwendet, um Schriftarten zu testen.",
+            "Die Programmierung ist die Kunst, einem Computer zu sagen, was er tun soll. Es erfordert Geduld, Logik und die Fähigkeit, Probleme in kleine, lösbare Teile zu zerlegen.",
+            "Künstliche Intelligenz verändert die Art und Weise, wie wir leben und arbeiten. Von selbstfahrenden Autos bis hin zu intelligenten Assistenten, die Technologie entwickelt sich rasant weiter.",
+            "Ein gesunder Geist wohnt in einem gesunden Körper. Regelmäßige Bewegung und eine ausgewogene Ernährung sind der Schlüssel zu einem langen und glücklichen Leben.",
+            "Lesen ist wie Reisen im Kopf. Bücher öffnen Türen zu neuen Welten, Ideen und Perspektiven, die wir sonst vielleicht nie entdeckt hätten.",
+            "Erfolg ist nicht der Schlüssel zum Glück. Glück ist der Schlüssel zum Erfolg. Wenn du liebst, was du tust, wirst du erfolgreich sein.",
+            "Die beste Zeit, einen Baum zu pflanzen, war vor zwanzig Jahren. Die zweitbeste Zeit ist jetzt. Also zögere nicht und starte dein Projekt heute.",
+            "Webentwicklung ist ein spannendes Feld, das sich ständig weiterentwickelt. HTML, CSS und JavaScript sind die Grundbausteine des Internets."
+        ];
+
+        let timeLeft = 60;
+        let timer = null;
+        let isRunning = false;
+        let charIndex = 0;
+        let mistakes = 0;
+        let currentText = "";
+
+        function randomText() {
+            const randomIndex = Math.floor(Math.random() * texts.length);
+            currentText = texts[randomIndex];
+            textDisplay.innerHTML = '';
+            currentText.split('').forEach(char => {
+                const charSpan = document.createElement('span');
+                charSpan.innerText = char;
+                textDisplay.appendChild(charSpan);
+            });
+        }
+
+        function initTyping() {
+            const typedChar = textInput.value.split('')[charIndex];
+            const charSpans = textDisplay.querySelectorAll('span');
+
+            if (charIndex < charSpans.length - 1 && timeLeft > 0) {
+                if (!isRunning) {
+                    timer = setInterval(updateTimer, 1000);
+                    isRunning = true;
+                }
+
+                if (typedChar == null) { // Backspace
+                    if (charIndex > 0) {
+                        charIndex--;
+                        if (charSpans[charIndex].classList.contains('incorrect')) {
+                            mistakes--;
+                        }
+                        charSpans[charIndex].classList.remove('correct', 'incorrect');
+                    }
+                } else {
+                    if (charSpans[charIndex].innerText === typedChar) {
+                        charSpans[charIndex].classList.add('correct');
+                    } else {
+                        mistakes++;
+                        charSpans[charIndex].classList.add('incorrect');
+                    }
+                    charIndex++;
+                }
+
+                charSpans.forEach(span => span.classList.remove('current'));
+                if (charIndex < charSpans.length) {
+                    charSpans[charIndex].classList.add('current');
+                }
+
+                // Stats Update
+                let cpm = charIndex - mistakes;
+                let wpm = Math.round(((charIndex - mistakes) / 5) / ((60 - timeLeft) / 60));
+                wpm = wpm < 0 || !wpm || wpm === Infinity ? 0 : wpm;
+
+                let accuracy = Math.floor(((charIndex - mistakes) / charIndex) * 100);
+                accuracy = isNaN(accuracy) ? 100 : accuracy;
+
+                wpmDisplay.innerText = wpm;
+                cpmDisplay.innerText = cpm;
+                accuracyDisplay.innerText = accuracy + "%";
+            } else if (timeLeft === 0) {
+                 clearInterval(timer);
+                 textInput.disabled = true;
+            } else if (charIndex >= charSpans.length - 1) {
+                // Completed the text, maybe load new text or stop?
+                // For simplicity, stop and celebrate or just let timer run out?
+                // Let's reset the text but keep timer running?
+                // Or better, just stop and show results.
+                clearInterval(timer);
+                textInput.disabled = true;
+                timerDisplay.innerText = "Fertig!";
+            }
+        }
+
+        function updateTimer() {
+            if (timeLeft > 0) {
+                timeLeft--;
+                timerDisplay.innerText = timeLeft + "s";
+
+                // Recalculate WPM in real-time
+                let wpm = Math.round(((charIndex - mistakes) / 5) / ((60 - timeLeft) / 60));
+                wpm = wpm < 0 || !wpm || wpm === Infinity ? 0 : wpm;
+                wpmDisplay.innerText = wpm;
+            } else {
+                clearInterval(timer);
+                textInput.disabled = true;
+            }
+        }
+
+        function resetGame() {
+            randomText();
+            clearInterval(timer);
+            timeLeft = 60;
+            charIndex = 0;
+            mistakes = 0;
+            isRunning = false;
+            timerDisplay.innerText = "60s";
+            wpmDisplay.innerText = 0;
+            cpmDisplay.innerText = 0;
+            accuracyDisplay.innerText = "100%";
+            textInput.value = "";
+            textInput.disabled = false;
+            textInput.focus();
+        }
+
+        randomText();
+        textInput.addEventListener("input", initTyping);
+        restartBtn.addEventListener("click", resetGame);
+    </script>
+</body>
+</html>

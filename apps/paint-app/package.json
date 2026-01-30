@@ -1,0 +1,20 @@
+{
+  "name": "paint-app",
+  "version": "1.0.0",
+  "description": "Einfaches Zeichenprogramm mit verschiedenen Farben und Pinselgrößen.",
+  "keywords": [
+    "ui",
+    "drawing",
+    "canvas",
+    "paint",
+    "art"
+  ],
+  "category": "ui",
+  "author": "Abdulkerim Sesli",
+  "license": "MIT",
+  "homepage": "https://www.abdulkerimsesli.de/projekte/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aKs030/Webgame.git"
+  }
+}
