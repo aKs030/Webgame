@@ -1,126 +1,145 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Zahlen Raten</title>
-    <meta name="description" content="Finde die geheime Zahl zwischen 1 und 100. Ein klassisches Ratespiel mit Hinweisen.">
-    <link rel="stylesheet" href="style.css">
+    <meta
+      name="description"
+      content="Finde die geheime Zahl zwischen 1 und 100. Ein klassisches Ratespiel mit Hinweisen."
+    />
+    <link rel="stylesheet" href="style.css" />
     <!-- Optimized: No External Frameworks -->
-</head>
-<body>
+    <link rel="stylesheet" href="../../card-integration.css" />
+    <script src="../../card-fit.js" defer></script>
+  </head>
+  <body>
     <div class="game-container">
-        <h1>🔢 Zahlen Raten</h1>
-        
-        <div class="mystery-number" id="mysteryDisplay">❓</div>
-        
-        <div class="input-group">
-            <input type="number" class="number-input" id="guessInput" placeholder="1-100" min="1" max="100">
-            <button class="guess-btn" onclick="makeGuess()">Raten!</button>
+      <h1>🔢 Zahlen Raten</h1>
+
+      <div class="mystery-number" id="mysteryDisplay">❓</div>
+
+      <div class="input-group">
+        <input
+          type="number"
+          class="number-input"
+          id="guessInput"
+          placeholder="1-100"
+          min="1"
+          max="100"
+        />
+        <button class="guess-btn" onclick="makeGuess()">Raten!</button>
+      </div>
+
+      <div class="feedback" id="feedback">
+        Ich denke an eine Zahl zwischen 1 und 100...
+      </div>
+
+      <div class="stats">
+        <div class="stat-item">
+          <span class="stat-number" id="attempts">0</span>
+          Versuche
         </div>
-        
-        <div class="feedback" id="feedback">Ich denke an eine Zahl zwischen 1 und 100...</div>
-        
-        <div class="stats">
-            <div class="stat-item">
-                <span class="stat-number" id="attempts">0</span>
-                Versuche
-            </div>
-            <div class="stat-item">
-                <span class="stat-number" id="bestScore">-</span>
-                Bester Score
-            </div>
+        <div class="stat-item">
+          <span class="stat-number" id="bestScore">-</span>
+          Bester Score
         </div>
-        
-        <div class="history" id="history"></div>
-        
-        <button class="reset-btn" onclick="newGame()">Neues Spiel</button>
+      </div>
+
+      <div class="history" id="history"></div>
+
+      <button class="reset-btn" onclick="newGame()">Neues Spiel</button>
     </div>
 
     <script>
-        let secretNumber;
-        let attempts;
-        let gameWon;
-        let guessHistory;
-        let bestScore = localStorage.getItem('numberGuessBestScore') || null;
-        
-        function initGame() {
-            secretNumber = Math.floor(Math.random() * 100) + 1;
-            attempts = 0;
-            gameWon = false;
-            guessHistory = [];
-            
-            document.getElementById('mysteryDisplay').textContent = '❓';
-            document.getElementById('feedback').textContent = 'Ich denke an eine Zahl zwischen 1 und 100...';
-            document.getElementById('feedback').style.color = 'white';
-            document.getElementById('attempts').textContent = '0';
-            document.getElementById('history').textContent = '';
-            document.getElementById('guessInput').value = '';
-            document.getElementById('guessInput').disabled = false;
-            
-            if (bestScore) {
-                document.getElementById('bestScore').textContent = bestScore;
-            }
+      let secretNumber;
+      let attempts;
+      let gameWon;
+      let guessHistory;
+      let bestScore = localStorage.getItem("numberGuessBestScore") || null;
+
+      function initGame() {
+        secretNumber = Math.floor(Math.random() * 100) + 1;
+        attempts = 0;
+        gameWon = false;
+        guessHistory = [];
+
+        document.getElementById("mysteryDisplay").textContent = "❓";
+        document.getElementById("feedback").textContent =
+          "Ich denke an eine Zahl zwischen 1 und 100...";
+        document.getElementById("feedback").style.color = "white";
+        document.getElementById("attempts").textContent = "0";
+        document.getElementById("history").textContent = "";
+        document.getElementById("guessInput").value = "";
+        document.getElementById("guessInput").disabled = false;
+
+        if (bestScore) {
+          document.getElementById("bestScore").textContent = bestScore;
         }
-        
-        function makeGuess() {
-            if (gameWon) return;
-            
-            const guessInput = document.getElementById('guessInput');
-            const guess = parseInt(guessInput.value);
-            
-            if (isNaN(guess) || guess < 1 || guess > 100) {
-                document.getElementById('feedback').textContent = 'Bitte gib eine Zahl zwischen 1 und 100 ein!';
-                document.getElementById('feedback').style.color = '#f87171';
-                return;
-            }
-            
-            attempts++;
-            guessHistory.push(guess);
-            
-            const feedbackElement = document.getElementById('feedback');
-            
-            if (guess === secretNumber) {
-                gameWon = true;
-                document.getElementById('mysteryDisplay').textContent = secretNumber;
-                feedbackElement.textContent = `🎉 Richtig! Du hast es in ${attempts} Versuchen geschafft!`;
-                feedbackElement.style.color = '#4ade80';
-                guessInput.disabled = true;
-                
-                // Update best score
-                if (!bestScore || attempts < bestScore) {
-                    bestScore = attempts;
-                    localStorage.setItem('numberGuessBestScore', bestScore);
-                    document.getElementById('bestScore').textContent = bestScore;
-                }
-            } else if (guess < secretNumber) {
-                feedbackElement.textContent = `📈 Zu niedrig! Die Zahl ist größer als ${guess}.`;
-                feedbackElement.style.color = '#60a5fa';
-            } else {
-                feedbackElement.textContent = `📉 Zu hoch! Die Zahl ist kleiner als ${guess}.`;
-                feedbackElement.style.color = '#f472b6';
-            }
-            
-            document.getElementById('attempts').textContent = attempts;
-            document.getElementById('history').textContent = `Versuche: ${guessHistory.join(', ')}`;
-            
-            guessInput.value = '';
-            guessInput.focus();
+      }
+
+      function makeGuess() {
+        if (gameWon) return;
+
+        const guessInput = document.getElementById("guessInput");
+        const guess = parseInt(guessInput.value);
+
+        if (isNaN(guess) || guess < 1 || guess > 100) {
+          document.getElementById("feedback").textContent =
+            "Bitte gib eine Zahl zwischen 1 und 100 ein!";
+          document.getElementById("feedback").style.color = "#f87171";
+          return;
         }
-        
-        function newGame() {
-            initGame();
+
+        attempts++;
+        guessHistory.push(guess);
+
+        const feedbackElement = document.getElementById("feedback");
+
+        if (guess === secretNumber) {
+          gameWon = true;
+          document.getElementById("mysteryDisplay").textContent = secretNumber;
+          feedbackElement.textContent = `🎉 Richtig! Du hast es in ${attempts} Versuchen geschafft!`;
+          feedbackElement.style.color = "#4ade80";
+          guessInput.disabled = true;
+
+          // Update best score
+          if (!bestScore || attempts < bestScore) {
+            bestScore = attempts;
+            localStorage.setItem("numberGuessBestScore", bestScore);
+            document.getElementById("bestScore").textContent = bestScore;
+          }
+        } else if (guess < secretNumber) {
+          feedbackElement.textContent = `📈 Zu niedrig! Die Zahl ist größer als ${guess}.`;
+          feedbackElement.style.color = "#60a5fa";
+        } else {
+          feedbackElement.textContent = `📉 Zu hoch! Die Zahl ist kleiner als ${guess}.`;
+          feedbackElement.style.color = "#f472b6";
         }
-        
-        // Enter key support
-        document.getElementById('guessInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                makeGuess();
-            }
-        });
-        
-        // Initialize game on load
+
+        document.getElementById("attempts").textContent = attempts;
+        document.getElementById("history").textContent =
+          `Versuche: ${guessHistory.join(", ")}`;
+
+        guessInput.value = "";
+        guessInput.focus();
+      }
+
+      function newGame() {
         initGame();
+      }
+
+      // Enter key support
+      document
+        .getElementById("guessInput")
+        .addEventListener("keypress", function (e) {
+          if (e.key === "Enter") {
+            makeGuess();
+          }
+        });
+
+      // Initialize game on load
+      initGame();
     </script>
-</body>
+  </body>
 </html>

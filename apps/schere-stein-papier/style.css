@@ -1,110 +1,121 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    font-family: system-ui, -apple-system, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
 }
 
 .game-container {
-    text-align: center;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    padding: 2rem;
-    max-width: 500px;
-    width: 90%;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 2rem;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
 
 h1 {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .score {
-    display: flex;
-    justify-content: space-around;
-    margin: 2rem 0;
-    font-size: 1.2rem;
+  display: flex;
+  justify-content: space-around;
+  margin: 2rem 0;
+  font-size: 1.2rem;
 }
 
 .choices {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin: 2rem 0;
-    flex-wrap: wrap;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin: 2rem 0;
+  flex-wrap: wrap;
 }
 
 .choice-btn {
-    background: rgba(255, 255, 255, 0.2);
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 15px;
-    padding: 1rem;
-    font-size: 3rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    min-width: 80px;
-    min-height: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 15px;
+  padding: 1rem;
+  font-size: 3rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 80px;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .choice-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: scale(1.1);
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
 }
 
 .result {
-    margin: 2rem 0;
-    font-size: 1.5rem;
-    min-height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  margin: 2rem 0;
+  font-size: 1.5rem;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .battle {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    margin: 2rem 0;
-    font-size: 4rem;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: 2rem 0;
+  font-size: 4rem;
 }
 
 .vs {
-    font-size: 1.5rem;
-    opacity: 0.7;
+  font-size: 1.5rem;
+  opacity: 0.7;
 }
 
 .reset-btn {
-    background: rgba(255, 255, 255, 0.2);
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 10px;
-    padding: 0.8rem 1.5rem;
-    color: white;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+  padding: 0.8rem 1.5rem;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .reset-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.3);
 }
 
 @media (max-width: 480px) {
-    h1 { font-size: 2rem; }
-    .choice-btn { font-size: 2.5rem; min-width: 70px; min-height: 70px; }
-    .battle { font-size: 3rem; }
+  h1 {
+    font-size: 2rem;
+  }
+  .choice-btn {
+    font-size: 2.5rem;
+    min-width: 70px;
+    min-height: 70px;
+  }
+  .battle {
+    font-size: 3rem;
+  }
 }

@@ -1,207 +1,227 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Weather App</title>
-    <meta name="description" content="Moderne Wetter-App mit aktuellen Wetterdaten und 5-Tage-Vorhersage. Standortbasierte Wetterinformationen.">
-    <link rel="stylesheet" href="style.css">
+    <meta
+      name="description"
+      content="Moderne Wetter-App mit aktuellen Wetterdaten und 5-Tage-Vorhersage. Standortbasierte Wetterinformationen."
+    />
+    <link rel="stylesheet" href="style.css" />
     <!-- Optimized: No External Frameworks -->
-</head>
-<body>
+    <link rel="stylesheet" href="../../card-integration.css" />
+    <script src="../../card-fit.js" defer></script>
+  </head>
+  <body>
     <div class="weather-container">
-        <h1>🌤️ Weather App</h1>
-        
-        <div class="demo-note">
-            <strong>Demo-Modus:</strong> Diese App zeigt Beispiel-Wetterdaten. 
-            Für echte Daten wäre ein API-Schlüssel erforderlich.
+      <h1>🌤️ Weather App</h1>
+
+      <div class="demo-note">
+        <strong>Demo-Modus:</strong> Diese App zeigt Beispiel-Wetterdaten. Für
+        echte Daten wäre ein API-Schlüssel erforderlich.
+      </div>
+
+      <div class="search-section">
+        <input
+          type="text"
+          class="search-input"
+          id="cityInput"
+          placeholder="Stadt eingeben (z.B. Berlin, München)"
+        />
+        <button class="search-btn" onclick="searchWeather()">🔍 Suchen</button>
+        <button class="location-btn" onclick="getCurrentLocation()">
+          📍 Standort
+        </button>
+      </div>
+
+      <div id="weatherContent">
+        <div class="loading">
+          Gib eine Stadt ein oder nutze deinen Standort für Wetterdaten
         </div>
-        
-        <div class="search-section">
-            <input type="text" class="search-input" id="cityInput" placeholder="Stadt eingeben (z.B. Berlin, München)">
-            <button class="search-btn" onclick="searchWeather()">🔍 Suchen</button>
-            <button class="location-btn" onclick="getCurrentLocation()">📍 Standort</button>
-        </div>
-        
-        <div id="weatherContent">
-            <div class="loading">
-                Gib eine Stadt ein oder nutze deinen Standort für Wetterdaten
-            </div>
-        </div>
+      </div>
     </div>
 
     <script>
-        // Demo weather data for different cities
-        const demoWeatherData = {
-            'berlin': {
-                location: 'Berlin, Deutschland',
-                current: {
-                    temperature: 18,
-                    description: 'Teilweise bewölkt',
-                    icon: '⛅',
-                    humidity: 65,
-                    windSpeed: 12,
-                    pressure: 1013,
-                    visibility: 10
-                },
-                forecast: [
-                    { day: 'Heute', icon: '⛅', temp: '18°/12°' },
-                    { day: 'Morgen', icon: '🌧️', temp: '15°/9°' },
-                    { day: 'Übermorgen', icon: '☀️', temp: '22°/14°' },
-                    { day: 'Donnerstag', icon: '🌤️', temp: '20°/13°' },
-                    { day: 'Freitag', icon: '🌧️', temp: '16°/10°' }
-                ]
-            },
-            'münchen': {
-                location: 'München, Deutschland',
-                current: {
-                    temperature: 16,
-                    description: 'Leicht bewölkt',
-                    icon: '🌤️',
-                    humidity: 58,
-                    windSpeed: 8,
-                    pressure: 1018,
-                    visibility: 12
-                },
-                forecast: [
-                    { day: 'Heute', icon: '🌤️', temp: '16°/8°' },
-                    { day: 'Morgen', icon: '☀️', temp: '19°/11°' },
-                    { day: 'Übermorgen', icon: '⛅', temp: '17°/9°' },
-                    { day: 'Donnerstag', icon: '🌧️', temp: '14°/7°' },
-                    { day: 'Freitag', icon: '☀️', temp: '21°/12°' }
-                ]
-            },
-            'hamburg': {
-                location: 'Hamburg, Deutschland',
-                current: {
-                    temperature: 14,
-                    description: 'Regnerisch',
-                    icon: '🌧️',
-                    humidity: 78,
-                    windSpeed: 15,
-                    pressure: 1008,
-                    visibility: 8
-                },
-                forecast: [
-                    { day: 'Heute', icon: '🌧️', temp: '14°/10°' },
-                    { day: 'Morgen', icon: '⛅', temp: '16°/11°' },
-                    { day: 'Übermorgen', icon: '🌤️', temp: '18°/12°' },
-                    { day: 'Donnerstag', icon: '☀️', temp: '20°/13°' },
-                    { day: 'Freitag', icon: '⛅', temp: '17°/11°' }
-                ]
-            }
-        };
-        
-        function searchWeather() {
-            const cityInput = document.getElementById('cityInput');
-            const city = cityInput.value.trim().toLowerCase();
-            
-            if (!city) {
-                showError('Bitte gib eine Stadt ein');
-                return;
-            }
-            
-            showLoading();
-            
-            // Simulate API delay
-            setTimeout(() => {
-                const weatherData = demoWeatherData[city];
-                
-                if (weatherData) {
-                    displayWeather(weatherData);
-                } else {
-                    // Generate random weather for unknown cities
-                    const randomWeather = generateRandomWeather(cityInput.value);
-                    displayWeather(randomWeather);
-                }
-            }, 1000);
+      // Demo weather data for different cities
+      const demoWeatherData = {
+        berlin: {
+          location: "Berlin, Deutschland",
+          current: {
+            temperature: 18,
+            description: "Teilweise bewölkt",
+            icon: "⛅",
+            humidity: 65,
+            windSpeed: 12,
+            pressure: 1013,
+            visibility: 10,
+          },
+          forecast: [
+            { day: "Heute", icon: "⛅", temp: "18°/12°" },
+            { day: "Morgen", icon: "🌧️", temp: "15°/9°" },
+            { day: "Übermorgen", icon: "☀️", temp: "22°/14°" },
+            { day: "Donnerstag", icon: "🌤️", temp: "20°/13°" },
+            { day: "Freitag", icon: "🌧️", temp: "16°/10°" },
+          ],
+        },
+        münchen: {
+          location: "München, Deutschland",
+          current: {
+            temperature: 16,
+            description: "Leicht bewölkt",
+            icon: "🌤️",
+            humidity: 58,
+            windSpeed: 8,
+            pressure: 1018,
+            visibility: 12,
+          },
+          forecast: [
+            { day: "Heute", icon: "🌤️", temp: "16°/8°" },
+            { day: "Morgen", icon: "☀️", temp: "19°/11°" },
+            { day: "Übermorgen", icon: "⛅", temp: "17°/9°" },
+            { day: "Donnerstag", icon: "🌧️", temp: "14°/7°" },
+            { day: "Freitag", icon: "☀️", temp: "21°/12°" },
+          ],
+        },
+        hamburg: {
+          location: "Hamburg, Deutschland",
+          current: {
+            temperature: 14,
+            description: "Regnerisch",
+            icon: "🌧️",
+            humidity: 78,
+            windSpeed: 15,
+            pressure: 1008,
+            visibility: 8,
+          },
+          forecast: [
+            { day: "Heute", icon: "🌧️", temp: "14°/10°" },
+            { day: "Morgen", icon: "⛅", temp: "16°/11°" },
+            { day: "Übermorgen", icon: "🌤️", temp: "18°/12°" },
+            { day: "Donnerstag", icon: "☀️", temp: "20°/13°" },
+            { day: "Freitag", icon: "⛅", temp: "17°/11°" },
+          ],
+        },
+      };
+
+      function searchWeather() {
+        const cityInput = document.getElementById("cityInput");
+        const city = cityInput.value.trim().toLowerCase();
+
+        if (!city) {
+          showError("Bitte gib eine Stadt ein");
+          return;
         }
-        
-        function getCurrentLocation() {
-            if (navigator.geolocation) {
-                showLoading('Standort wird ermittelt...');
-                
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        // Simulate getting weather for current location
-                        setTimeout(() => {
-                            const locationWeather = {
-                                location: 'Dein Standort',
-                                current: {
-                                    temperature: Math.floor(Math.random() * 25) + 5,
-                                    description: 'Aktuelles Wetter',
-                                    icon: getRandomWeatherIcon(),
-                                    humidity: Math.floor(Math.random() * 40) + 40,
-                                    windSpeed: Math.floor(Math.random() * 20) + 5,
-                                    pressure: Math.floor(Math.random() * 50) + 990,
-                                    visibility: Math.floor(Math.random() * 10) + 5
-                                },
-                                forecast: generateRandomForecast()
-                            };
-                            displayWeather(locationWeather);
-                        }, 1500);
-                    },
-                    (error) => {
-                        showError('Standort konnte nicht ermittelt werden. Versuche es mit einer Stadt.');
-                    }
-                );
-            } else {
-                showError('Geolocation wird von diesem Browser nicht unterstützt');
-            }
-        }
-        
-        function generateRandomWeather(cityName) {
-            return {
-                location: cityName,
-                current: {
+
+        showLoading();
+
+        // Simulate API delay
+        setTimeout(() => {
+          const weatherData = demoWeatherData[city];
+
+          if (weatherData) {
+            displayWeather(weatherData);
+          } else {
+            // Generate random weather for unknown cities
+            const randomWeather = generateRandomWeather(cityInput.value);
+            displayWeather(randomWeather);
+          }
+        }, 1000);
+      }
+
+      function getCurrentLocation() {
+        if (navigator.geolocation) {
+          showLoading("Standort wird ermittelt...");
+
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              // Simulate getting weather for current location
+              setTimeout(() => {
+                const locationWeather = {
+                  location: "Dein Standort",
+                  current: {
                     temperature: Math.floor(Math.random() * 25) + 5,
-                    description: getRandomWeatherDescription(),
+                    description: "Aktuelles Wetter",
                     icon: getRandomWeatherIcon(),
                     humidity: Math.floor(Math.random() * 40) + 40,
                     windSpeed: Math.floor(Math.random() * 20) + 5,
                     pressure: Math.floor(Math.random() * 50) + 990,
-                    visibility: Math.floor(Math.random() * 10) + 5
-                },
-                forecast: generateRandomForecast()
-            };
+                    visibility: Math.floor(Math.random() * 10) + 5,
+                  },
+                  forecast: generateRandomForecast(),
+                };
+                displayWeather(locationWeather);
+              }, 1500);
+            },
+            (error) => {
+              showError(
+                "Standort konnte nicht ermittelt werden. Versuche es mit einer Stadt.",
+              );
+            },
+          );
+        } else {
+          showError("Geolocation wird von diesem Browser nicht unterstützt");
         }
-        
-        function getRandomWeatherIcon() {
-            const icons = ['☀️', '⛅', '🌤️', '🌧️', '⛈️', '🌨️', '🌫️'];
-            return icons[Math.floor(Math.random() * icons.length)];
-        }
-        
-        function getRandomWeatherDescription() {
-            const descriptions = [
-                'Sonnig', 'Teilweise bewölkt', 'Bewölkt', 'Leichter Regen',
-                'Regnerisch', 'Gewitter', 'Neblig', 'Klar'
-            ];
-            return descriptions[Math.floor(Math.random() * descriptions.length)];
-        }
-        
-        function generateRandomForecast() {
-            const days = ['Heute', 'Morgen', 'Übermorgen', 'Donnerstag', 'Freitag'];
-            return days.map(day => ({
-                day: day,
-                icon: getRandomWeatherIcon(),
-                temp: `${Math.floor(Math.random() * 15) + 10}°/${Math.floor(Math.random() * 10) + 5}°`
-            }));
-        }
-        
-        function showLoading(message = 'Wetterdaten werden geladen...') {
-            document.getElementById('weatherContent').innerHTML = `
+      }
+
+      function generateRandomWeather(cityName) {
+        return {
+          location: cityName,
+          current: {
+            temperature: Math.floor(Math.random() * 25) + 5,
+            description: getRandomWeatherDescription(),
+            icon: getRandomWeatherIcon(),
+            humidity: Math.floor(Math.random() * 40) + 40,
+            windSpeed: Math.floor(Math.random() * 20) + 5,
+            pressure: Math.floor(Math.random() * 50) + 990,
+            visibility: Math.floor(Math.random() * 10) + 5,
+          },
+          forecast: generateRandomForecast(),
+        };
+      }
+
+      function getRandomWeatherIcon() {
+        const icons = ["☀️", "⛅", "🌤️", "🌧️", "⛈️", "🌨️", "🌫️"];
+        return icons[Math.floor(Math.random() * icons.length)];
+      }
+
+      function getRandomWeatherDescription() {
+        const descriptions = [
+          "Sonnig",
+          "Teilweise bewölkt",
+          "Bewölkt",
+          "Leichter Regen",
+          "Regnerisch",
+          "Gewitter",
+          "Neblig",
+          "Klar",
+        ];
+        return descriptions[Math.floor(Math.random() * descriptions.length)];
+      }
+
+      function generateRandomForecast() {
+        const days = ["Heute", "Morgen", "Übermorgen", "Donnerstag", "Freitag"];
+        return days.map((day) => ({
+          day: day,
+          icon: getRandomWeatherIcon(),
+          temp: `${Math.floor(Math.random() * 15) + 10}°/${Math.floor(Math.random() * 10) + 5}°`,
+        }));
+      }
+
+      function showLoading(message = "Wetterdaten werden geladen...") {
+        document.getElementById("weatherContent").innerHTML = `
                 <div class="loading">${message}</div>
             `;
-        }
-        
-        function showError(message) {
-            document.getElementById('weatherContent').innerHTML = `
+      }
+
+      function showError(message) {
+        document.getElementById("weatherContent").innerHTML = `
                 <div class="error">${message}</div>
             `;
-        }
-        
-        function displayWeather(data) {
-            const content = `
+      }
+
+      function displayWeather(data) {
+        const content = `
                 <div class="current-weather">
                     <div class="location-name">${data.location}</div>
                     <div class="weather-icon">${data.current.icon}</div>
@@ -231,30 +251,36 @@
                 <div class="forecast-section">
                     <div class="forecast-title">5-Tage-Vorhersage</div>
                     <div class="forecast-container">
-                        ${data.forecast.map(item => `
+                        ${data.forecast
+                          .map(
+                            (item) => `
                             <div class="forecast-item">
                                 <div class="forecast-day">${item.day}</div>
                                 <div class="forecast-icon">${item.icon}</div>
                                 <div class="forecast-temp">${item.temp}</div>
                             </div>
-                        `).join('')}
+                        `,
+                          )
+                          .join("")}
                     </div>
                 </div>
             `;
-            
-            document.getElementById('weatherContent').innerHTML = content;
-        }
-        
-        // Enter key support
-        document.getElementById('cityInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                searchWeather();
-            }
+
+        document.getElementById("weatherContent").innerHTML = content;
+      }
+
+      // Enter key support
+      document
+        .getElementById("cityInput")
+        .addEventListener("keypress", function (e) {
+          if (e.key === "Enter") {
+            searchWeather();
+          }
         });
-        
-        // Load Berlin weather by default
-        document.getElementById('cityInput').value = 'Berlin';
-        searchWeather();
+
+      // Load Berlin weather by default
+      document.getElementById("cityInput").value = "Berlin";
+      searchWeather();
     </script>
-</body>
+  </body>
 </html>

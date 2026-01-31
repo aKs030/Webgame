@@ -4,63 +4,72 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Color Changer | Abdulkerim Sesli</title>
-    <meta name="description" content="Zufällige Farben generieren, kopieren und Verlauf verwalten" />
+    <meta
+      name="description"
+      content="Zufällige Farben generieren, kopieren und Verlauf verwalten"
+    />
     <link rel="stylesheet" href="index.css" />
+    <link rel="stylesheet" href="../../card-integration.css" />
+    <script src="../../card-fit.js" defer></script>
   </head>
   <body>
     <div id="root"></div>
     <script type="module">
-      import React, { useState, useEffect } from 'https://esm.sh/react@18.2.0'
-      import ReactDOM from 'https://esm.sh/react-dom@18.2.0/client'
-      import htm from 'https://esm.sh/htm@3.1.1'
+      import React, { useState, useEffect } from "https://esm.sh/react@18.2.0";
+      import ReactDOM from "https://esm.sh/react-dom@18.2.0/client";
+      import htm from "https://esm.sh/htm@3.1.1";
 
-      const html = htm.bind(React.createElement)
+      const html = htm.bind(React.createElement);
 
-      const LS_KEY = 'color-changer-history'
+      const LS_KEY = "color-changer-history";
 
       function randomHex() {
         const r = Math.floor(Math.random() * 256)
           .toString(16)
-          .padStart(2, '0')
+          .padStart(2, "0");
         const g = Math.floor(Math.random() * 256)
           .toString(16)
-          .padStart(2, '0')
+          .padStart(2, "0");
         const b = Math.floor(Math.random() * 256)
           .toString(16)
-          .padStart(2, '0')
-        return `#${r}${g}${b}`
+          .padStart(2, "0");
+        return `#${r}${g}${b}`;
       }
 
       function ColorChangerApp() {
-        const [color, setColor] = useState(() => randomHex())
-        const [history, setHistory] = useState(() => JSON.parse(localStorage.getItem(LS_KEY) || '[]'))
+        const [color, setColor] = useState(() => randomHex());
+        const [history, setHistory] = useState(() =>
+          JSON.parse(localStorage.getItem(LS_KEY) || "[]"),
+        );
 
         useEffect(() => {
-          localStorage.setItem(LS_KEY, JSON.stringify(history.slice(0, 15)))
-        }, [history])
+          localStorage.setItem(LS_KEY, JSON.stringify(history.slice(0, 15)));
+        }, [history]);
 
-        const pick = c => {
-          setColor(c)
-          setHistory(prev => [c, ...prev.filter(x => x !== c)].slice(0, 15))
-        }
+        const pick = (c) => {
+          setColor(c);
+          setHistory((prev) =>
+            [c, ...prev.filter((x) => x !== c)].slice(0, 15),
+          );
+        };
 
         const generate = () => {
-          const c = randomHex()
-          pick(c)
-        }
+          const c = randomHex();
+          pick(c);
+        };
 
         const copyToClipboard = async () => {
           try {
-            await navigator.clipboard.writeText(color)
-            const notif = document.getElementById('copyNotification')
-            notif.classList.add('show')
-            setTimeout(() => notif.classList.remove('show'), 2000)
+            await navigator.clipboard.writeText(color);
+            const notif = document.getElementById("copyNotification");
+            notif.classList.add("show");
+            setTimeout(() => notif.classList.remove("show"), 2000);
           } catch (e) {
-            alert('Kopieren nicht möglich')
+            alert("Kopieren nicht möglich");
           }
-        }
+        };
 
-        const clearHistory = () => setHistory([])
+        const clearHistory = () => setHistory([]);
 
         return html`
           <div className="app-root">
@@ -71,7 +80,10 @@
               </div>
 
               <div className="preview">
-                <div className="preview-inner" style=${{background: color, height: '220px'}}>
+                <div
+                  className="preview-inner"
+                  style=${{ background: color, height: "220px" }}
+                >
                   <div className="info-box">
                     <div className="color-code">${color}</div>
                     <div className="color-sub">Aktuelle Farbe</div>
@@ -81,41 +93,56 @@
 
               <div className="btn-group">
                 <button onClick=${generate} className="btn">Neue Farbe</button>
-                <button onClick=${copyToClipboard} className="btn">Kopieren</button>
-                <button onClick=${() => pick('#ffffff')} className="btn">Weiß</button>
+                <button onClick=${copyToClipboard} className="btn">
+                  Kopieren
+                </button>
+                <button onClick=${() => pick("#ffffff")} className="btn">
+                  Weiß
+                </button>
               </div>
 
               <div className="controls-row">
                 <h3 className="recent-title">Letzte Farben</h3>
                 <div className="controls-actions">
-                  <button onClick=${clearHistory} className="link-small">Leeren</button>
+                  <button onClick=${clearHistory} className="link-small">
+                    Leeren
+                  </button>
                 </div>
               </div>
 
               <div className="palette-grid">
                 ${history.length === 0
-                  ? html`<div className="palette-empty">Keine Farben gespeichert — klicke auf "Neue Farbe".</div>`
-                  : history.map((c, i) => html`
-                      <button
-                        key=${i}
-                        onClick=${() => pick(c)}
-                        title=${c}
-                        style=${{background: c}}
-                        className="palette-button"
-                      ></button>
-                    `)}
+                  ? html`<div className="palette-empty">
+                      Keine Farben gespeichert — klicke auf "Neue Farbe".
+                    </div>`
+                  : history.map(
+                      (c, i) => html`
+                        <button
+                          key=${i}
+                          onClick=${() => pick(c)}
+                          title=${c}
+                          style=${{ background: c }}
+                          className="palette-button"
+                        ></button>
+                      `,
+                    )}
               </div>
 
-              <div className="hint">Tipp: Farben mit einem Klick kopieren oder in der Historie auswählen. Die letzten 15 Farben bleiben erhalten.</div>
+              <div className="hint">
+                Tipp: Farben mit einem Klick kopieren oder in der Historie
+                auswählen. Die letzten 15 Farben bleiben erhalten.
+              </div>
             </div>
 
-            <div id="copyNotification" className="copy-notification">Farbe kopiert! 📋</div>
+            <div id="copyNotification" className="copy-notification">
+              Farbe kopiert! 📋
+            </div>
           </div>
-        `
+        `;
       }
 
-      const root = ReactDOM.createRoot(document.getElementById('root'))
-      root.render(html`<${ColorChangerApp} />`)
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(html`<${ColorChangerApp} />`);
     </script>
   </body>
 </html>

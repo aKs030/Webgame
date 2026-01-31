@@ -1,0 +1,267 @@
+/* card-integration.css - Global styles to optimize apps for portfolio Cards
+   - Target card sizes: 1000x600 (desktop) and 350x500 (mobile)
+   - Transparent/minimal background, compact layout, and responsive scaling
+*/
+:root {
+  --card-width: 1000px;
+  --card-height: 600px;
+  --card-padding: 1rem;
+  --card-radius: 1rem;
+  --card-bg: rgba(255, 255, 255, 0.03);
+  --fg-color: #e6eef8;
+  --muted-color: rgba(230, 238, 248, 0.75);
+  --btn-size: 1rem;
+  --small-font: 0.9rem;
+  --base-font: 1rem;
+}
+
+/* Reset / ensure no full-screen backgrounds */
+html,
+body {
+  margin: 0;
+  padding: var(--card-padding);
+  background: transparent !important;
+  background-image: none !important;
+  background-color: transparent !important;
+  color: var(--fg-color);
+  font-size: var(--base-font);
+  min-height: auto !important;
+  height: auto !important;
+}
+
+/* Container to make apps fit the card */
+.app-container,
+.game-container,
+.container,
+#root,
+#app,
+main,
+.app {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  background: var(--card-bg);
+  border-radius: var(--card-radius);
+  padding: calc(var(--card-padding) * 0.9);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: flex-start;
+  overflow: hidden;
+}
+
+/* Ensure main content area is visible and scrollable if needed */
+.app-inner,
+.main,
+.game-area {
+  width: 100%;
+  height: calc(100% - 3rem);
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Canvas/games: centered and responsive */
+canvas,
+.canvas,
+.game-canvas {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  display: block;
+}
+
+/* Buttons and inputs: touch-friendly */
+button,
+.btn,
+input[type="button"],
+input[type="submit"],
+.choice-btn {
+  font-size: 0.95rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  min-width: 2.4rem;
+  min-height: 2.4rem;
+}
+
+/* Compact header/footer */
+.header,
+.footer,
+.controls {
+  width: 100%;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.25rem 0.5rem;
+}
+
+/* Score / UI overlays: small and unobtrusive */
+.score,
+.info,
+.status {
+  font-size: var(--small-font);
+  padding: 0.25rem 0.5rem;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 0.5rem;
+}
+
+/* Provide a utility class to hide decorative images/backgrounds */
+.bg-hide {
+  background: transparent !important;
+}
+
+/* Mobile Card Anpassung */
+@media (max-width: 500px) {
+  :root {
+    --card-padding: 0.5rem;
+  }
+  html,
+  body {
+    padding: 0.5rem;
+  }
+  .app-container,
+  .game-container {
+    padding: 0.5rem;
+  }
+  button,
+  .btn {
+    font-size: 0.95rem;
+    padding: 0.4rem 0.6rem;
+  }
+  .choice-btn {
+    font-size: 1.4rem;
+    min-width: 56px;
+    min-height: 56px;
+  }
+}
+
+/* Size helpers for embedding tests */
+.card-size-1000x600 {
+  width: 1000px;
+  height: 600px;
+}
+.card-size-350x500 {
+  width: 350px;
+  height: 500px;
+}
+
+/* Accessibility tweaks */
+button:focus,
+input:focus,
+.choice-btn:focus {
+  outline: 2px solid rgba(255, 255, 255, 0.3);
+  outline-offset: 2px;
+}
+
+/* Encourage compact fonts where apps use large sizes */
+h1,
+h2,
+h3 {
+  line-height: 1.1;
+  margin: 0.2rem 0;
+}
+
+/* Provide a small utility to scale content into smaller cards (use sparingly) */
+.scale-to-fit {
+  width: 100%;
+  height: 100%;
+  transform-origin: top left;
+}
+
+/* Card-fit wrapper styling (used by card-fit.js) */
+#card-fit-wrapper {
+  display: inline-block;
+  will-change: transform;
+  transform-origin: top left;
+}
+
+/* Prevent internal scrolling: allow flex items to shrink and hide overflow */
+.app-container,
+.game-container {
+  overflow: hidden;
+}
+.app-inner,
+.main,
+.game-area {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ensure media/interactive elements fit without causing scroll */
+canvas,
+img,
+iframe,
+video,
+.game-canvas {
+  max-width: 100%;
+  max-height: 100%;
+  width: 100% !important;
+  height: auto !important;
+  display: block;
+  object-fit: contain;
+}
+/* Some canvases have intrinsic width/height attributes — ensure CSS forces them to fit */
+canvas[width],
+canvas[height] {
+  width: 100% !important;
+  height: auto !important;
+}
+
+/* Ensure root/bodies take full card space and no unexpected extra size */
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+/* Compact controls: wrap instead of creating horizontal overflow */
+.controls,
+.control-row,
+.button-grid,
+.header,
+.footer {
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+/* Reduce padding & font sizes inside cards to avoid overflow */
+.card-compact * {
+  padding: 0.15rem;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* Fallback to scaling when content still overflows (use with class .scale-to-fit) */
+.scale-to-fit > * {
+  width: 100%;
+  height: 100%;
+}
+
+/* Card-specific tight mode for very small cards */
+@media (max-width: 400px) {
+  :root {
+    --card-padding: 0.35rem;
+    --base-font: 0.9rem;
+    --small-font: 0.85rem;
+  }
+  .header,
+  .footer {
+    padding: 0.25rem;
+  }
+  .controls,
+  .button-grid {
+    gap: 0.25rem;
+  }
+}
