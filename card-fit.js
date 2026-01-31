@@ -7,7 +7,7 @@
     if (OPT_OUT) return;
 
     // Inject card-integration.css if not present (supports common relative paths)
-    (function injectIntegrationCss(){
+    (function injectIntegrationCss() {
         if (document.getElementById('card-integration-css')) return;
         const link = document.createElement('link');
         link.rel = 'stylesheet';
@@ -15,12 +15,12 @@
         // Try relative path candidates (from typical embed paths)
         const candidates = ['../../card-integration.css', '/card-integration.css', '../card-integration.css'];
         let appended = false;
-        function tryLoad(idx){
+        function tryLoad(idx) {
             if (idx >= candidates.length) return;
             link.href = candidates[idx];
-            link.addEventListener('error', ()=> {
+            link.addEventListener('error', () => {
                 // try next path
-                tryLoad(idx+1);
+                tryLoad(idx + 1);
             }, { once: true });
             // Append only once; rely on error handler to try next src
             if (!appended) { document.head.appendChild(link); appended = true; }
@@ -165,7 +165,7 @@
             wrapper.classList.remove('card-expanded');
             // restore original flow
             if (wrapper.dataset._origStyle) {
-                try { Object.assign(wrapper.style, JSON.parse(wrapper.dataset._origStyle)); } catch(e){}
+                try { Object.assign(wrapper.style, JSON.parse(wrapper.dataset._origStyle)); } catch (e) { }
                 wrapper.removeAttribute('data-_origStyle');
             }
             fit();
@@ -245,7 +245,7 @@
             if (window.parent && window.parent !== window) {
                 window.parent.postMessage(payload, '*');
             }
-        } catch (e) {}
+        } catch (e) { }
     }
 
     // create controls on load and when DOM changes
