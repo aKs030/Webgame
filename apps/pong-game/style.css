@@ -5,10 +5,8 @@
 }
 
 body {
-  font-family:
-    system-ui,
-    -apple-system,
-    sans-serif;
+  font-family: Arial, sans-serif;
+  margin: 0;
   background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
   min-height: auto;
   display: flex;

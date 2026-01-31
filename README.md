@@ -52,7 +52,7 @@ apps/app-name/
 - Responsive Design (Mobile-first)
 - Vanilla JavaScript bevorzugt
 - Inline CSS/JS für Performance
-- Keine externen CSS-Frameworks (z.B. Tailwind)
+- Keine externen CSS-Frameworks
 - Schnelle Ladezeiten (< 2 Sekunden)
 
 ## 🏷️ Kategorien
