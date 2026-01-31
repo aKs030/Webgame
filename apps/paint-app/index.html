@@ -159,24 +159,22 @@
 
         // Touch Events
         canvas.addEventListener('touchstart', (e) => {
-            e.preventDefault();
             isDrawing = true;
             const touch = e.touches[0];
             const rect = canvas.getBoundingClientRect();
             [lastX, lastY] = [touch.clientX - rect.left, touch.clientY - rect.top];
-        });
+        }, { passive: true });
 
         canvas.addEventListener('touchmove', (e) => {
-            e.preventDefault();
             const touch = e.touches[0];
             const rect = canvas.getBoundingClientRect();
             draw({
                 offsetX: touch.clientX - rect.left,
                 offsetY: touch.clientY - rect.top
             });
-        });
+        }, { passive: true });
 
-        canvas.addEventListener('touchend', () => isDrawing = false);
+        canvas.addEventListener('touchend', () => isDrawing = false, { passive: true });
 
         function draw(e) {
             if (!isDrawing) return;

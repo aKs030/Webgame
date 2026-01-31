@@ -232,6 +232,7 @@
             transition: all 0.3s ease;
             color: #00ff88;
             min-width: 80px;
+            touch-action: none;
         }
 
         .mobile-btn:hover, .mobile-btn:active {
@@ -542,15 +543,15 @@
                 document.addEventListener('keyup', (e) => this.handleKeyUp(e));
 
                 // Mobile controls
-                document.getElementById('player-up').addEventListener('touchstart', () => this.mobileControls.player1Up = true);
-                document.getElementById('player-up').addEventListener('touchend', () => this.mobileControls.player1Up = false);
-                document.getElementById('player-down').addEventListener('touchstart', () => this.mobileControls.player1Down = true);
-                document.getElementById('player-down').addEventListener('touchend', () => this.mobileControls.player1Down = false);
+                document.getElementById('player-up').addEventListener('touchstart', () => this.mobileControls.player1Up = true, { passive: true });
+                document.getElementById('player-up').addEventListener('touchend', () => this.mobileControls.player1Up = false, { passive: true });
+                document.getElementById('player-down').addEventListener('touchstart', () => this.mobileControls.player1Down = true, { passive: true });
+                document.getElementById('player-down').addEventListener('touchend', () => this.mobileControls.player1Down = false, { passive: true });
                 
-                document.getElementById('player2-up').addEventListener('touchstart', () => this.mobileControls.player2Up = true);
-                document.getElementById('player2-up').addEventListener('touchend', () => this.mobileControls.player2Up = false);
-                document.getElementById('player2-down').addEventListener('touchstart', () => this.mobileControls.player2Down = true);
-                document.getElementById('player2-down').addEventListener('touchend', () => this.mobileControls.player2Down = false);
+                document.getElementById('player2-up').addEventListener('touchstart', () => this.mobileControls.player2Up = true, { passive: true });
+                document.getElementById('player2-up').addEventListener('touchend', () => this.mobileControls.player2Up = false, { passive: true });
+                document.getElementById('player2-down').addEventListener('touchstart', () => this.mobileControls.player2Down = true, { passive: true });
+                document.getElementById('player2-down').addEventListener('touchend', () => this.mobileControls.player2Down = false, { passive: true });
 
                 // Prevent context menu on mobile
                 this.canvas.addEventListener('contextmenu', (e) => e.preventDefault());
