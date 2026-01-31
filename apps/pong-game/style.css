@@ -1,0 +1,352 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    color: white;
+}
+
+.game-container {
+    background: rgba(255,255,255,0.1);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    padding: 30px;
+    text-align: center;
+    max-width: 900px;
+    width: 100%;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.game-header {
+    margin-bottom: 20px;
+}
+
+.game-header h1 {
+    font-size: 3rem;
+    color: #00ff88;
+    margin-bottom: 10px;
+    text-shadow: 0 0 20px rgba(0,255,136,0.5);
+    font-weight: bold;
+}
+
+.game-subtitle {
+    color: #ccc;
+    font-size: 1.1rem;
+}
+
+.game-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 20px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 15px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.player-score {
+    text-align: center;
+}
+
+.player-name {
+    font-size: 1.1rem;
+    color: #ccc;
+    margin-bottom: 10px;
+}
+
+.score-display {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #00ff88;
+    text-shadow: 0 0 10px rgba(0,255,136,0.3);
+}
+
+.vs-divider {
+    font-size: 2rem;
+    color: #666;
+    font-weight: bold;
+}
+
+.game-canvas {
+    border: 2px solid #00ff88;
+    border-radius: 10px;
+    background: #000;
+    margin: 0 auto 20px;
+    display: block;
+    box-shadow: 0 0 30px rgba(0,255,136,0.3);
+}
+
+.game-controls {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.control-btn {
+    padding: 12px 24px;
+    border: 2px solid #00ff88;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 120px;
+    background: transparent;
+    color: #00ff88;
+}
+
+.control-btn:hover {
+    background: #00ff88;
+    color: #000;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,255,136,0.3);
+}
+
+.control-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.control-btn.active {
+    background: #00ff88;
+    color: #000;
+}
+
+.difficulty-selector {
+    margin-bottom: 20px;
+}
+
+.difficulty-selector label {
+    display: block;
+    margin-bottom: 15px;
+    font-weight: 500;
+    color: #ccc;
+    font-size: 1.1rem;
+}
+
+.difficulty-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.difficulty-btn {
+    padding: 10px 20px;
+    border: 2px solid rgba(255,255,255,0.3);
+    background: transparent;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    color: #ccc;
+}
+
+.difficulty-btn:hover {
+    border-color: #00ff88;
+    color: #00ff88;
+}
+
+.difficulty-btn.active {
+    background: #00ff88;
+    color: #000;
+    border-color: #00ff88;
+}
+
+.game-mode-selector {
+    margin-bottom: 20px;
+}
+
+.mode-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.mode-btn {
+    padding: 12px 24px;
+    border: 2px solid rgba(255,255,255,0.3);
+    background: transparent;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    color: #ccc;
+}
+
+.mode-btn:hover {
+    border-color: #00ff88;
+    color: #00ff88;
+}
+
+.mode-btn.active {
+    background: #00ff88;
+    color: #000;
+    border-color: #00ff88;
+}
+
+.mobile-controls {
+    display: none;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.mobile-paddle-controls {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.mobile-btn {
+    padding: 15px 25px;
+    border: 2px solid #00ff88;
+    background: transparent;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    color: #00ff88;
+    min-width: 80px;
+    touch-action: none;
+}
+
+.mobile-btn:hover, .mobile-btn:active {
+    background: #00ff88;
+    color: #000;
+}
+
+.game-instructions {
+    background: rgba(0,0,0,0.3);
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.instructions-title {
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #00ff88;
+    font-size: 1.2rem;
+}
+
+.instructions-list {
+    text-align: left;
+    color: #ccc;
+    line-height: 1.8;
+}
+
+.game-status {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.9);
+    color: #00ff88;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    display: none;
+    border: 2px solid #00ff88;
+    box-shadow: 0 0 30px rgba(0,255,136,0.3);
+}
+
+.status-title {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    text-shadow: 0 0 10px rgba(0,255,136,0.5);
+}
+
+.status-message {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    color: #ccc;
+}
+
+.continue-btn {
+    padding: 12px 24px;
+    background: #00ff88;
+    color: #000;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.fps-counter {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #666;
+    font-size: 0.8rem;
+    font-family: monospace;
+}
+
+@media (max-width: 768px) {
+    .game-container {
+        padding: 20px;
+        margin: 10px;
+    }
+
+    .game-header h1 {
+        font-size: 2rem;
+    }
+
+    .game-canvas {
+        width: 100%;
+        max-width: 400px;
+        height: auto;
+    }
+
+    .mobile-controls {
+        display: flex;
+    }
+
+    .game-stats {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .score-display {
+        font-size: 2rem;
+    }
+
+    .control-btn, .mode-btn {
+        width: 100%;
+        max-width: 200px;
+    }
+}
+
+@media (max-width: 480px) {
+    .game-canvas {
+        max-width: 320px;
+    }
+
+    .difficulty-buttons, .mode-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .difficulty-btn, .mode-btn {
+        width: 100%;
+        max-width: 180px;
+    }
+}
