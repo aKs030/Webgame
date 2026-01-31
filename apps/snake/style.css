@@ -15,13 +15,40 @@ body {
     Arial;
   background: #0f1724;
   color: #e6eef8;
+  overflow: hidden;
 }
+
+/* Responsive Container */
+.game-container {
+  width: 100%;
+  height: 100vh;
+  max-width: 100%;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 1rem;
+}
+
+.game-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    transform-origin: center center;
+}
+
+/* Modified .container to fit */
 .container {
+  width: 100%;
   max-width: 640px;
-  margin: 48px auto;
-  padding: 24px;
+  margin: 0 auto;
+  padding: 1rem;
   text-align: center;
 }
+
 h1 {
   margin: 0 0 16px;
   font-size: 24px;
@@ -32,6 +59,7 @@ h1 {
   padding: 12px;
   border-radius: 8px;
   box-shadow: 0 6px 18px rgba(2, 6, 23, 0.6);
+  max-width: 100%;
 }
 canvas {
   background: linear-gradient(180deg, #071020 0%, #081424 100%);
@@ -40,6 +68,8 @@ canvas {
   width: 400px;
   height: 400px;
   image-rendering: pixelated;
+  max-width: 100%;
+  height: auto;
 }
 .hud {
   display: flex;
@@ -244,58 +274,6 @@ select#swipeSensitivity {
   color: #e6eef8;
 }
 
-.visually-hidden {
-  position: absolute !important;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  border: 0;
-}
-
-.ghost {
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  padding: 6px 8px;
-  border-radius: 6px;
-  color: #cfe8ff;
-  margin-left: 8px;
-}
-
-/* Modal */
-.modal {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(2, 6, 23, 0.45);
-  z-index: 40;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 180ms ease;
-}
-.modal[aria-hidden="false"] {
-  opacity: 1;
-  pointer-events: auto;
-}
-.modal-content {
-  background: #071020;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 8px 30px rgba(2, 6, 23, 0.7);
-  width: min(420px, 92%);
-  text-align: center;
-}
-.modal-actions {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  margin-top: 12px;
-}
-
 /* Particle helper (drawn in canvas, but keep spare utility style) */
 .particle {
   position: absolute;
@@ -306,4 +284,30 @@ select#swipeSensitivity {
 /* Theme specific subtle accents */
 .theme-toggle {
   margin-left: 6px;
+}
+
+/* Responsive Overrides */
+@media (max-width: 500px) {
+  .game-container { padding: 0.5rem; font-size: 0.8rem; }
+  .container { padding: 0.5rem; }
+  h1 { font-size: 1.2rem; margin-bottom: 0.5rem; }
+  .game-area { padding: 8px; }
+  /* Ensure canvas fits */
+  canvas { width: 100%; max-width: 320px; }
+  button { padding: 4px 8px; font-size: 0.8rem; }
+  .hud { font-size: 0.8rem; flex-wrap: wrap; }
+  .hud .controls { display: flex; flex-wrap: wrap; gap: 4px; }
+  select { font-size: 0.8rem; padding: 4px; }
+}
+
+@media (max-height: 450px) {
+    /* Compact mode for small heights (Preview Card) */
+    .game-container { padding: 2px; }
+    h1 { display: none; }
+    .hint { display: none; }
+    .game-area { padding: 4px; box-shadow: none; }
+    .container { padding: 0; margin: 0; }
+    canvas { max-height: 120px; width: auto; } /* Force height constraint */
+    .hud { display: none; } /* Hide HUD in preview to save space */
+    .mobile-controls { display: none; }
 }

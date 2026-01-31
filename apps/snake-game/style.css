@@ -7,14 +7,35 @@
 body {
     font-family: system-ui, -apple-system, sans-serif;
     background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
+    /* Removed min-height and flex center from body, let container handle it */
+    color: #333;
+    overflow: hidden;
 }
 
+/* Responsive Container Wrapper */
 .game-container {
+  width: 100%;
+  height: 100vh;
+  max-width: 100%;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 1rem;
+}
+
+.game-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    transform-origin: center center;
+}
+
+/* Renamed existing game-container to game-card */
+.game-card {
     background: white;
     border-radius: 20px;
     box-shadow: 0 20px 40px rgba(0,0,0,0.2);
@@ -33,6 +54,10 @@ body {
     color: #1e3c72;
     margin-bottom: 10px;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+.game-title {
+    /* mapped to h1 */
 }
 
 .game-stats {
@@ -68,6 +93,8 @@ body {
     display: block;
     box-shadow: 0 10px 20px rgba(0,0,0,0.2);
     touch-action: none;
+    max-width: 100%;
+    height: auto;
 }
 
 .game-controls {
@@ -251,55 +278,23 @@ body {
     cursor: pointer;
 }
 
-@media (max-width: 768px) {
-    .game-container {
-        padding: 20px;
-        margin: 10px;
-    }
-
-    .game-header h1 {
-        font-size: 2rem;
-    }
-
-    .game-canvas {
-        width: 100%;
-        max-width: 320px;
-        height: auto;
-    }
-
-    .mobile-controls {
-        display: grid;
-    }
-
-    .game-stats {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .stat-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .control-btn {
-        width: 100%;
-        max-width: 200px;
-    }
+/* Responsive Overrides */
+@media (max-width: 500px) {
+    .game-container { padding: 0.5rem; }
+    .game-card { padding: 1rem; }
+    .game-header h1 { font-size: 1.5rem; }
+    .game-canvas { max-width: 100%; }
+    .difficulty-btn { padding: 6px 12px; font-size: 0.8rem; }
+    .control-btn { padding: 8px 16px; font-size: 0.9rem; }
 }
 
-@media (max-width: 480px) {
-    .game-canvas {
-        max-width: 280px;
-    }
-
-    .difficulty-buttons {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .difficulty-btn {
-        width: 100%;
-        max-width: 150px;
-    }
+@media (max-height: 450px) {
+    .game-container { padding: 0.25rem; }
+    .game-card { padding: 0.5rem; }
+    .game-header { display: none; }
+    .game-stats { margin-bottom: 10px; padding: 5px; }
+    .stat-value { font-size: 1rem; }
+    .game-instructions { display: none; }
+    .difficulty-selector { display: none; }
+    .game-canvas { margin-bottom: 10px; max-height: 150px; }
 }

@@ -9,10 +9,12 @@
     <!-- Optimized: No External Frameworks -->
 </head>
 <body>
-    <div class="calculator">
-        <h1>🔢 Calculator</h1>
-        
-        <div class="mode-toggle">
+    <div class="game-container">
+        <div class="game-content">
+            <div class="calculator">
+                <h1 class="game-title">🔢 Calculator</h1>
+
+                <div class="mode-toggle">
             <button class="mode-btn active" onclick="setMode('basic')">Standard</button>
             <button class="mode-btn" onclick="setMode('scientific')">Wissenschaftlich</button>
         </div>
@@ -57,9 +59,70 @@
             <button class="btn zero" onclick="inputNumber('0')">0</button>
             <button class="btn" onclick="inputDecimal()">.</button>
         </div>
+        </div>
     </div>
 
     <script>
+        // Responsive Game Handler
+        class ResponsiveGameHandler {
+          constructor() {
+            this.container = document.body;
+            this.init();
+          }
+
+          init() {
+            this.detectContainerSize();
+            this.adjustGameLayout();
+            window.addEventListener('resize', () => this.adjustGameLayout());
+          }
+
+          detectContainerSize() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+
+            if (width <= 500 || height <= 200) {
+              document.body.classList.add('compact-mode');
+            } else {
+              document.body.classList.remove('compact-mode');
+            }
+
+            if (width <= 320) {
+              document.body.classList.add('mobile-mode');
+            } else {
+              document.body.classList.remove('mobile-mode');
+            }
+          }
+
+          adjustGameLayout() {
+            this.scaleGameElements();
+          }
+
+          scaleGameElements() {
+            const container = document.querySelector('.game-container');
+            if (!container) return;
+
+            const containerWidth = container.offsetWidth;
+            const containerHeight = container.offsetHeight;
+            const gameContent = document.querySelector('.game-content');
+
+            if (!gameContent) return;
+
+            const scaleX = Math.min(1, containerWidth / 400);
+            const scaleY = Math.min(1, containerHeight / 500); // 500 is roughly the height needed for calculator
+            const scale = Math.min(scaleX, scaleY);
+
+            if (scale < 0.95) {
+                gameContent.style.transform = `scale(${scale})`;
+            } else {
+                gameContent.style.transform = 'none';
+            }
+          }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+          new ResponsiveGameHandler();
+        });
+
         let calculator = {
             display: '0',
             previousValue: null,

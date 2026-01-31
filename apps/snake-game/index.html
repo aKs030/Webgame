@@ -10,8 +10,10 @@
 </head>
 <body>
     <div class="game-container">
+        <div class="game-content">
+            <div class="game-card">
         <div class="game-header">
-            <h1>🐍 Snake Game</h1>
+            <h1 class="game-title">🐍 Snake Game</h1>
             <p>Sammle Äpfel und werde länger!</p>
         </div>
 
@@ -71,9 +73,71 @@
             <div class="final-score" id="finalScore">Score: 0</div>
             <button class="play-again-btn" id="playAgainBtn">Nochmal spielen</button>
         </div>
+            </div>
+        </div>
     </div>
 
     <script>
+        // Responsive Game Handler
+        class ResponsiveGameHandler {
+          constructor() {
+            this.container = document.body;
+            this.init();
+          }
+
+          init() {
+            this.detectContainerSize();
+            this.adjustGameLayout();
+            window.addEventListener('resize', () => this.adjustGameLayout());
+          }
+
+          detectContainerSize() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+
+            if (width <= 500 || height <= 200) {
+              document.body.classList.add('compact-mode');
+            } else {
+              document.body.classList.remove('compact-mode');
+            }
+
+            if (width <= 320) {
+              document.body.classList.add('mobile-mode');
+            } else {
+              document.body.classList.remove('mobile-mode');
+            }
+          }
+
+          adjustGameLayout() {
+            this.scaleGameElements();
+          }
+
+          scaleGameElements() {
+            const container = document.querySelector('.game-container');
+            if (!container) return;
+
+            const containerWidth = container.offsetWidth;
+            const containerHeight = container.offsetHeight;
+            const gameContent = document.querySelector('.game-content');
+
+            if (!gameContent) return;
+
+            const scaleX = Math.min(1, containerWidth / 600);
+            const scaleY = Math.min(1, containerHeight / 700);
+            const scale = Math.min(scaleX, scaleY);
+
+            if (scale < 0.95) {
+                gameContent.style.transform = `scale(${scale})`;
+            } else {
+                gameContent.style.transform = 'none';
+            }
+          }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+          new ResponsiveGameHandler();
+        });
+
         class SnakeGame {
             constructor() {
                 this.canvas = document.getElementById('gameCanvas');

@@ -10,7 +10,9 @@
 </head>
 <body>
     <div class="game-container">
-        <h1>🧠 Memory Game</h1>
+        <div class="game-content">
+            <div class="memory-game-card">
+        <h1 class="game-title">🧠 Memory Game</h1>
         
         <div class="difficulty-selector">
             <button class="difficulty-btn active" onclick="setDifficulty('easy')">Einfach (4x2)</button>
@@ -41,9 +43,70 @@
             <button class="btn" onclick="newGame()">Neues Spiel</button>
             <button class="btn" onclick="showHint()">💡 Tipp</button>
         </div>
+            </div>
+        </div>
     </div>
 
     <script>
+        // Responsive Game Handler
+        class ResponsiveGameHandler {
+          constructor() {
+            this.container = document.body;
+            this.init();
+          }
+
+          init() {
+            this.detectContainerSize();
+            this.adjustGameLayout();
+            window.addEventListener('resize', () => {
+                this.detectContainerSize();
+                this.adjustGameLayout();
+            });
+          }
+
+          detectContainerSize() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+
+            if (width <= 500 || height <= 250) {
+              document.body.classList.add('compact-mode');
+            } else {
+              document.body.classList.remove('compact-mode');
+            }
+
+            if (width <= 320) {
+              document.body.classList.add('mobile-mode');
+            } else {
+              document.body.classList.remove('mobile-mode');
+            }
+          }
+
+          adjustGameLayout() {
+            this.scaleGameElements();
+          }
+
+          scaleGameElements() {
+            const container = document.querySelector('.game-container');
+            if (!container) return;
+
+            const containerWidth = container.offsetWidth;
+            const containerHeight = container.offsetHeight;
+            const gameContent = document.querySelector('.game-content');
+
+            if (!gameContent) return;
+
+            const scaleX = Math.min(1, containerWidth / 600);
+            const scaleY = Math.min(1, containerHeight / 700);
+            const scale = Math.min(scaleX, scaleY);
+
+            if (scale < 0.95) {
+                gameContent.style.transform = `scale(${scale})`;
+            } else {
+                gameContent.style.transform = 'none';
+            }
+          }
+        }
+
         let gameState = {
             cards: [],
             flippedCards: [],
@@ -63,6 +126,14 @@
             medium: { rows: 4, cols: 4, pairs: 8 },
             hard: { rows: 4, cols: 6, pairs: 12 }
         };
+
+        function getCurrentConfig() {
+            if (document.body.classList.contains('compact-mode')) {
+                // Reduced size for small containers: 2x3 (3 pairs)
+                return { rows: 2, cols: 3, pairs: 3, isCompact: true };
+            }
+            return difficulties[gameState.difficulty];
+        }
         
         function setDifficulty(level) {
             gameState.difficulty = level;
@@ -77,7 +148,7 @@
         }
         
         function createCards() {
-            const config = difficulties[gameState.difficulty];
+            const config = getCurrentConfig();
             const selectedEmojis = emojis.slice(0, config.pairs);
             const cardPairs = [...selectedEmojis, ...selectedEmojis];
             
@@ -97,9 +168,14 @@
         
         function renderBoard() {
             const board = document.getElementById('gameBoard');
-            const config = difficulties[gameState.difficulty];
+            const config = getCurrentConfig();
             
-            board.className = `game-board ${gameState.difficulty}`;
+            if (config.isCompact) {
+                board.className = 'game-board small';
+            } else {
+                board.className = `game-board ${gameState.difficulty}`;
+            }
+
             board.innerHTML = '';
             
             gameState.cards.forEach(card => {
@@ -155,7 +231,7 @@
                 document.getElementById('gameMessage').textContent = '🎉 Paar gefunden!';
                 
                 // Check if game is won
-                const totalPairs = difficulties[gameState.difficulty].pairs;
+                const totalPairs = getCurrentConfig().pairs;
                 if (gameState.matchedPairs === totalPairs) {
                     winGame();
                 }
@@ -270,7 +346,11 @@
         }
         
         // Initialize game
-        newGame();
+        document.addEventListener('DOMContentLoaded', () => {
+            new ResponsiveGameHandler();
+            // Allow handler to set classes first
+            setTimeout(newGame, 0);
+        });
     </script>
 </body>
 </html>

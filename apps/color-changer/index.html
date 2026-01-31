@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="index.css" />
   </head>
   <body>
+    <div class="game-container">
+        <div class="game-content">
+
     <div id="root"></div>
     <script type="module">
       import React, { useState, useEffect } from 'https://esm.sh/react@18.2.0'
@@ -117,5 +120,75 @@
       const root = ReactDOM.createRoot(document.getElementById('root'))
       root.render(html`<${ColorChangerApp} />`)
     </script>
-  </body>
+
+        </div>
+    </div>
+
+    <script>
+        // Responsive Game Handler
+        class ResponsiveGameHandler {
+          constructor() {
+            this.container = document.body;
+            this.init();
+          }
+
+          init() {
+            this.detectContainerSize();
+            this.adjustGameLayout();
+            window.addEventListener('resize', () => this.adjustGameLayout());
+          }
+
+          detectContainerSize() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+
+            if (width <= 500 || height <= 250) {
+              document.body.classList.add('compact-mode');
+            } else {
+              document.body.classList.remove('compact-mode');
+            }
+
+            if (width <= 320) {
+              document.body.classList.add('mobile-mode');
+            } else {
+              document.body.classList.remove('mobile-mode');
+            }
+          }
+
+          adjustGameLayout() {
+            this.scaleGameElements();
+          }
+
+          scaleGameElements() {
+            const container = document.querySelector('.game-container');
+            if (!container) return;
+
+            const containerWidth = container.offsetWidth;
+            const containerHeight = container.offsetHeight;
+            const gameContent = document.querySelector('.game-content');
+
+            if (!gameContent) return;
+
+            // Base dimensions
+            const baseWidth = 600;
+            const baseHeight = 600;
+
+            const scaleX = Math.min(1, containerWidth / baseWidth);
+            const scaleY = Math.min(1, containerHeight / baseHeight);
+            const scale = Math.min(scaleX, scaleY);
+
+            if (scale < 0.95) {
+                gameContent.style.transform = `scale(${scale})`;
+            } else {
+                gameContent.style.transform = 'none';
+            }
+          }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+          new ResponsiveGameHandler();
+        });
+    </script>
+
+</body>
 </html>

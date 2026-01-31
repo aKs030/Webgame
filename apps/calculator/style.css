@@ -7,12 +7,31 @@
 body {
     font-family: system-ui, -apple-system, sans-serif;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     color: white;
-    padding: 1rem;
+    overflow: hidden;
+}
+
+/* Responsive Container */
+.game-container {
+  width: 100%;
+  height: 100vh;
+  max-width: 100%;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 1rem;
+}
+
+.game-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    /* Allow height to grow but centered */
+    transform-origin: center center;
 }
 
 .calculator {
@@ -24,6 +43,8 @@ body {
     width: 100%;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    flex-direction: column;
 }
 
 h1 {
@@ -31,6 +52,10 @@ h1 {
     font-size: 2rem;
     margin-bottom: 1.5rem;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.game-title {
+    /* mapped to h1 */
 }
 
 .display {
@@ -164,9 +189,32 @@ h1 {
     background: rgba(168, 85, 247, 0.5);
 }
 
-@media (max-width: 480px) {
-    .calculator { padding: 1.5rem; }
-    h1 { font-size: 1.8rem; }
-    .display-current { font-size: 1.8rem; }
-    .btn { font-size: 1.1rem; min-height: 55px; }
+/* Dynamische Skalierung */
+@media (max-width: 500px) {
+  .game-container { padding: 0.5rem; font-size: 0.8rem; }
+  .game-title { font-size: 1.5rem; margin-bottom: 1rem; }
+  /* Calculator specifics */
+  .calculator { padding: 1rem; }
+  .btn { padding: 0.4rem 0.8rem; font-size: 0.9rem; min-height: 45px; }
+  .display { padding: 1rem; margin-bottom: 1rem; }
+  .display-current { font-size: 1.5rem; }
+}
+
+@media (max-height: 450px) {
+  /* Compact height mode adjustments */
+  .game-container { padding: 0.25rem; }
+  .calculator { padding: 0.5rem; }
+  h1, .game-title { display: none; } /* Hide title on very short screens */
+  .display { padding: 0.5rem; margin-bottom: 0.5rem; }
+  .display-current { font-size: 1.2rem; min-height: 30px; }
+  .display-history { display: none; }
+  .btn { padding: 0.2rem; min-height: 30px; font-size: 0.9rem; }
+  .mode-toggle { display: none; } /* Hide mode toggle on tiny screens */
+  .button-grid { gap: 0.25rem; }
+  .scientific-buttons { display: none !important; } /* Force basic mode */
+}
+
+/* Container Query Support (falls verfügbar) */
+@container (max-width: 500px) {
+  .game-content { transform: scale(0.8); }
 }

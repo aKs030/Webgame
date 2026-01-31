@@ -8,16 +8,18 @@
       <!-- Optimized: No External Frameworks -->
 </head>
   <body>
-    <main class="container">
-      <h1>Snake 🐍</h1>
-      <div class="game-area">
-        <canvas
-          id="game"
-          width="400"
-          height="400"
-          aria-label="Snake Spiel"
-        ></canvas>
-        <div class="hud">
+    <div class="game-container">
+      <div class="game-content">
+        <main class="container">
+          <h1 class="game-title">Snake 🐍</h1>
+          <div class="game-area">
+            <canvas
+              id="game"
+              width="400"
+              height="400"
+              aria-label="Snake Spiel"
+            ></canvas>
+            <div class="hud">
           <div class="left">
             <div id="score">Punkte: 0</div>
             <div id="highscore">Highscore: 0</div>
@@ -79,32 +81,95 @@
             ▼
           </button>
         </div>
-      </div>
+          </div>
 
-      <div
-        id="gameModal"
-        class="modal"
-        role="dialog"
-        aria-hidden="true"
-        aria-labelledby="modalTitle"
-      >
-        <div class="modal-content" role="document">
-          <h2 id="modalTitle">Game Over</h2>
-          <p id="modalMessage">Punkte: 0</p>
-          <div id="topScoresWrap">
-            <h3>Top Scores</h3>
-            <ol id="topScores" class="top-scores"></ol>
+          <div
+            id="gameModal"
+            class="modal"
+            role="dialog"
+            aria-hidden="true"
+            aria-labelledby="modalTitle"
+          >
+            <div class="modal-content" role="document">
+              <h2 id="modalTitle">Game Over</h2>
+              <p id="modalMessage">Punkte: 0</p>
+              <div id="topScoresWrap">
+                <h3>Top Scores</h3>
+                <ol id="topScores" class="top-scores"></ol>
+              </div>
+              <div class="modal-actions">
+                <button id="modalRestart">Neustart</button>
+                <button id="modalResetHighscore" class="ghost">
+                  Highscore zurücksetzen
+                </button>
+                <button id="modalClose" class="ghost">Schließen</button>
+              </div>
+            </div>
           </div>
-          <div class="modal-actions">
-            <button id="modalRestart">Neustart</button>
-            <button id="modalResetHighscore" class="ghost">
-              Highscore zurücksetzen
-            </button>
-            <button id="modalClose" class="ghost">Schließen</button>
-          </div>
-        </div>
+        </main>
       </div>
-    </main>
+    </div>
+    <script>
+      // Responsive Game Handler
+      class ResponsiveGameHandler {
+        constructor() {
+          this.container = document.body;
+          this.init();
+        }
+
+        init() {
+          this.detectContainerSize();
+          this.adjustGameLayout();
+          window.addEventListener('resize', () => this.adjustGameLayout());
+        }
+
+        detectContainerSize() {
+          const width = window.innerWidth;
+          const height = window.innerHeight;
+
+          if (width <= 500 || height <= 200) {
+            document.body.classList.add('compact-mode');
+          } else {
+            document.body.classList.remove('compact-mode');
+          }
+
+          if (width <= 320) {
+            document.body.classList.add('mobile-mode');
+          } else {
+            document.body.classList.remove('mobile-mode');
+          }
+        }
+
+        adjustGameLayout() {
+          this.scaleGameElements();
+        }
+
+        scaleGameElements() {
+          const container = document.querySelector('.game-container');
+          if (!container) return;
+
+          const containerWidth = container.offsetWidth;
+          const containerHeight = container.offsetHeight;
+          const gameContent = document.querySelector('.game-content');
+
+          if (!gameContent) return;
+
+          const scaleX = Math.min(1, containerWidth / 550); // Wider for snake HUD
+          const scaleY = Math.min(1, containerHeight / 600);
+          const scale = Math.min(scaleX, scaleY);
+
+          if (scale < 0.95) {
+              gameContent.style.transform = `scale(${scale})`;
+          } else {
+              gameContent.style.transform = 'none';
+          }
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        new ResponsiveGameHandler();
+      });
+    </script>
     <script src="game.js"></script>
   </body>
 </html>
