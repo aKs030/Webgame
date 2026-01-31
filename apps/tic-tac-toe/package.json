@@ -1,0 +1,19 @@
+{
+  "name": "tic-tac-toe",
+  "version": "1.0.0",
+  "description": "Klassisches Tic-Tac-Toe Spiel für zwei Spieler.",
+  "keywords": [
+    "game",
+    "strategy",
+    "tic-tac-toe",
+    "2-player"
+  ],
+  "category": "game",
+  "author": "Abdulkerim Sesli",
+  "license": "MIT",
+  "homepage": "https://www.abdulkerimsesli.de/projekte/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aKs030/Webgame.git"
+  }
+}
