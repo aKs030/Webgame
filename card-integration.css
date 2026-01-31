@@ -2,7 +2,8 @@
    - Target card sizes: 1000x600 (desktop) and 350x500 (mobile)
    - Transparent/minimal background, compact layout, and responsive scaling
 */
-:root {
+/* Scoped variables — only apply inside the embedded card wrapper */
+#card-fit-wrapper {
   --card-width: 1000px;
   --card-height: 600px;
   --card-padding: 1rem;
@@ -15,9 +16,8 @@
   --base-font: 1rem;
 }
 
-/* Reset / ensure no full-screen backgrounds */
-html,
-body {
+/* Reset / ensure no full-screen backgrounds inside card */
+#card-fit-wrapper {
   margin: 0;
   padding: var(--card-padding);
   background: transparent !important;
@@ -30,13 +30,13 @@ body {
 }
 
 /* Container to make apps fit the card */
-.app-container,
-.game-container,
-.container,
-#root,
-#app,
-main,
-.app {
+#card-fit-wrapper .app-container,
+#card-fit-wrapper .game-container,
+#card-fit-wrapper .container,
+#card-fit-wrapper #root,
+#card-fit-wrapper #app,
+#card-fit-wrapper main,
+#card-fit-wrapper .app {
   box-sizing: border-box;
   width: 100%;
   height: 100%;
@@ -54,9 +54,9 @@ main,
 }
 
 /* Ensure main content area is visible and scrollable if needed */
-.app-inner,
-.main,
-.game-area {
+#card-fit-wrapper .app-inner,
+#card-fit-wrapper .main,
+#card-fit-wrapper .game-area {
   width: 100%;
   height: calc(100% - 3rem);
   overflow: auto;
@@ -66,9 +66,9 @@ main,
 }
 
 /* Canvas/games: centered and responsive */
-canvas,
-.canvas,
-.game-canvas {
+#card-fit-wrapper canvas,
+#card-fit-wrapper .canvas,
+#card-fit-wrapper .game-canvas {
   max-width: 100%;
   max-height: 100%;
   width: auto;
@@ -76,12 +76,12 @@ canvas,
   display: block;
 }
 
-/* Buttons and inputs: touch-friendly */
-button,
-.btn,
-input[type="button"],
-input[type="submit"],
-.choice-btn {
+/* Buttons and inputs: touch-friendly (scoped) */
+#card-fit-wrapper button,
+#card-fit-wrapper .btn,
+#card-fit-wrapper input[type="button"],
+#card-fit-wrapper input[type="submit"],
+#card-fit-wrapper .choice-btn {
   font-size: 0.95rem;
   padding: 0.5rem 0.75rem;
   border-radius: 0.5rem;
@@ -89,10 +89,10 @@ input[type="submit"],
   min-height: 2.4rem;
 }
 
-/* Compact header/footer */
-.header,
-.footer,
-.controls {
+/* Compact header/footer (scoped) */
+#card-fit-wrapper .header,
+#card-fit-wrapper .footer,
+#card-fit-wrapper .controls {
   width: 100%;
   display: flex;
   gap: 0.5rem;
@@ -101,40 +101,40 @@ input[type="submit"],
   padding: 0.25rem 0.5rem;
 }
 
-/* Score / UI overlays: small and unobtrusive */
-.score,
-.info,
-.status {
+/* Score / UI overlays: small and unobtrusive (scoped) */
+#card-fit-wrapper .score,
+#card-fit-wrapper .info,
+#card-fit-wrapper .status {
   font-size: var(--small-font);
   padding: 0.25rem 0.5rem;
   background: rgba(0, 0, 0, 0.25);
   border-radius: 0.5rem;
 }
 
-/* Provide a utility class to hide decorative images/backgrounds */
-.bg-hide {
+/* Provide a utility class to hide decorative images/backgrounds (scoped) */
+#card-fit-wrapper .bg-hide {
   background: transparent !important;
 }
 
 /* Mobile Card Anpassung */
 @media (max-width: 500px) {
-  :root {
+  /* Scoped variables */
+  #card-fit-wrapper {
     --card-padding: 0.5rem;
   }
-  html,
-  body {
+  #card-fit-wrapper {
     padding: 0.5rem;
   }
-  .app-container,
-  .game-container {
+  #card-fit-wrapper .app-container,
+  #card-fit-wrapper .game-container {
     padding: 0.5rem;
   }
-  button,
-  .btn {
+  #card-fit-wrapper button,
+  #card-fit-wrapper .btn {
     font-size: 0.95rem;
     padding: 0.4rem 0.6rem;
   }
-  .choice-btn {
+  #card-fit-wrapper .choice-btn {
     font-size: 1.4rem;
     min-width: 56px;
     min-height: 56px;
@@ -159,10 +159,10 @@ input:focus,
   outline-offset: 2px;
 }
 
-/* Encourage compact fonts where apps use large sizes */
-h1,
-h2,
-h3 {
+/* Encourage compact fonts where apps use large sizes (scoped) */
+#card-fit-wrapper h1,
+#card-fit-wrapper h2,
+#card-fit-wrapper h3 {
   line-height: 1.1;
   margin: 0.2rem 0;
 }
@@ -251,17 +251,18 @@ body,
 
 /* Card-specific tight mode for very small cards */
 @media (max-width: 400px) {
-  :root {
+  /* Scoped variables */
+  #card-fit-wrapper {
     --card-padding: 0.35rem;
     --base-font: 0.9rem;
     --small-font: 0.85rem;
   }
-  .header,
-  .footer {
+  #card-fit-wrapper .header,
+  #card-fit-wrapper .footer {
     padding: 0.25rem;
   }
-  .controls,
-  .button-grid {
+  #card-fit-wrapper .controls,
+  #card-fit-wrapper .button-grid {
     gap: 0.25rem;
   }
 }
