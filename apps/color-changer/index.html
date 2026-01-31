@@ -1,285 +1,121 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Color Changer</title>
-    <meta name="description" content="Dynamische Hintergrundfarben per Klick. Entdecke schöne Farbkombinationen und Gradienten.">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: system-ui, -apple-system, sans-serif;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        
-        .color-container {
-            text-align: center;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 2rem;
-            max-width: 500px;
-            width: 90%;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-        
-        .color-display {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 15px;
-            padding: 2rem;
-            margin: 2rem 0;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-        }
-        
-        .color-code {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 1rem;
-            font-family: 'Courier New', monospace;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 0.5rem 1rem;
-            border-radius: 10px;
-            display: inline-block;
-        }
-        
-        .color-name {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            margin-bottom: 1rem;
-        }
-        
-        .buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin: 2rem 0;
-        }
-        
-        .btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 10px;
-            padding: 1rem 1.5rem;
-            color: white;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
-        }
-        
-        .btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
-        }
-        
-        .btn:active {
-            transform: translateY(0);
-        }
-        
-        .color-palette {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
-            gap: 1rem;
-            margin: 2rem 0;
-        }
-        
-        .palette-color {
-            aspect-ratio: 1;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-        }
-        
-        .palette-color:hover {
-            transform: scale(1.1);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-        
-        .copy-notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 10px;
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
-            z-index: 1000;
-        }
-        
-        .copy-notification.show {
-            transform: translateX(0);
-        }
-        
-        @media (max-width: 480px) {
-            h1 { font-size: 2rem; }
-            .color-code { font-size: 1.2rem; }
-            .buttons { flex-direction: column; }
-            .btn { width: 100%; }
-        }
-    </style>
-    <!-- Optimized: No External Frameworks -->
-</head>
-<body>
-    <div class="color-container">
-        <h1>🎨 Color Changer</h1>
-        
-        <div class="color-display">
-            <div class="color-code" id="colorCode">#667eea → #764ba2</div>
-            <div class="color-name" id="colorName">Mystischer Gradient</div>
-        </div>
-        
-        <div class="buttons">
-            <button class="btn" onclick="randomSolidColor()">🎲 Zufällige Farbe</button>
-            <button class="btn" onclick="randomGradient()">🌈 Zufälliger Gradient</button>
-            <button class="btn" onclick="copyColor()">📋 Kopieren</button>
-        </div>
-        
-        <div class="color-palette" id="colorPalette"></div>
-    </div>
-    
-    <div class="copy-notification" id="copyNotification">
-        Farbe kopiert! 📋
-    </div>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Color Changer | Abdulkerim Sesli</title>
+    <meta name="description" content="Zufällige Farben generieren, kopieren und Verlauf verwalten" />
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module">
+      import React, { useState, useEffect } from 'https://esm.sh/react@18.2.0'
+      import ReactDOM from 'https://esm.sh/react-dom@18.2.0/client'
+      import htm from 'https://esm.sh/htm@3.1.1'
 
-    <script>
-        let currentColor = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-        let currentColorCode = '#667eea → #764ba2';
-        
-        const gradients = [
-            { colors: '#667eea → #764ba2', name: 'Mystischer Gradient', css: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' },
-            { colors: '#f093fb → #f5576c', name: 'Sonnenuntergang', css: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' },
-            { colors: '#4facfe → #00f2fe', name: 'Ozean Blau', css: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)' },
-            { colors: '#43e97b → #38f9d7', name: 'Smaragd Grün', css: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)' },
-            { colors: '#fa709a → #fee140', name: 'Tropischer Sonnenaufgang', css: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)' },
-            { colors: '#a8edea → #fed6e3', name: 'Pastelltraum', css: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)' },
-            { colors: '#ff9a9e → #fecfef', name: 'Rosa Wolken', css: 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)' },
-            { colors: '#a18cd1 → #fbc2eb', name: 'Lavendel Himmel', css: 'linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)' }
-        ];
-        
-        const solidColors = [
-            { color: '#e74c3c', name: 'Lebendiges Rot' },
-            { color: '#3498db', name: 'Himmel Blau' },
-            { color: '#2ecc71', name: 'Smaragd Grün' },
-            { color: '#f39c12', name: 'Sonnen Orange' },
-            { color: '#9b59b6', name: 'Amethyst Lila' },
-            { color: '#1abc9c', name: 'Türkis' },
-            { color: '#34495e', name: 'Schiefer Grau' },
-            { color: '#e67e22', name: 'Karotten Orange' }
-        ];
-        
-        function randomSolidColor() {
-            const randomColor = solidColors[Math.floor(Math.random() * solidColors.length)];
-            currentColor = randomColor.color;
-            currentColorCode = randomColor.color;
-            
-            document.body.style.background = randomColor.color;
-            document.getElementById('colorCode').textContent = randomColor.color;
-            document.getElementById('colorName').textContent = randomColor.name;
+      const html = htm.bind(React.createElement)
+
+      const LS_KEY = 'color-changer-history'
+
+      function randomHex() {
+        const r = Math.floor(Math.random() * 256)
+          .toString(16)
+          .padStart(2, '0')
+        const g = Math.floor(Math.random() * 256)
+          .toString(16)
+          .padStart(2, '0')
+        const b = Math.floor(Math.random() * 256)
+          .toString(16)
+          .padStart(2, '0')
+        return `#${r}${g}${b}`
+      }
+
+      function ColorChangerApp() {
+        const [color, setColor] = useState(() => randomHex())
+        const [history, setHistory] = useState(() => JSON.parse(localStorage.getItem(LS_KEY) || '[]'))
+
+        useEffect(() => {
+          localStorage.setItem(LS_KEY, JSON.stringify(history.slice(0, 15)))
+        }, [history])
+
+        const pick = c => {
+          setColor(c)
+          setHistory(prev => [c, ...prev.filter(x => x !== c)].slice(0, 15))
         }
-        
-        function randomGradient() {
-            const randomGradient = gradients[Math.floor(Math.random() * gradients.length)];
-            currentColor = randomGradient.css;
-            currentColorCode = randomGradient.colors;
-            
-            document.body.style.background = randomGradient.css;
-            document.getElementById('colorCode').textContent = randomGradient.colors;
-            document.getElementById('colorName').textContent = randomGradient.name;
+
+        const generate = () => {
+          const c = randomHex()
+          pick(c)
         }
-        
-        function setColor(color, name, css) {
-            currentColor = css;
-            currentColorCode = color;
-            
-            document.body.style.background = css;
-            document.getElementById('colorCode').textContent = color;
-            document.getElementById('colorName').textContent = name;
+
+        const copyToClipboard = async () => {
+          try {
+            await navigator.clipboard.writeText(color)
+            const notif = document.getElementById('copyNotification')
+            notif.classList.add('show')
+            setTimeout(() => notif.classList.remove('show'), 2000)
+          } catch (e) {
+            alert('Kopieren nicht möglich')
+          }
         }
-        
-        function copyColor() {
-            navigator.clipboard.writeText(currentColor).then(() => {
-                const notification = document.getElementById('copyNotification');
-                notification.classList.add('show');
-                setTimeout(() => {
-                    notification.classList.remove('show');
-                }, 2000);
-            }).catch(() => {
-                // Fallback for older browsers
-                const textArea = document.createElement('textarea');
-                textArea.value = currentColor;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textArea);
-                
-                const notification = document.getElementById('copyNotification');
-                notification.classList.add('show');
-                setTimeout(() => {
-                    notification.classList.remove('show');
-                }, 2000);
-            });
-        }
-        
-        function createColorPalette() {
-            const palette = document.getElementById('colorPalette');
-            
-            // Add gradient samples
-            gradients.slice(0, 4).forEach(gradient => {
-                const colorDiv = document.createElement('div');
-                colorDiv.className = 'palette-color';
-                colorDiv.style.background = gradient.css;
-                colorDiv.title = gradient.name;
-                colorDiv.onclick = () => setColor(gradient.colors, gradient.name, gradient.css);
-                palette.appendChild(colorDiv);
-            });
-            
-            // Add solid color samples
-            solidColors.slice(0, 4).forEach(color => {
-                const colorDiv = document.createElement('div');
-                colorDiv.className = 'palette-color';
-                colorDiv.style.background = color.color;
-                colorDiv.title = color.name;
-                colorDiv.onclick = () => setColor(color.color, color.name, color.color);
-                palette.appendChild(colorDiv);
-            });
-        }
-        
-        // Initialize palette
-        createColorPalette();
-        
-        // Keyboard shortcuts
-        document.addEventListener('keydown', (e) => {
-            if (e.key === ' ') {
-                e.preventDefault();
-                randomGradient();
-            } else if (e.key === 'c' || e.key === 'C') {
-                copyColor();
-            } else if (e.key === 's' || e.key === 'S') {
-                randomSolidColor();
-            }
-        });
+
+        const clearHistory = () => setHistory([])
+
+        return html`
+          <div className="app-root">
+            <div className="card">
+              <div className="card-header">
+                <h1 className="title">Color Changer</h1>
+                <a href="/" className="back-link">← Zurück</a>
+              </div>
+
+              <div className="preview">
+                <div className="preview-inner" style=${{background: color, height: '220px'}}>
+                  <div className="info-box">
+                    <div className="color-code">${color}</div>
+                    <div className="color-sub">Aktuelle Farbe</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="btn-group">
+                <button onClick=${generate} className="btn">Neue Farbe</button>
+                <button onClick=${copyToClipboard} className="btn">Kopieren</button>
+                <button onClick=${() => pick('#ffffff')} className="btn">Weiß</button>
+              </div>
+
+              <div className="controls-row">
+                <h3 className="recent-title">Letzte Farben</h3>
+                <div className="controls-actions">
+                  <button onClick=${clearHistory} className="link-small">Leeren</button>
+                </div>
+              </div>
+
+              <div className="palette-grid">
+                ${history.length === 0
+                  ? html`<div className="palette-empty">Keine Farben gespeichert — klicke auf "Neue Farbe".</div>`
+                  : history.map((c, i) => html`
+                      <button
+                        key=${i}
+                        onClick=${() => pick(c)}
+                        title=${c}
+                        style=${{background: c}}
+                        className="palette-button"
+                      ></button>
+                    `)}
+              </div>
+
+              <div className="hint">Tipp: Farben mit einem Klick kopieren oder in der Historie auswählen. Die letzten 15 Farben bleiben erhalten.</div>
+            </div>
+
+            <div id="copyNotification" className="copy-notification">Farbe kopiert! 📋</div>
+          </div>
+        `
+      }
+
+      const root = ReactDOM.createRoot(document.getElementById('root'))
+      root.render(html`<${ColorChangerApp} />`)
     </script>
-</body>
+  </body>
 </html>
