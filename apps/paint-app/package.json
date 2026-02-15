@@ -1,13 +1,15 @@
 {
   "name": "paint-app",
   "version": "1.0.0",
-  "description": "Einfaches Zeichenprogramm mit verschiedenen Farben und Pinselgrößen.",
+  "description": "Einfaches Zeichenprogramm mit verschiedenen Farben und Pinselgr\u00f6\u00dfen.",
   "keywords": [
     "ui",
     "drawing",
     "canvas",
     "paint",
-    "art"
+    "art",
+    "Abdulkerim",
+    "Sesli"
   ],
   "category": "ui",
   "author": "Abdulkerim Sesli",

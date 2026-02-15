@@ -2,7 +2,16 @@
   "name": "calculator",
   "version": "1.0.0",
   "description": "Moderner Taschenrechner mit erweiterten Funktionen. Grundrechenarten und wissenschaftliche Operationen.",
-  "keywords": ["utility", "calculator", "math", "tool", "scientific", "computation"],
+  "keywords": [
+    "utility",
+    "calculator",
+    "math",
+    "tool",
+    "scientific",
+    "computation",
+    "Abdulkerim",
+    "Sesli"
+  ],
   "category": "utility",
   "author": "Abdulkerim Sesli",
   "license": "MIT",

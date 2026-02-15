@@ -1,8 +1,18 @@
 {
   "name": "color-changer",
   "version": "1.0.0",
-  "description": "Dynamische Hintergrundfarben per Klick. Entdecke schöne Farbkombinationen und Gradienten.",
-  "keywords": ["ui", "design", "color", "css", "theme", "gradient", "interactive"],
+  "description": "Dynamische Hintergrundfarben per Klick. Entdecke sch\u00f6ne Farbkombinationen und Gradienten.",
+  "keywords": [
+    "ui",
+    "design",
+    "color",
+    "css",
+    "theme",
+    "gradient",
+    "interactive",
+    "Abdulkerim",
+    "Sesli"
+  ],
   "category": "ui",
   "author": "Abdulkerim Sesli",
   "license": "MIT",

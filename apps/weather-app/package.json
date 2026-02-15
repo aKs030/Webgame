@@ -2,7 +2,16 @@
   "name": "weather-app",
   "version": "1.0.0",
   "description": "Moderne Wetter-App mit aktuellen Wetterdaten und 5-Tage-Vorhersage. Standortbasierte Wetterinformationen.",
-  "keywords": ["web", "weather", "api", "forecast", "location", "temperature"],
+  "keywords": [
+    "web",
+    "weather",
+    "api",
+    "forecast",
+    "location",
+    "temperature",
+    "Abdulkerim",
+    "Sesli"
+  ],
   "category": "web",
   "author": "Abdulkerim Sesli",
   "license": "MIT",

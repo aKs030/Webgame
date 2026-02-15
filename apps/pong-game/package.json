@@ -2,7 +2,17 @@
   "name": "pong-game",
   "version": "1.0.0",
   "description": "Klassisches Pong-Spiel mit KI-Gegner, Physics Engine und Canvas-Rendering",
-  "keywords": ["pong", "game", "canvas", "retro", "arcade", "ai", "physics"],
+  "keywords": [
+    "pong",
+    "game",
+    "canvas",
+    "retro",
+    "arcade",
+    "ai",
+    "physics",
+    "Abdulkerim",
+    "Sesli"
+  ],
   "category": "game",
   "author": "Abdulkerim Sesli",
   "license": "MIT",
