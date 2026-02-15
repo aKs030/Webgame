@@ -1,8 +1,17 @@
 {
   "name": "password-generator",
   "version": "1.0.0",
-  "description": "Sicherer Passwort-Generator mit anpassbaren Optionen. Erstelle starke Passwörter für maximale Sicherheit.",
-  "keywords": ["utility", "security", "password", "generator", "encryption", "safety"],
+  "description": "Sicherer Passwort-Generator mit anpassbaren Optionen. Erstelle starke Passw\u00f6rter f\u00fcr maximale Sicherheit.",
+  "keywords": [
+    "utility",
+    "security",
+    "password",
+    "generator",
+    "encryption",
+    "safety",
+    "Abdulkerim",
+    "Sesli"
+  ],
   "category": "utility",
   "author": "Abdulkerim Sesli",
   "license": "MIT",

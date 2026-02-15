@@ -1,12 +1,14 @@
 {
   "name": "tic-tac-toe",
   "version": "1.0.0",
-  "description": "Klassisches Tic-Tac-Toe Spiel für zwei Spieler.",
+  "description": "Klassisches Tic-Tac-Toe Spiel f\u00fcr zwei Spieler.",
   "keywords": [
     "game",
     "strategy",
     "tic-tac-toe",
-    "2-player"
+    "2-player",
+    "Abdulkerim",
+    "Sesli"
   ],
   "category": "game",
   "author": "Abdulkerim Sesli",

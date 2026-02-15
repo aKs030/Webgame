@@ -1,8 +1,17 @@
 {
   "name": "memory-game",
   "version": "1.0.0",
-  "description": "Klassisches Memory-Spiel mit verschiedenen Schwierigkeitsgraden. Trainiere dein Gedächtnis!",
-  "keywords": ["game", "memory", "cards", "brain-training", "puzzle", "concentration"],
+  "description": "Klassisches Memory-Spiel mit verschiedenen Schwierigkeitsgraden. Trainiere dein Ged\u00e4chtnis!",
+  "keywords": [
+    "game",
+    "memory",
+    "cards",
+    "brain-training",
+    "puzzle",
+    "concentration",
+    "Abdulkerim",
+    "Sesli"
+  ],
   "category": "game",
   "author": "Abdulkerim Sesli",
   "license": "MIT",

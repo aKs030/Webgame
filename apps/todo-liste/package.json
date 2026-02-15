@@ -1,8 +1,17 @@
 {
   "name": "todo-liste",
   "version": "1.0.0",
-  "description": "Produktivitäts-Tool zum Verwalten von Aufgaben. Erstelle, bearbeite und organisiere deine To-Dos.",
-  "keywords": ["productivity", "todo", "tasks", "crud", "organization", "planner"],
+  "description": "Produktivit\u00e4ts-Tool zum Verwalten von Aufgaben. Erstelle, bearbeite und organisiere deine To-Dos.",
+  "keywords": [
+    "productivity",
+    "todo",
+    "tasks",
+    "crud",
+    "organization",
+    "planner",
+    "Abdulkerim",
+    "Sesli"
+  ],
   "category": "productivity",
   "author": "Abdulkerim Sesli",
   "license": "MIT",

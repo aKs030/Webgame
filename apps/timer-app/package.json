@@ -2,7 +2,16 @@
   "name": "timer-app",
   "version": "1.0.0",
   "description": "Vielseitige Timer-App mit Countdown, Stoppuhr und Pomodoro-Technik",
-  "keywords": ["timer", "countdown", "stopwatch", "pomodoro", "productivity", "utility"],
+  "keywords": [
+    "timer",
+    "countdown",
+    "stopwatch",
+    "pomodoro",
+    "productivity",
+    "utility",
+    "Abdulkerim",
+    "Sesli"
+  ],
   "category": "utility",
   "author": "Abdulkerim Sesli",
   "license": "MIT",

@@ -2,7 +2,16 @@
   "name": "quiz-app",
   "version": "1.0.0",
   "description": "Interaktive Quiz-App mit verschiedenen Kategorien und Schwierigkeitsgraden",
-  "keywords": ["quiz", "game", "trivia", "education", "javascript", "wissen"],
+  "keywords": [
+    "quiz",
+    "game",
+    "trivia",
+    "education",
+    "javascript",
+    "wissen",
+    "Abdulkerim",
+    "Sesli"
+  ],
   "category": "game",
   "author": "Abdulkerim Sesli",
   "license": "MIT",

@@ -1,8 +1,16 @@
 {
   "name": "schere-stein-papier",
   "version": "1.0.0",
-  "description": "Der Klassiker gegen den Computer! Wähle Schere, Stein oder Papier und tritt gegen die KI an.",
-  "keywords": ["game", "spiel", "rock-paper-scissors", "javascript", "entertainment"],
+  "description": "Der Klassiker gegen den Computer! W\u00e4hle Schere, Stein oder Papier und tritt gegen die KI an.",
+  "keywords": [
+    "game",
+    "spiel",
+    "rock-paper-scissors",
+    "javascript",
+    "entertainment",
+    "Abdulkerim",
+    "Sesli"
+  ],
   "category": "game",
   "author": "Abdulkerim Sesli",
   "license": "MIT",
