@@ -3,6 +3,8 @@
   const params = new URLSearchParams(location.search);
   const force = params.get("card") === "1";
   const popupMode = params.get("popup") === "1";
+  const MIN_CONTENT_WIDTH = 320;
+  const MIN_CONTENT_HEIGHT = 220;
 
   const embedded = (() => {
     try {
@@ -17,6 +19,7 @@
   let wrapper;
   let resizeObserver = null;
   let raf;
+  let lastPosted = null;
 
   function markMode() {
     if (!document.body) return;
@@ -32,13 +35,32 @@
   }
 
   function postSize(width, height, scale) {
+    const roundedWidth = Math.max(MIN_CONTENT_WIDTH, Math.round(width));
+    const roundedHeight = Math.max(MIN_CONTENT_HEIGHT, Math.round(height));
+    const roundedScale = Number.isFinite(scale) ? Number(scale.toFixed(4)) : 1;
+
+    if (
+      lastPosted &&
+      Math.abs(lastPosted.width - roundedWidth) < 2 &&
+      Math.abs(lastPosted.height - roundedHeight) < 2 &&
+      Math.abs(lastPosted.scale - roundedScale) < 0.002
+    ) {
+      return;
+    }
+
+    lastPosted = {
+      width: roundedWidth,
+      height: roundedHeight,
+      scale: roundedScale,
+    };
+
     try {
       window.parent.postMessage(
         {
           type: "card-fit-size",
-          width,
-          height,
-          scale,
+          width: roundedWidth,
+          height: roundedHeight,
+          scale: roundedScale,
           popup: popupMode,
         },
         "*",
@@ -103,14 +125,67 @@
     const width = Math.max(
       Math.ceil(rect.width),
       Math.ceil(content.scrollWidth || 0),
-      320,
+      MIN_CONTENT_WIDTH,
     );
     const height = Math.max(
       Math.ceil(rect.height),
       Math.ceil(content.scrollHeight || 0),
-      220,
+      MIN_CONTENT_HEIGHT,
     );
     return { width, height };
+  }
+
+  function isPopupCandidate(node) {
+    if (!(node instanceof HTMLElement)) return false;
+
+    const tag = node.tagName.toLowerCase();
+    if (
+      tag === "script" ||
+      tag === "style" ||
+      tag === "link" ||
+      tag === "meta" ||
+      tag === "noscript"
+    ) {
+      return false;
+    }
+
+    const styles = getComputedStyle(node);
+    if (
+      styles.display === "none" ||
+      styles.visibility === "hidden" ||
+      Number(styles.opacity || "1") === 0
+    ) {
+      return false;
+    }
+
+    const position = styles.position;
+    if (position === "fixed" || position === "absolute") {
+      return false;
+    }
+
+    return true;
+  }
+
+  function scorePopupCandidate(node) {
+    const rect = node.getBoundingClientRect();
+    const width = Math.ceil(Math.max(rect.width, node.scrollWidth || 0));
+    const height = Math.ceil(Math.max(rect.height, node.scrollHeight || 0));
+
+    if (width < 120 || height < 80) return -1;
+
+    // Prefer substantial app containers without selecting full-page wrappers blindly.
+    let score = width * height;
+
+    const classAndId = `${node.className || ""} ${node.id || ""}`.toLowerCase();
+    if (/app|root|container|game|card|panel|main/.test(classAndId)) {
+      score *= 1.08;
+    }
+
+    if (width > innerWidth * 1.4 && height > innerHeight * 1.4) {
+      score *= 0.6;
+    }
+
+    return score;
   }
 
   function pickPopupTarget() {
@@ -126,34 +201,24 @@
       target = target.firstElementChild;
     }
 
-    const rect = target.getBoundingClientRect();
-    const almostViewportWide = rect.width >= innerWidth * 0.9;
-    if (almostViewportWide && target.children.length > 0) {
-      let bestChild = null;
-      let bestArea = 0;
-      for (const child of target.children) {
-        const childStyle = getComputedStyle(child);
-        if (
-          childStyle.position === "absolute" ||
-          childStyle.position === "fixed"
-        ) {
-          continue;
-        }
+    let bestTarget = target;
+    let bestScore = scorePopupCandidate(target);
 
-        const childRect = child.getBoundingClientRect();
-        if (childRect.width < 140 || childRect.height < 80) continue;
+    // Scan descendants to find the most likely content root.
+    const descendants = target.querySelectorAll("*");
+    const maxScan = 350;
+    for (let i = 0; i < descendants.length && i < maxScan; i += 1) {
+      const node = descendants[i];
+      if (!isPopupCandidate(node)) continue;
 
-        const area = childRect.width * childRect.height;
-        if (area > bestArea) {
-          bestArea = area;
-          bestChild = child;
-        }
+      const score = scorePopupCandidate(node);
+      if (score > bestScore) {
+        bestScore = score;
+        bestTarget = node;
       }
-
-      if (bestChild) target = bestChild;
     }
 
-    return target;
+    return bestTarget;
   }
 
   function measurePopupContent() {
@@ -198,8 +263,11 @@
       ),
     );
 
-    const width = Math.max(preferredWidth || fallbackWidth, 320);
-    const height = Math.max(preferredHeight || fallbackHeight, 220);
+    const width = Math.max(preferredWidth || fallbackWidth, MIN_CONTENT_WIDTH);
+    const height = Math.max(
+      preferredHeight || fallbackHeight,
+      MIN_CONTENT_HEIGHT,
+    );
 
     return { width, height };
   }
