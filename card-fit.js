@@ -62,6 +62,8 @@
           height: roundedHeight,
           scale: roundedScale,
           popup: popupMode,
+          viewportWidth: Math.round(innerWidth),
+          viewportHeight: Math.round(innerHeight),
         },
         "*",
       );
