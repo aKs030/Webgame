@@ -112,7 +112,8 @@
       margin: "0",
       padding: "0",
       background: "transparent",
-      overflow: "visible",
+      // Keep inner scrolling available when content is taller than iframe viewport.
+      overflow: "auto",
       width: "auto",
       height: "auto",
       minHeight: "0",
