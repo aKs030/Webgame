@@ -204,8 +204,8 @@
       target.style.height = `${height}px`;
       target.style.transform = scale === 1 ? "none" : `scale(${scale})`;
 
-      // Report rendered size so parent popup can stay compact.
-      postSize(width * scale, height * scale, scale);
+      // Report natural content size to the parent popup while rendering scaled locally.
+      postSize(width, height, scale);
     });
   }
 
