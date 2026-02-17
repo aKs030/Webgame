@@ -317,6 +317,12 @@
     fitEmbed();
   }
 
+  function handleParentMessage(event) {
+    const payload = event?.data;
+    if (!payload || payload.type !== "card-fit-request") return;
+    fit();
+  }
+
   function init() {
     markMode();
     if (popupMode) preparePopupLayout();
@@ -325,6 +331,7 @@
     addEventListener("resize", fit, { passive: true });
     addEventListener("orientationchange", fit, { passive: true });
     addEventListener("load", fit);
+    addEventListener("message", handleParentMessage);
 
     if ("ResizeObserver" in window && !resizeObserver) {
       resizeObserver = new ResizeObserver(() => fit());
