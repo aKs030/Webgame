@@ -130,6 +130,13 @@ body.card-popup-mode {
   max-height: 100%;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  background: #020617 !important;
+}
+
+/* Keep a stable dark canvas behind transparent app shells in popup mode. */
+body.card-popup-mode #card-popup-fit-wrapper {
+  background: transparent;
+  box-sizing: border-box;
 }
 
 /* Remove only outer page-shell backgrounds, keep app card styling intact */
