@@ -161,101 +161,65 @@
   }
 
   function measurePopupContent(target) {
-    let root = target.firstElementChild || target;
-    if (
-      root instanceof HTMLElement &&
-      /^(root|app)$/i.test(root.id || "") &&
-      root.firstElementChild instanceof HTMLElement
-    ) {
-      root = root.firstElementChild;
-    }
+    const content = target.firstElementChild || target;
+    const nodes = [];
 
-    const candidates = [];
-    const seen = new Set();
-    const addCandidate = (node) => {
-      if (!(node instanceof HTMLElement)) return;
-      if (seen.has(node)) return;
-      seen.add(node);
-      candidates.push(node);
-    };
+    if (target instanceof HTMLElement) nodes.push(target);
+    if (content instanceof HTMLElement && content !== target) nodes.push(content);
 
-    addCandidate(root);
-
-    if (root instanceof HTMLElement) {
-      const preferredSelector =
-        ".calculator, .card, .game-container, .weather-container, .app-container, .container, main, [data-card-root]";
-      const preferred = root.querySelectorAll(preferredSelector);
-      for (let i = 0; i < preferred.length; i += 1) {
-        addCandidate(preferred[i]);
-      }
-
-      const topLevel = root.children;
-      const maxTopLevel = Math.min(topLevel.length, 12);
-      for (let i = 0; i < maxTopLevel; i += 1) {
-        addCandidate(topLevel[i]);
+    const descendants = target.querySelectorAll("*");
+    const maxDescendants = Math.min(descendants.length, 1400);
+    for (let i = 0; i < maxDescendants; i += 1) {
+      const node = descendants[i];
+      if (node instanceof HTMLElement) {
+        nodes.push(node);
       }
     }
 
-    let bestWidth = 0;
-    let bestHeight = 0;
-    let bestScore = -1;
+    let minLeft = Infinity;
+    let minTop = Infinity;
+    let maxRight = -Infinity;
+    let maxBottom = -Infinity;
 
-    for (const node of candidates) {
+    for (const node of nodes) {
       const styles = getComputedStyle(node);
       if (styles.display === "none" || styles.visibility === "hidden") continue;
-      if (styles.position === "fixed" || styles.position === "absolute")
-        continue;
+      if (styles.position === "fixed") continue;
 
       const rect = node.getBoundingClientRect();
-      let width = Math.ceil(Math.max(rect.width, node.scrollWidth || 0));
-      let height = Math.ceil(Math.max(rect.height, node.scrollHeight || 0));
-      if (width < 140 || height < 110) continue;
+      if (rect.width < 2 || rect.height < 2) continue;
 
-      const marginX =
-        (parseFloat(styles.marginLeft) || 0) +
-        (parseFloat(styles.marginRight) || 0);
-      const marginY =
-        (parseFloat(styles.marginTop) || 0) +
-        (parseFloat(styles.marginBottom) || 0);
-
-      width = Math.ceil(width + marginX);
-      height = Math.ceil(height + marginY);
-
-      let score = width * height;
-
-      // Prefer actual app cards/containers over full viewport wrappers.
-      if (width >= innerWidth * 0.94) score *= 0.58;
-      if (height >= innerHeight * 1.35) score *= 0.72;
-      if (width >= innerWidth * 0.94 && height >= innerHeight * 0.9) {
-        score *= 0.48;
-      }
-      if (node === root) score *= 0.86;
-
-      if (score > bestScore) {
-        bestScore = score;
-        bestWidth = width;
-        bestHeight = height;
-      }
+      minLeft = Math.min(minLeft, rect.left);
+      minTop = Math.min(minTop, rect.top);
+      maxRight = Math.max(maxRight, rect.right);
+      maxBottom = Math.max(maxBottom, rect.bottom);
     }
 
-    if (bestScore < 0) {
-      const fallbackRect = target.getBoundingClientRect();
-      bestWidth = Math.ceil(
-        Math.max(fallbackRect.width, target.scrollWidth || 0, MIN_CONTENT_WIDTH),
-      );
-      bestHeight = Math.ceil(
-        Math.max(
-          fallbackRect.height,
-          target.scrollHeight || 0,
-          MIN_CONTENT_HEIGHT,
-        ),
-      );
+    let width = MIN_CONTENT_WIDTH;
+    let height = MIN_CONTENT_HEIGHT;
+
+    if (Number.isFinite(minLeft) && Number.isFinite(minTop)) {
+      width = Math.ceil(Math.max(0, maxRight - minLeft));
+      height = Math.ceil(Math.max(0, maxBottom - minTop));
     }
 
-    return {
-      width: Math.max(bestWidth, MIN_CONTENT_WIDTH),
-      height: Math.max(bestHeight, MIN_CONTENT_HEIGHT),
-    };
+    const targetRect = target.getBoundingClientRect();
+    width = Math.max(
+      width,
+      Math.ceil(targetRect.width),
+      Math.ceil(target.scrollWidth || 0),
+      Math.ceil(content.scrollWidth || 0),
+      MIN_CONTENT_WIDTH,
+    );
+    height = Math.max(
+      height,
+      Math.ceil(targetRect.height),
+      Math.ceil(target.scrollHeight || 0),
+      Math.ceil(content.scrollHeight || 0),
+      MIN_CONTENT_HEIGHT,
+    );
+
+    return { width, height };
   }
 
   function fitEmbed() {
