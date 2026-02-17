@@ -125,6 +125,11 @@ body.card-popup-mode {
 /* Allow natural app height/width so parent can resize popup around content */
 body.card-popup-mode {
   overflow: auto !important;
+  overscroll-behavior: contain;
+  max-width: 100%;
+  max-height: 100%;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 /* Remove only outer page-shell backgrounds, keep app card styling intact */
@@ -164,6 +169,16 @@ body.card-popup-mode .app-toast {
   top: max(0.6rem, env(safe-area-inset-top));
   right: max(0.6rem, env(safe-area-inset-right));
   z-index: 2147480000;
+}
+
+@media (max-width: 640px) {
+  body.card-popup-mode .copy-notification,
+  body.card-popup-mode .notification-toast,
+  body.card-popup-mode .app-toast {
+    top: auto;
+    right: max(0.6rem, env(safe-area-inset-right));
+    bottom: max(0.6rem, env(safe-area-inset-bottom));
+  }
 }
 
 /* ============================================================
