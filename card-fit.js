@@ -153,6 +153,74 @@
     return { width, height };
   }
 
+  function measurePopupContent(target) {
+    const root = target.firstElementChild || target;
+    const candidates = [];
+
+    const addCandidate = (node) => {
+      if (!(node instanceof HTMLElement)) return;
+      candidates.push(node);
+    };
+
+    addCandidate(root);
+
+    const preferredSelector =
+      ".calculator, .card, .app-container, .game-container, .container, .app-root, main, [class*='container'], [class*='game'], [class*='card'], [class*='app']";
+    const preferred = root.querySelectorAll(preferredSelector);
+    const maxPreferred = 180;
+    for (let i = 0; i < preferred.length && i < maxPreferred; i += 1) {
+      addCandidate(preferred[i]);
+    }
+
+    let bestWidth = MIN_CONTENT_WIDTH;
+    let bestHeight = MIN_CONTENT_HEIGHT;
+    let bestScore = -1;
+
+    for (const node of candidates) {
+      const styles = getComputedStyle(node);
+      if (styles.display === "none" || styles.visibility === "hidden") continue;
+      if (styles.position === "fixed" || styles.position === "absolute")
+        continue;
+
+      const rect = node.getBoundingClientRect();
+      let width = Math.ceil(Math.max(rect.width, node.scrollWidth || 0));
+      let height = Math.ceil(Math.max(rect.height, node.scrollHeight || 0));
+      if (width < 120 || height < 80) continue;
+
+      const marginX =
+        (parseFloat(styles.marginLeft) || 0) +
+        (parseFloat(styles.marginRight) || 0);
+      const marginY =
+        (parseFloat(styles.marginTop) || 0) +
+        (parseFloat(styles.marginBottom) || 0);
+
+      width = Math.ceil(width + marginX);
+      height = Math.ceil(height + marginY);
+
+      let score = width * height;
+
+      // Full-viewport wrappers are often not the real content root.
+      if (width >= innerWidth * 0.92 && height >= innerHeight * 0.92) {
+        score *= 0.75;
+      }
+
+      // Heavily penalize obviously oversized wrappers.
+      if (width > innerWidth * 1.8 || height > innerHeight * 1.8) {
+        score *= 0.5;
+      }
+
+      if (score > bestScore) {
+        bestScore = score;
+        bestWidth = width;
+        bestHeight = height;
+      }
+    }
+
+    const width = Math.max(bestWidth, MIN_CONTENT_WIDTH);
+    const height = Math.max(bestHeight, MIN_CONTENT_HEIGHT);
+    return { width, height };
+  }
+
   function fitEmbed() {
     cancelAnimationFrame(raf);
     raf = requestAnimationFrame(() => {
@@ -163,7 +231,7 @@
       target.style.width = "auto";
       target.style.height = "auto";
 
-      const { width, height } = measureEmbedContent(target);
+      const { width, height } = measurePopupContent(target);
       const availableWidth = Math.max(1, innerWidth);
       const availableHeight = Math.max(1, innerHeight);
       const scale = Math.min(
