@@ -1,309 +1,195 @@
-/* card-integration.css - Global styles to optimize apps for portfolio Cards
-   - Target card sizes: 1000x600 (desktop) and 350x500 (mobile)
-   - Transparent/minimal background, compact layout, and responsive scaling
+/* card-integration.css
+   Central integration layer for all Webgame apps in card/embed and popup mode.
+   Goal: keep app-specific UI intact, remove outer page backgrounds in popup,
+   and avoid clipping/overflow issues in embedded cards.
 */
-/* Scoped variables — only apply inside the embedded card wrapper */
+
+/* Shared tokens for embedded card mode */
 #card-fit-wrapper {
-  --card-width: 1000px;
-  --card-height: 600px;
-  --card-padding: 1rem;
+  --card-padding: 0.75rem;
   --card-radius: 1rem;
-  --card-bg: rgba(255, 255, 255, 0.03);
   --fg-color: #e6eef8;
-  --muted-color: rgba(230, 238, 248, 0.75);
-  --btn-size: 1rem;
-  --small-font: 0.9rem;
-  --base-font: 1rem;
 }
 
-/* Reset / ensure no full-screen backgrounds inside card */
-#card-fit-wrapper {
-  margin: 0;
-  padding: var(--card-padding);
-  background: transparent !important;
-  background-image: none !important;
-  background-color: transparent !important;
-  color: var(--fg-color);
-  font-size: var(--base-font);
-  min-height: auto !important;
-  height: auto !important;
-}
-
-/* Container to make apps fit the card */
-#card-fit-wrapper .app-container,
-#card-fit-wrapper .game-container,
-#card-fit-wrapper .container,
-#card-fit-wrapper #root,
-#card-fit-wrapper #app,
-#card-fit-wrapper main,
-#card-fit-wrapper .app {
-  box-sizing: border-box;
+/* ============================================================
+   EMBED MODE (card=1 without popup)
+   ============================================================ */
+html.card-embed-mode,
+body.card-embed-mode {
+  margin: 0 !important;
+  padding: 0 !important;
   width: 100%;
   height: 100%;
-  max-width: 100%;
-  max-height: 100%;
-  background: var(--card-bg);
-  border-radius: var(--card-radius);
-  padding: calc(var(--card-padding) * 0.9);
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  align-items: center;
-  justify-content: flex-start;
-  overflow: hidden;
+  min-height: 100%;
+  overflow: hidden !important;
+  background: transparent !important;
+  background-image: none !important;
+  box-sizing: border-box;
 }
 
-/* Ensure main content area is visible and scrollable if needed */
-#card-fit-wrapper .app-inner,
-#card-fit-wrapper .main,
-#card-fit-wrapper .game-area {
-  width: 100%;
-  height: calc(100% - 3rem);
-  overflow: auto;
+body.card-embed-mode {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Canvas/games: centered and responsive */
-#card-fit-wrapper canvas,
-#card-fit-wrapper .canvas,
-#card-fit-wrapper .game-canvas {
+/* Wrapper created by card-fit.js */
+body.card-embed-mode #card-fit-wrapper {
+  display: inline-block;
+  margin: 0;
+  padding: var(--card-padding);
+  color: var(--fg-color);
+  background: transparent !important;
+  background-image: none !important;
+  transform-origin: top left;
+  will-change: transform;
+  box-sizing: border-box;
+}
+
+/* Keep app shells within bounds without forcing hard heights */
+body.card-embed-mode #card-fit-wrapper .app-container,
+body.card-embed-mode #card-fit-wrapper .game-container,
+body.card-embed-mode #card-fit-wrapper #root,
+body.card-embed-mode #card-fit-wrapper #app,
+body.card-embed-mode #card-fit-wrapper main,
+body.card-embed-mode #card-fit-wrapper .app,
+body.card-embed-mode #card-fit-wrapper .container {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Compact control bars on small card viewports */
+body.card-embed-mode #card-fit-wrapper .controls,
+body.card-embed-mode #card-fit-wrapper .control-row,
+body.card-embed-mode #card-fit-wrapper .button-grid,
+body.card-embed-mode #card-fit-wrapper .header,
+body.card-embed-mode #card-fit-wrapper .footer,
+body.card-embed-mode #card-fit-wrapper .toolbar {
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+/* Touch-friendly controls in card mode */
+body.card-embed-mode #card-fit-wrapper button,
+body.card-embed-mode #card-fit-wrapper .btn,
+body.card-embed-mode #card-fit-wrapper input[type="button"],
+body.card-embed-mode #card-fit-wrapper input[type="submit"],
+body.card-embed-mode #card-fit-wrapper .choice-btn {
+  min-height: 2.35rem;
+  min-width: 2.35rem;
+}
+
+/* Media should fit card area gracefully */
+body.card-embed-mode #card-fit-wrapper canvas,
+body.card-embed-mode #card-fit-wrapper img,
+body.card-embed-mode #card-fit-wrapper video,
+body.card-embed-mode #card-fit-wrapper iframe,
+body.card-embed-mode #card-fit-wrapper .game-canvas {
+  display: block;
   max-width: 100%;
   max-height: 100%;
-  width: auto;
   height: auto;
-  display: block;
+  object-fit: contain;
 }
 
-/* Buttons and inputs: touch-friendly (scoped) */
-#card-fit-wrapper button,
-#card-fit-wrapper .btn,
-#card-fit-wrapper input[type="button"],
-#card-fit-wrapper input[type="submit"],
-#card-fit-wrapper .choice-btn {
-  font-size: 0.95rem;
-  padding: 0.5rem 0.75rem;
-  border-radius: 0.5rem;
-  min-width: 2.4rem;
-  min-height: 2.4rem;
+/* Canvases with intrinsic attrs should still scale */
+body.card-embed-mode #card-fit-wrapper canvas[width],
+body.card-embed-mode #card-fit-wrapper canvas[height] {
+  width: 100% !important;
+  height: auto !important;
 }
 
-/* Compact header/footer (scoped) */
-#card-fit-wrapper .header,
-#card-fit-wrapper .footer,
-#card-fit-wrapper .controls {
-  width: 100%;
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.25rem 0.5rem;
-}
-
-/* Score / UI overlays: small and unobtrusive (scoped) */
-#card-fit-wrapper .score,
-#card-fit-wrapper .info,
-#card-fit-wrapper .status {
-  font-size: var(--small-font);
-  padding: 0.25rem 0.5rem;
-  background: rgba(0, 0, 0, 0.25);
-  border-radius: 0.5rem;
-}
-
-/* Provide a utility class to hide decorative images/backgrounds (scoped) */
-#card-fit-wrapper .bg-hide {
-  background: transparent !important;
-}
-
-/* Mobile Card Anpassung */
 @media (max-width: 500px) {
-  /* Scoped variables */
-  #card-fit-wrapper {
-    --card-padding: 0.5rem;
-  }
-  #card-fit-wrapper {
-    padding: 0.5rem;
-  }
-  #card-fit-wrapper .app-container,
-  #card-fit-wrapper .game-container {
-    padding: 0.5rem;
-  }
-  #card-fit-wrapper button,
-  #card-fit-wrapper .btn {
-    font-size: 0.95rem;
-    padding: 0.4rem 0.6rem;
-  }
-  #card-fit-wrapper .choice-btn {
-    font-size: 1.4rem;
-    min-width: 56px;
-    min-height: 56px;
+  body.card-embed-mode #card-fit-wrapper {
+    --card-padding: 0.45rem;
+    --card-radius: 0.75rem;
   }
 }
 
-/* Size helpers for embedding tests */
+/* ============================================================
+   POPUP MODE (popup=1)
+   ============================================================ */
+html.card-popup-mode,
+body.card-popup-mode {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  min-height: 0 !important;
+  background: transparent !important;
+  background-image: none !important;
+  background-color: transparent !important;
+  box-sizing: border-box;
+}
+
+/* Allow natural app height/width so parent can resize popup around content */
+body.card-popup-mode {
+  overflow: auto !important;
+}
+
+/* Remove only outer page-shell backgrounds, keep app card styling intact */
+body.card-popup-mode #root,
+body.card-popup-mode #app,
+body.card-popup-mode main,
+body.card-popup-mode .app-root,
+body.card-popup-mode .app-shell,
+body.card-popup-mode .page-root {
+  background: transparent !important;
+  background-image: none !important;
+}
+
+/* Standalone-only navigation should not appear inside popup */
+body.card-popup-mode .back-link,
+body.card-popup-mode .btn-back,
+body.card-popup-mode [data-standalone-only],
+body.card-popup-mode .standalone-only,
+body.card-popup-mode a[href="/"],
+body.card-popup-mode a[href="./"] {
+  display: none !important;
+}
+
+/* Keep media responsive in popup */
+body.card-popup-mode canvas,
+body.card-popup-mode img,
+body.card-popup-mode video,
+body.card-popup-mode iframe {
+  max-width: 100%;
+}
+
+/* Toasts/notifications should stay visible inside popup */
+body.card-popup-mode .copy-notification,
+body.card-popup-mode .notification-toast,
+body.card-popup-mode .app-toast {
+  position: fixed;
+  top: max(0.6rem, env(safe-area-inset-top));
+  right: max(0.6rem, env(safe-area-inset-right));
+  z-index: 2147480000;
+}
+
+/* ============================================================
+   Utilities / modal controls
+   ============================================================ */
 .card-size-1000x600 {
   width: 1000px;
   height: 600px;
 }
+
 .card-size-350x500 {
   width: 350px;
   height: 500px;
 }
 
-/* Accessibility tweaks */
-button:focus,
-input:focus,
-.choice-btn:focus {
-  outline: 2px solid rgba(255, 255, 255, 0.3);
+.card-embed-mode button:focus-visible,
+.card-embed-mode input:focus-visible,
+.card-embed-mode .choice-btn:focus-visible,
+.card-popup-mode button:focus-visible,
+.card-popup-mode input:focus-visible,
+.card-popup-mode .choice-btn:focus-visible {
+  outline: 2px solid rgba(96, 165, 250, 0.8);
   outline-offset: 2px;
 }
 
-/* Encourage compact fonts where apps use large sizes (scoped) */
-#card-fit-wrapper h1,
-#card-fit-wrapper h2,
-#card-fit-wrapper h3 {
-  line-height: 1.1;
-  margin: 0.2rem 0;
-}
-
-/* Provide a small utility to scale content into smaller cards (use sparingly) */
-.scale-to-fit {
-  width: 100%;
-  height: 100%;
-  transform-origin: top left;
-}
-
-/* Card-fit wrapper styling (used by card-fit.js) */
-#card-fit-wrapper {
-  display: inline-block;
-  will-change: transform;
-  transform-origin: top left;
-}
-
-/* Popup mode: remove app full-page backgrounds in embedded view */
-html.card-popup-mode,
-body.card-popup-mode {
-  background: transparent !important;
-  background-image: none !important;
-  background-color: transparent !important;
-}
-
-body.card-popup-mode .app-root,
-body.card-popup-mode .container,
-body.card-popup-mode .app,
-body.card-popup-mode .game-container,
-body.card-popup-mode .app-container,
-body.card-popup-mode main,
-body.card-popup-mode #root {
-  background: transparent !important;
-  background-image: none !important;
-}
-
-/* Popup mode should follow app intrinsic height instead of clipping to 100%. */
-body.card-popup-mode #card-fit-wrapper .app-container,
-body.card-popup-mode #card-fit-wrapper .game-container,
-body.card-popup-mode #card-fit-wrapper .container,
-body.card-popup-mode #card-fit-wrapper #root,
-body.card-popup-mode #card-fit-wrapper #app,
-body.card-popup-mode #card-fit-wrapper main,
-body.card-popup-mode #card-fit-wrapper .app,
-body.card-popup-mode #card-fit-wrapper .app-inner,
-body.card-popup-mode #card-fit-wrapper .main,
-body.card-popup-mode #card-fit-wrapper .game-area {
-  height: auto !important;
-  min-height: 0 !important;
-  max-height: none !important;
-  overflow: visible !important;
-}
-
-/* Prevent internal scrolling: allow flex items to shrink and hide overflow */
-body.card-embed-mode .app-container,
-body.card-embed-mode .game-container {
-  overflow: hidden;
-}
-body.card-embed-mode .app-inner,
-body.card-embed-mode .main,
-body.card-embed-mode .game-area {
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Ensure media/interactive elements fit without causing scroll */
-body.card-embed-mode canvas,
-body.card-embed-mode img,
-body.card-embed-mode iframe,
-body.card-embed-mode video,
-body.card-embed-mode .game-canvas {
-  max-width: 100%;
-  max-height: 100%;
-  width: 100% !important;
-  height: auto !important;
-  display: block;
-  object-fit: contain;
-}
-/* Some canvases have intrinsic width/height attributes — ensure CSS forces them to fit */
-body.card-embed-mode canvas[width],
-body.card-embed-mode canvas[height] {
-  width: 100% !important;
-  height: auto !important;
-}
-
-/* Ensure root/bodies take full card space and no unexpected extra size */
-html.card-embed-mode,
-body.card-embed-mode,
-body.card-embed-mode #root {
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
-}
-
-/* Compact controls: wrap instead of creating horizontal overflow */
-body.card-embed-mode .controls,
-body.card-embed-mode .control-row,
-body.card-embed-mode .button-grid,
-body.card-embed-mode .header,
-body.card-embed-mode .footer {
-  flex-wrap: wrap;
-  gap: 0.4rem;
-}
-
-/* Reduce padding & font sizes inside cards to avoid overflow */
-body.card-embed-mode .card-compact * {
-  padding: 0.15rem;
-  margin: 0;
-  font-size: 0.95rem;
-}
-
-/* Fallback to scaling when content still overflows (use with class .scale-to-fit) */
-body.card-embed-mode .scale-to-fit > * {
-  width: 100%;
-  height: 100%;
-}
-
-/* Card-specific tight mode for very small cards */
-@media (max-width: 400px) {
-  /* Scoped variables */
-  #card-fit-wrapper {
-    --card-padding: 0.35rem;
-    --base-font: 0.9rem;
-    --small-font: 0.85rem;
-  }
-  #card-fit-wrapper .header,
-  #card-fit-wrapper .footer {
-    padding: 0.25rem;
-  }
-  #card-fit-wrapper .controls,
-  #card-fit-wrapper .button-grid {
-    gap: 0.25rem;
-  }
-}
-
-/* --- CARD EMBED CONTROLS & MODAL --- */
+/* --- Card embed controls and fallback modal --- */
 #card-fit-wrapper.card-expanded {
   position: fixed;
   inset: 0;
@@ -331,7 +217,7 @@ body.card-embed-mode .scale-to-fit > * {
 
 .card-controls .card-btn {
   background: rgba(255, 255, 255, 0.06);
-  color: var(--fg-color);
+  color: var(--fg-color, #e6eef8);
   border: 1px solid rgba(255, 255, 255, 0.08);
   padding: 0.4rem 0.6rem;
   font-size: 0.9rem;
@@ -344,7 +230,6 @@ body.card-embed-mode .scale-to-fit > * {
   transform: translateY(-2px);
 }
 
-/* Mockup interactive mode */
 #card-fit-wrapper.mockup-enabled {
   background: transparent;
 }
@@ -353,7 +238,6 @@ body.card-embed-mode .scale-to-fit > * {
   pointer-events: auto;
 }
 
-/* Modal overlay inside the app (fallback when parent cannot open modal) */
 .card-modal-overlay {
   position: fixed;
   inset: 0;
@@ -368,7 +252,7 @@ body.card-embed-mode .scale-to-fit > * {
 .card-modal {
   width: min(1200px, 98vw);
   height: min(840px, 95vh);
-  background: var(--card-bg);
+  background: rgba(255, 255, 255, 0.03);
   border-radius: 1rem;
   overflow: hidden;
   display: flex;
@@ -389,33 +273,29 @@ body.card-embed-mode .scale-to-fit > * {
   flex: 1;
   width: 100%;
   border: 0;
-  background: white;
+  background: transparent;
 }
 
-/* Small screens: make modal full window */
 @media (max-width: 640px) {
   #card-fit-wrapper.card-expanded {
     padding: 0.5rem;
     border-radius: 0;
   }
+
   .card-controls {
     top: 0.5rem;
     right: 0.5rem;
     gap: 0.4rem;
   }
+
   .card-controls .card-btn {
     padding: 0.35rem 0.5rem;
     font-size: 0.85rem;
   }
+
   .card-modal {
     width: 100%;
     height: 100%;
     border-radius: 0;
   }
-}
-
-/* Accessibility */
-.card-controls .card-btn:focus {
-  outline: 2px solid rgba(96, 165, 250, 0.8);
-  outline-offset: 2px;
 }
