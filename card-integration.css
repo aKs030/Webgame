@@ -181,14 +181,33 @@ input:focus,
   transform-origin: top left;
 }
 
+/* Popup mode: remove app full-page backgrounds in embedded view */
+html.card-popup-mode,
+body.card-popup-mode {
+  background: transparent !important;
+  background-image: none !important;
+  background-color: transparent !important;
+}
+
+body.card-popup-mode .app-root,
+body.card-popup-mode .container,
+body.card-popup-mode .app,
+body.card-popup-mode .game-container,
+body.card-popup-mode .app-container,
+body.card-popup-mode main,
+body.card-popup-mode #root {
+  background: transparent !important;
+  background-image: none !important;
+}
+
 /* Prevent internal scrolling: allow flex items to shrink and hide overflow */
-.app-container,
-.game-container {
+body.card-embed-mode .app-container,
+body.card-embed-mode .game-container {
   overflow: hidden;
 }
-.app-inner,
-.main,
-.game-area {
+body.card-embed-mode .app-inner,
+body.card-embed-mode .main,
+body.card-embed-mode .game-area {
   flex: 1 1 auto;
   min-height: 0;
   overflow: hidden;
@@ -198,11 +217,11 @@ input:focus,
 }
 
 /* Ensure media/interactive elements fit without causing scroll */
-canvas,
-img,
-iframe,
-video,
-.game-canvas {
+body.card-embed-mode canvas,
+body.card-embed-mode img,
+body.card-embed-mode iframe,
+body.card-embed-mode video,
+body.card-embed-mode .game-canvas {
   max-width: 100%;
   max-height: 100%;
   width: 100% !important;
@@ -211,40 +230,40 @@ video,
   object-fit: contain;
 }
 /* Some canvases have intrinsic width/height attributes — ensure CSS forces them to fit */
-canvas[width],
-canvas[height] {
+body.card-embed-mode canvas[width],
+body.card-embed-mode canvas[height] {
   width: 100% !important;
   height: auto !important;
 }
 
 /* Ensure root/bodies take full card space and no unexpected extra size */
-html,
-body,
-#root {
+html.card-embed-mode,
+body.card-embed-mode,
+body.card-embed-mode #root {
   width: 100%;
   height: 100%;
   box-sizing: border-box;
 }
 
 /* Compact controls: wrap instead of creating horizontal overflow */
-.controls,
-.control-row,
-.button-grid,
-.header,
-.footer {
+body.card-embed-mode .controls,
+body.card-embed-mode .control-row,
+body.card-embed-mode .button-grid,
+body.card-embed-mode .header,
+body.card-embed-mode .footer {
   flex-wrap: wrap;
   gap: 0.4rem;
 }
 
 /* Reduce padding & font sizes inside cards to avoid overflow */
-.card-compact * {
+body.card-embed-mode .card-compact * {
   padding: 0.15rem;
   margin: 0;
   font-size: 0.95rem;
 }
 
 /* Fallback to scaling when content still overflows (use with class .scale-to-fit) */
-.scale-to-fit > * {
+body.card-embed-mode .scale-to-fit > * {
   width: 100%;
   height: 100%;
 }
