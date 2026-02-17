@@ -200,6 +200,23 @@ body.card-popup-mode #root {
   background-image: none !important;
 }
 
+/* Popup mode should follow app intrinsic height instead of clipping to 100%. */
+body.card-popup-mode #card-fit-wrapper .app-container,
+body.card-popup-mode #card-fit-wrapper .game-container,
+body.card-popup-mode #card-fit-wrapper .container,
+body.card-popup-mode #card-fit-wrapper #root,
+body.card-popup-mode #card-fit-wrapper #app,
+body.card-popup-mode #card-fit-wrapper main,
+body.card-popup-mode #card-fit-wrapper .app,
+body.card-popup-mode #card-fit-wrapper .app-inner,
+body.card-popup-mode #card-fit-wrapper .main,
+body.card-popup-mode #card-fit-wrapper .game-area {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
 /* Prevent internal scrolling: allow flex items to shrink and hide overflow */
 body.card-embed-mode .app-container,
 body.card-embed-mode .game-container {
