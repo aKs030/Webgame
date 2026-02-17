@@ -148,8 +148,10 @@ body.card-popup-mode .back-link,
 body.card-popup-mode .btn-back,
 body.card-popup-mode [data-standalone-only],
 body.card-popup-mode .standalone-only,
-body.card-popup-mode a[href="/"],
-body.card-popup-mode a[href="./"] {
+body.card-popup-mode a.back-link[href="/"],
+body.card-popup-mode a.back-link[href="./"],
+body.card-popup-mode a.btn-back[href="/"],
+body.card-popup-mode a.btn-back[href="./"] {
   display: none !important;
 }
 
