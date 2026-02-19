@@ -1,0 +1,25 @@
+{
+  "name": "schluesselweite-tool",
+  "version": "1.0.0",
+  "description": "Berechne die Schlüsselweite (SW) für metrische Schrauben und Muttern nach ISO und DIN Normen.",
+  "keywords": [
+    "schluesselweite",
+    "wrench",
+    "size",
+    "schrauben",
+    "muttern",
+    "iso",
+    "din",
+    "calculator",
+    "tool",
+    "werkzeug"
+  ],
+  "category": "tool",
+  "author": "Jules",
+  "license": "MIT",
+  "homepage": "https://github.com/aKs030/Webgame/tree/main/apps/schluesselweite-tool",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aKs030/Webgame.git"
+  }
+}

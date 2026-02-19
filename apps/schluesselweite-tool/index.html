@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schlüsselweite Rechner</title>
+    <meta name="description" content="Berechne die Schlüsselweite (SW) für metrische Schrauben und Muttern nach ISO und DIN Normen.">
+    <meta name="keywords" content="schluesselweite, wrench, size, schrauben, muttern, iso, din, calculator, tool, werkzeug">
+    <meta name="author" content="Jules">
+    <link rel="stylesheet" href="../../card-integration.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="../../card-fit.js" defer></script>
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <div id="card-fit-wrapper">
+        <div class="app-container">
+            <h1>Schlüsselweite Tool</h1>
+
+            <div class="standard-toggle">
+                <div id="isoBtn" class="toggle-option active">ISO</div>
+                <div id="dinBtn" class="toggle-option">DIN</div>
+            </div>
+
+            <div class="input-section">
+                <div class="search-container">
+                    <input type="text" id="sizeInput" placeholder="Größe (z.B. M6)">
+                </div>
+                <div id="quickGrid" class="quick-select-grid">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <div class="result-section">
+                <div id="resultLabel" class="result-label">Schlüsselweite (M6)</div>
+                <div>
+                    <span id="resultValue" class="result-value">10</span>
+                    <span id="resultUnit" class="result-unit">mm</span>
+                </div>
+                <div id="standardBadge" class="standard-badge">ISO</div>
+            </div>
+
+            <div class="details-section">
+                <div id="detailsToggleBtn" class="details-toggle-btn">
+                    <span>Weitere Details</span>
+                    <span id="toggleIcon">▼</span>
+                </div>
+                <div id="detailsContent" class="details-content">
+                    <div class="detail-item">
+                        <span class="detail-label">Steigung</span>
+                        <span id="detailPitch" class="detail-value">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Durchgangsloch</span>
+                        <span id="detailClearance" class="detail-value">-</span>
+                    </div>
+                    <!-- Alt Standard (Hidden unless diff) -->
+                    <div id="detailAltContainer" class="detail-item" style="display:none;">
+                        <span id="detailAltLabel" class="detail-label">DIN SW</span>
+                        <span id="detailAltStandard" class="detail-value">-</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
