@@ -15,52 +15,66 @@
 <body>
     <div id="card-fit-wrapper">
         <div class="app-container">
-            <h1>Schlüsselweite Tool</h1>
+            <h1>Schlüsselweite</h1>
 
             <div class="standard-toggle">
                 <div id="isoBtn" class="toggle-option active">ISO</div>
                 <div id="dinBtn" class="toggle-option">DIN</div>
             </div>
 
-            <div class="input-section">
-                <div class="search-container">
-                    <input type="text" id="sizeInput" placeholder="Größe (z.B. M6)">
+            <!-- Dynamic Visual Area -->
+            <div class="visual-area">
+                <div class="hex-visual-container">
+                    <svg id="hexSvg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+                        <!-- Background Shadow Circle -->
+                        <circle cx="50" cy="50" r="45" fill="rgba(0,0,0,0.2)" filter="blur(5px)" />
+                        <!-- Hexagon Path (Calculated dynamically via JS) -->
+                        <path id="hexPath" class="hex-path" d="" fill="none" />
+                        <!-- Inner Circle (Thread hole representation) -->
+                        <circle id="innerHole" cx="50" cy="50" r="0" fill="rgba(15, 23, 42, 0.9)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                        <!-- Text inside for M-Size -->
+                        <text id="visualLabel" x="50" y="53" text-anchor="middle" fill="#94a3b8" font-size="14" font-weight="600" opacity="0.8">M6</text>
+                    </svg>
                 </div>
+
+                <div class="result-display">
+                    <div class="result-label">Schlüsselweite</div>
+                    <div class="result-value-wrapper">
+                        <span id="resultValue" class="result-value">10</span>
+                        <span id="resultUnit" class="result-unit">mm</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-section animate-entry">
+                <div class="search-wrapper">
+                    <input type="number" id="sizeInput" placeholder="Größe eingeben (z.B. 6)" inputmode="numeric">
+                </div>
+
                 <div id="quickGrid" class="quick-select-grid">
                     <!-- Populated by JS -->
                 </div>
-            </div>
 
-            <div class="result-section">
-                <div id="resultLabel" class="result-label">Schlüsselweite (M6)</div>
-                <div>
-                    <span id="resultValue" class="result-value">10</span>
-                    <span id="resultUnit" class="result-unit">mm</span>
-                </div>
-                <div id="standardBadge" class="standard-badge">ISO</div>
-            </div>
-
-            <div class="details-section">
-                <div id="detailsToggleBtn" class="details-toggle-btn">
-                    <span>Weitere Details</span>
-                    <span id="toggleIcon">▼</span>
-                </div>
-                <div id="detailsContent" class="details-content">
-                    <div class="detail-item">
-                        <span class="detail-label">Steigung</span>
-                        <span id="detailPitch" class="detail-value">-</span>
+                <!-- Modern Grid Details -->
+                <div class="tech-details">
+                    <div class="tech-item">
+                        <span class="tech-label">Steigung</span>
+                        <span id="detailPitch" class="tech-value">-</span>
+                        <span class="tech-sub">mm / Umdr.</span>
                     </div>
-                    <div class="detail-item">
-                        <span class="detail-label">Durchgangsloch</span>
-                        <span id="detailClearance" class="detail-value">-</span>
+                    <div class="tech-item">
+                        <span class="tech-label">Bohrung</span>
+                        <span id="detailClearance" class="tech-value">-</span>
+                        <span class="tech-sub">Durchgangsloch</span>
                     </div>
                     <!-- Alt Standard (Hidden unless diff) -->
-                    <div id="detailAltContainer" class="detail-item" style="display:none;">
-                        <span id="detailAltLabel" class="detail-label">DIN SW</span>
-                        <span id="detailAltStandard" class="detail-value">-</span>
+                    <div id="detailAltContainer" class="tech-item" style="display:none; grid-column: span 2;">
+                        <span id="detailAltLabel" class="tech-label">Alternative (DIN)</span>
+                        <span id="detailAltStandard" class="tech-value" style="color: var(--accent-color);">-</span>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </body>
