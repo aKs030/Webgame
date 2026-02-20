@@ -28,3 +28,13 @@
 127.0.0.1 - - [20/Feb/2026 07:45:17] "GET /apps/schluesselweite-tool/style.css HTTP/1.1" 200 -
 127.0.0.1 - - [20/Feb/2026 07:45:17] "GET /card-fit.js HTTP/1.1" 200 -
 127.0.0.1 - - [20/Feb/2026 07:45:17] "GET /apps/schluesselweite-tool/script.js HTTP/1.1" 200 -
+127.0.0.1 - - [20/Feb/2026 07:53:57] "GET /apps/schluesselweite-tool/index.html HTTP/1.1" 200 -
+127.0.0.1 - - [20/Feb/2026 07:53:57] "GET /apps/schluesselweite-tool/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [20/Feb/2026 07:53:57] "GET /card-integration.css HTTP/1.1" 200 -
+127.0.0.1 - - [20/Feb/2026 07:53:57] "GET /card-fit.js HTTP/1.1" 200 -
+127.0.0.1 - - [20/Feb/2026 07:53:57] "GET /apps/schluesselweite-tool/script.js HTTP/1.1" 200 -
+127.0.0.1 - - [20/Feb/2026 07:54:18] "GET /apps/schluesselweite-tool/index.html HTTP/1.1" 200 -
+127.0.0.1 - - [20/Feb/2026 07:54:18] "GET /card-integration.css HTTP/1.1" 200 -
+127.0.0.1 - - [20/Feb/2026 07:54:18] "GET /apps/schluesselweite-tool/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [20/Feb/2026 07:54:18] "GET /apps/schluesselweite-tool/script.js HTTP/1.1" 200 -
+127.0.0.1 - - [20/Feb/2026 07:54:18] "GET /card-fit.js HTTP/1.1" 200 -

@@ -177,7 +177,8 @@ function updateDisplay() {
 
   // Animate Number if changed
   if (targetSw !== previousSw) {
-    animateValue(resultValue, previousSw, targetSw, 500);
+    // Only animate if element exists (it was removed in HTML)
+    if (resultValue) animateValue(resultValue, previousSw, targetSw, 500);
     previousSw = targetSw;
 
     // Slight rotation effect on change
@@ -188,7 +189,7 @@ function updateDisplay() {
   }
 
   // Update M-Label
-  resultMSize.textContent = `M${currentSize}`;
+  if (resultMSize) resultMSize.textContent = `M${currentSize}`;
 
   // Update Table Data
   tableMSize.textContent = `M${currentSize}`;
