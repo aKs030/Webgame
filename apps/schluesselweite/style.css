@@ -58,8 +58,10 @@ main {
 /* Wheel Scroll Selector */
 .wheel-wrapper {
     position: relative;
-    height: 300px; /* 5 visible items * 60px */
-    width: 100%;
+    height: 200px; /* Reduced height */
+    width: fit-content;
+    min-width: 120px;
+    margin: 0 auto; /* Center horizontally */
     overflow: hidden;
     /* Glassmorphism container for the wheel */
     background: var(--glass-bg);
@@ -78,6 +80,7 @@ main {
     -ms-overflow-style: none; /* IE/Edge */
     position: relative;
     z-index: 2;
+    padding: 0 10px; /* Add slight padding for text */
 }
 
 .wheel-container::-webkit-scrollbar {
@@ -89,19 +92,20 @@ main {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.2rem;
+    font-size: 1rem; /* Smaller font */
     font-weight: 500;
     color: var(--text-secondary);
     transition: all 0.2s ease;
     cursor: pointer;
     user-select: none;
+    white-space: nowrap; /* Prevent wrapping */
 }
 
 .wheel-item.active {
     color: var(--text-primary);
-    font-size: 1.5rem;
+    font-size: 1.2rem; /* Moderate scale up */
     font-weight: 700;
-    transform: scale(1.1);
+    transform: scale(1.05);
 }
 
 .wheel-highlight {
@@ -123,7 +127,7 @@ main {
     position: absolute;
     left: 0;
     right: 0;
-    height: 120px; /* 2 items height */
+    height: 80px; /* Adjusted mask height */
     z-index: 3;
     pointer-events: none;
 }
@@ -143,27 +147,28 @@ main {
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
     border-radius: 16px;
-    padding: 20px;
+    padding: 30px; /* Increased padding */
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     box-shadow: var(--glass-shadow);
-    flex: 1;
+    flex: 2; /* Increased flex grow to make it larger relative to wheel */
     display: flex;
     flex-direction: column;
+    justify-content: center; /* Center content vertically */
 }
 
 .data-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 30px; /* Increased margin */
     border-bottom: 1px solid var(--glass-border);
-    padding-bottom: 10px;
+    padding-bottom: 15px;
 }
 
 .data-header h2 {
     margin: 0;
-    font-size: 2rem;
+    font-size: 3rem; /* Increased font size */
     color: var(--accent-color);
 }
 
@@ -196,12 +201,12 @@ main {
 
 .label {
     color: var(--text-secondary);
-    font-size: 0.9rem;
+    font-size: 1.1rem; /* Increased font size */
 }
 
 .value {
     font-weight: 600;
-    font-size: 1.1rem;
+    font-size: 1.4rem; /* Increased font size */
 }
 
 /* Responsive adjustments */

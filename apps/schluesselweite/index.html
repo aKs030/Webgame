@@ -105,7 +105,9 @@
             threadData.forEach((item, index) => {
                 const el = document.createElement('div');
                 el.className = 'wheel-item';
-                el.textContent = item.m;
+                // Show "M... / SW..." in the scroll wheel
+                const hexVal = item.hex.split(" ")[0]; // Take primary hex value (e.g. "16")
+                el.textContent = `${item.m} / ${hexVal}`;
                 el.dataset.index = index;
                 el.onclick = () => scrollToItem(index);
                 wheelContainer.appendChild(el);
