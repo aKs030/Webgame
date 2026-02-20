@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schlüsselweite & Gewinde</title>
+    <meta name="author" content="Abdulkerim Sesli">
+    <meta name="keywords" content="mechanic, tool, iso, din, thread, bolt, schlüsselweite, gewinde, steigung, Abdulkerim, Sesli">
+    <meta name="description" content="Interaktive Tabelle für ISO/DIN Gewinde, Schlüsselweiten und Kernlochdurchmesser.">
+    <link rel="stylesheet" href="style.css">
+    <!-- Card Integration -->
+    <link rel="stylesheet" href="../../card-integration.css">
+    <script src="../../card-fit.js" defer></script>
+</head>
+<body>
+    <div id="card-fit-wrapper">
+        <div class="app-container">
+            <header>
+                <h1>🔧 Gewinde Daten</h1>
+                <p>ISO/DIN Standard</p>
+            </header>
+
+            <main>
+                <!-- Number Wheel Scroll Selector -->
+                <div class="wheel-wrapper">
+                    <div class="wheel-mask-top"></div>
+                    <div class="wheel-mask-bottom"></div>
+                    <div class="wheel-highlight"></div>
+                    <div class="wheel-container" id="wheelContainer">
+                        <!-- Items injected by JS -->
+                    </div>
+                </div>
+
+                <!-- Data Display -->
+                <div class="data-card">
+                    <div class="data-header">
+                        <h2 id="selectedM">M6</h2>
+                        <span class="standard-badge">ISO 4014 / DIN 931</span>
+                    </div>
+
+                    <div class="data-grid">
+                        <div class="data-row">
+                            <span class="label">Steigung (P)</span>
+                            <span class="value" id="pitchVal">1.0 mm</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="label">Kernloch Ø</span>
+                            <span class="value" id="coreVal">5.0 mm</span>
+                        </div>
+                        <div class="data-row highlight">
+                            <span class="label">SW Sechskant</span>
+                            <span class="value" id="hexVal">10 mm</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="label">SW Innensechskant</span>
+                            <span class="value" id="allenVal">5 mm</span>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        const threadData = [
+            { m: "M3", p: "0.5", core: "2.5", hex: "5.5", allen: "2.5" },
+            { m: "M4", p: "0.7", core: "3.3", hex: "7", allen: "3" },
+            { m: "M5", p: "0.8", core: "4.2", hex: "8", allen: "4" },
+            { m: "M6", p: "1.0", core: "5.0", hex: "10", allen: "5" },
+            { m: "M8", p: "1.25", core: "6.8", hex: "13", allen: "6" },
+            { m: "M10", p: "1.5", core: "8.5", hex: "16 (ISO) / 17 (DIN)", allen: "8" },
+            { m: "M12", p: "1.75", core: "10.2", hex: "18 (ISO) / 19 (DIN)", allen: "10" },
+            { m: "M14", p: "2.0", core: "12.0", hex: "21 (ISO) / 22 (DIN)", allen: "12" },
+            { m: "M16", p: "2.0", core: "14.0", hex: "24", allen: "14" },
+            { m: "M20", p: "2.5", core: "17.5", hex: "30", allen: "17" },
+            { m: "M24", p: "3.0", core: "21.0", hex: "36", allen: "19" }
+        ];
+
+        const wheelContainer = document.getElementById('wheelContainer');
+        let ITEM_HEIGHT = 60; // Default, will update
+        let isScrolling;
+
+        function getItemHeight() {
+            // Create a temporary item to measure height from CSS
+            const testItem = document.createElement('div');
+            testItem.className = 'wheel-item';
+            testItem.style.visibility = 'hidden';
+            testItem.style.position = 'absolute';
+            document.body.appendChild(testItem);
+            const height = testItem.offsetHeight;
+            document.body.removeChild(testItem);
+            return height || 60;
+        }
+
+        function initWheel() {
+            ITEM_HEIGHT = getItemHeight();
+
+            // Padding Top: 2 items height to center the first item (index 0)
+            const paddingTop = document.createElement('div');
+            paddingTop.className = 'wheel-padding';
+            paddingTop.style.height = (ITEM_HEIGHT * 2) + 'px';
+            paddingTop.style.flexShrink = 0;
+            wheelContainer.appendChild(paddingTop);
+
+            threadData.forEach((item, index) => {
+                const el = document.createElement('div');
+                el.className = 'wheel-item';
+                el.textContent = item.m;
+                el.dataset.index = index;
+                el.onclick = () => scrollToItem(index);
+                wheelContainer.appendChild(el);
+            });
+
+            // Padding Bottom: 2 items height
+            const paddingBottom = document.createElement('div');
+            paddingBottom.className = 'wheel-padding';
+            paddingBottom.style.height = (ITEM_HEIGHT * 2) + 'px';
+            paddingBottom.style.flexShrink = 0;
+            wheelContainer.appendChild(paddingBottom);
+
+            // Initial selection M6 (index 3)
+            setTimeout(() => {
+                scrollToItem(3);
+                updateDisplay(threadData[3]);
+                updateActiveItem(3);
+            }, 100);
+        }
+
+        function scrollToItem(index) {
+            wheelContainer.scrollTo({
+                top: index * ITEM_HEIGHT,
+                behavior: 'smooth'
+            });
+            updateActiveItem(index);
+            updateDisplay(threadData[index]);
+        }
+
+        wheelContainer.addEventListener('scroll', () => {
+            window.clearTimeout(isScrolling);
+
+            const scrollTop = wheelContainer.scrollTop;
+            let index = Math.round(scrollTop / ITEM_HEIGHT);
+            if (index < 0) index = 0;
+            if (index >= threadData.length) index = threadData.length - 1;
+
+            // Highlight the closest item while scrolling
+            updateActiveItem(index);
+
+            // Snap only after scroll stops
+            isScrolling = setTimeout(() => {
+                scrollToItem(index);
+            }, 150);
+        });
+
+        // Handle resize
+        window.addEventListener('resize', () => {
+            const newHeight = getItemHeight();
+            if (newHeight !== ITEM_HEIGHT) {
+                ITEM_HEIGHT = newHeight;
+                // Update padding
+                document.querySelectorAll('.wheel-padding').forEach(p => {
+                    p.style.height = (ITEM_HEIGHT * 2) + 'px';
+                });
+                // Re-snap to current active item
+                const active = document.querySelector('.wheel-item.active');
+                if (active) {
+                    scrollToItem(parseInt(active.dataset.index));
+                }
+            }
+        });
+
+        function updateActiveItem(index) {
+            const items = document.querySelectorAll('.wheel-item');
+            items.forEach(item => item.classList.remove('active'));
+            // items list contains padding elements? No querySelectorAll('.wheel-item') only selects items.
+            if (items[index]) {
+                items[index].classList.add('active');
+            }
+        }
+
+        function updateDisplay(data) {
+            if (!data) return;
+            document.getElementById('selectedM').textContent = data.m;
+            document.getElementById('pitchVal').textContent = data.p + " mm";
+            document.getElementById('coreVal').textContent = data.core + " mm";
+            document.getElementById('hexVal').textContent = data.hex + (data.hex.includes('/') ? "" : " mm");
+            document.getElementById('allenVal').textContent = data.allen + " mm";
+        }
+
+        initWheel();
+    </script>
+</body>
+</html>
