@@ -1,33 +1,33 @@
 // Data Source: ISO 4014/4017 (DIN 931/933) for Bolts, ISO 4032 (DIN 934) for Nuts
 const wrenchData = {
-  "1.6": { sw_iso: 3.2, sw_din: 3.2, pitch: 0.35, clearance: 1.8 },
-  "2": { sw_iso: 4, sw_din: 4, pitch: 0.4, clearance: 2.4 },
-  "2.5": { sw_iso: 5, sw_din: 5, pitch: 0.45, clearance: 2.9 },
-  "3": { sw_iso: 5.5, sw_din: 5.5, pitch: 0.5, clearance: 3.4 },
-  "4": { sw_iso: 7, sw_din: 7, pitch: 0.7, clearance: 4.5 },
-  "5": { sw_iso: 8, sw_din: 8, pitch: 0.8, clearance: 5.5 },
-  "6": { sw_iso: 10, sw_din: 10, pitch: 1.0, clearance: 6.6 },
-  "8": { sw_iso: 13, sw_din: 13, pitch: 1.25, clearance: 9.0 },
-  "10": { sw_iso: 16, sw_din: 17, pitch: 1.5, clearance: 11.0 }, // Main diff ISO/DIN
-  "12": { sw_iso: 18, sw_din: 19, pitch: 1.75, clearance: 13.5 }, // Main diff ISO/DIN
-  "14": { sw_iso: 21, sw_din: 22, pitch: 2.0, clearance: 15.5 }, // Main diff ISO/DIN
-  "16": { sw_iso: 24, sw_din: 24, pitch: 2.0, clearance: 17.5 },
-  "18": { sw_iso: 27, sw_din: 27, pitch: 2.5, clearance: 20.0 },
-  "20": { sw_iso: 30, sw_din: 30, pitch: 2.5, clearance: 22.0 },
-  "22": { sw_iso: 34, sw_din: 32, pitch: 2.5, clearance: 24.0 },
-  "24": { sw_iso: 36, sw_din: 36, pitch: 3.0, clearance: 26.0 },
-  "27": { sw_iso: 41, sw_din: 41, pitch: 3.0, clearance: 30.0 },
-  "30": { sw_iso: 46, sw_din: 46, pitch: 3.5, clearance: 33.0 },
-  "33": { sw_iso: 50, sw_din: 50, pitch: 3.5, clearance: 36.0 },
-  "36": { sw_iso: 55, sw_din: 55, pitch: 4.0, clearance: 39.0 },
-  "39": { sw_iso: 60, sw_din: 60, pitch: 4.0, clearance: 42.0 },
-  "42": { sw_iso: 65, sw_din: 65, pitch: 4.5, clearance: 45.0 },
-  "45": { sw_iso: 70, sw_din: 70, pitch: 4.5, clearance: 48.0 },
-  "48": { sw_iso: 75, sw_din: 75, pitch: 5.0, clearance: 52.0 },
-  "52": { sw_iso: 80, sw_din: 80, pitch: 5.0, clearance: 56.0 },
-  "56": { sw_iso: 85, sw_din: 85, pitch: 5.5, clearance: 62.0 },
-  "60": { sw_iso: 90, sw_din: 90, pitch: 5.5, clearance: 66.0 },
-  "64": { sw_iso: 95, sw_din: 95, pitch: 6.0, clearance: 70.0 }
+  "1.6": { sw_iso: 3.2, sw_din: 3.2, pitch: 0.35, clearance: 1.8, tap_drill: 1.25 },
+  "2": { sw_iso: 4, sw_din: 4, pitch: 0.4, clearance: 2.4, tap_drill: 1.6 },
+  "2.5": { sw_iso: 5, sw_din: 5, pitch: 0.45, clearance: 2.9, tap_drill: 2.05 },
+  "3": { sw_iso: 5.5, sw_din: 5.5, pitch: 0.5, clearance: 3.4, tap_drill: 2.5 },
+  "4": { sw_iso: 7, sw_din: 7, pitch: 0.7, clearance: 4.5, tap_drill: 3.3 },
+  "5": { sw_iso: 8, sw_din: 8, pitch: 0.8, clearance: 5.5, tap_drill: 4.2 },
+  "6": { sw_iso: 10, sw_din: 10, pitch: 1.0, clearance: 6.6, tap_drill: 5.0 },
+  "8": { sw_iso: 13, sw_din: 13, pitch: 1.25, clearance: 9.0, tap_drill: 6.8 },
+  "10": { sw_iso: 16, sw_din: 17, pitch: 1.5, clearance: 11.0, tap_drill: 8.5 }, // Main diff ISO/DIN
+  "12": { sw_iso: 18, sw_din: 19, pitch: 1.75, clearance: 13.5, tap_drill: 10.2 }, // Main diff ISO/DIN
+  "14": { sw_iso: 21, sw_din: 22, pitch: 2.0, clearance: 15.5, tap_drill: 12.0 }, // Main diff ISO/DIN
+  "16": { sw_iso: 24, sw_din: 24, pitch: 2.0, clearance: 17.5, tap_drill: 14.0 },
+  "18": { sw_iso: 27, sw_din: 27, pitch: 2.5, clearance: 20.0, tap_drill: 15.5 },
+  "20": { sw_iso: 30, sw_din: 30, pitch: 2.5, clearance: 22.0, tap_drill: 17.5 },
+  "22": { sw_iso: 34, sw_din: 32, pitch: 2.5, clearance: 24.0, tap_drill: 19.5 },
+  "24": { sw_iso: 36, sw_din: 36, pitch: 3.0, clearance: 26.0, tap_drill: 21.0 },
+  "27": { sw_iso: 41, sw_din: 41, pitch: 3.0, clearance: 30.0, tap_drill: 24.0 },
+  "30": { sw_iso: 46, sw_din: 46, pitch: 3.5, clearance: 33.0, tap_drill: 26.5 },
+  "33": { sw_iso: 50, sw_din: 50, pitch: 3.5, clearance: 36.0, tap_drill: 29.5 },
+  "36": { sw_iso: 55, sw_din: 55, pitch: 4.0, clearance: 39.0, tap_drill: 32.0 },
+  "39": { sw_iso: 60, sw_din: 60, pitch: 4.0, clearance: 42.0, tap_drill: 35.0 },
+  "42": { sw_iso: 65, sw_din: 65, pitch: 4.5, clearance: 45.0, tap_drill: 37.5 },
+  "45": { sw_iso: 70, sw_din: 70, pitch: 4.5, clearance: 48.0, tap_drill: 40.5 },
+  "48": { sw_iso: 75, sw_din: 75, pitch: 5.0, clearance: 52.0, tap_drill: 43.0 },
+  "52": { sw_iso: 80, sw_din: 80, pitch: 5.0, clearance: 56.0, tap_drill: 47.0 },
+  "56": { sw_iso: 85, sw_din: 85, pitch: 5.5, clearance: 62.0, tap_drill: 50.5 },
+  "60": { sw_iso: 90, sw_din: 90, pitch: 5.5, clearance: 66.0, tap_drill: 54.5 },
+  "64": { sw_iso: 95, sw_din: 95, pitch: 6.0, clearance: 70.0, tap_drill: 58.0 }
 };
 
 // State
@@ -43,6 +43,7 @@ const quickGrid = document.getElementById('quickGrid');
 const resultValue = document.getElementById('resultValue');
 
 const detailPitch = document.getElementById('detailPitch');
+const detailTapDrill = document.getElementById('detailTapDrill');
 const detailClearance = document.getElementById('detailClearance');
 const detailAltStandard = document.getElementById('detailAltStandard');
 
@@ -156,6 +157,7 @@ function updateDisplay() {
   // Update Technical Details
   detailPitch.textContent = data.pitch;
   detailClearance.textContent = data.clearance;
+  detailTapDrill.textContent = data.tap_drill;
 
   // Alt Standard logic
   const altStandard = currentStandard === 'iso' ? 'DIN' : 'ISO';
