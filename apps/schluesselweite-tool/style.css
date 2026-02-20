@@ -121,13 +121,34 @@ h1 {
 .result-display {
   text-align: center;
   z-index: 10;
+  margin-top: 1rem;
 }
 
 .result-value-wrapper {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: center;
-  gap: 0.2rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.result-m-size, .result-sw-prefix, .result-equals {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.result-m-size {
+  color: #fff;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+.result-sw-prefix {
+  font-size: 1.5rem;
+  color: var(--primary-color);
+  margin-left: 0.5rem;
+  align-self: flex-end;
+  margin-bottom: 0.8rem;
 }
 
 .result-value {
@@ -145,6 +166,15 @@ h1 {
   font-size: 1.25rem;
   font-weight: 500;
   color: var(--text-muted);
+  align-self: flex-end;
+  margin-bottom: 0.8rem;
+}
+
+@media (max-width: 450px) {
+  .result-m-size, .result-equals { font-size: 2rem; }
+  .result-value { font-size: 3rem; }
+  .result-sw-prefix { font-size: 1.2rem; margin-bottom: 0.5rem; }
+  .result-unit { margin-bottom: 0.5rem; }
 }
 
 .result-label {

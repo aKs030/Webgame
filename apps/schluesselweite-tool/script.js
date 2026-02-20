@@ -41,6 +41,7 @@ const dinBtn = document.getElementById('dinBtn');
 const sizeInput = document.getElementById('sizeInput');
 const quickGrid = document.getElementById('quickGrid');
 const resultValue = document.getElementById('resultValue');
+const resultMSize = document.getElementById('resultMSize');
 
 const detailPitch = document.getElementById('detailPitch');
 const detailTapDrill = document.getElementById('detailTapDrill');
@@ -153,6 +154,9 @@ function updateDisplay() {
         hexSvg.style.transform = `rotate(0deg) scale(1)`;
     }, 400);
   }
+
+  // Update M-Label
+  resultMSize.textContent = `M${currentSize}`;
 
   // Update Technical Details
   detailPitch.textContent = data.pitch;
