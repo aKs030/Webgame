@@ -84,6 +84,7 @@ function setStandard(std) {
   }
 
   updateDisplay();
+  renderQuickButtons(); // Re-render buttons to show correct SW
 }
 
 function selectSize(size) {
@@ -104,9 +105,36 @@ function renderQuickButtons() {
   quickGrid.innerHTML = '';
 
   commonSizes.forEach(size => {
+    const data = wrenchData[size];
+    // Default to ISO if data missing (shouldn't happen for commonSizes)
+    let sw = "?";
+    if (data) {
+        sw = currentStandard === 'iso' ? data.sw_iso : data.sw_din;
+    }
+
     const btn = document.createElement('div');
     btn.className = 'size-btn';
-    btn.textContent = `M${size}`;
+
+    // Create inner structure for styling
+    // M-Part
+    const mSpan = document.createElement('span');
+    mSpan.className = 'btn-m-part';
+    mSpan.textContent = `M${size}`;
+
+    // Separator
+    const sep = document.createElement('span');
+    sep.className = 'btn-sep';
+    sep.textContent = '|';
+
+    // SW-Part
+    const swSpan = document.createElement('span');
+    swSpan.className = 'btn-sw-part';
+    swSpan.textContent = `SW ${sw}`;
+
+    btn.appendChild(mSpan);
+    btn.appendChild(sep);
+    btn.appendChild(swSpan);
+
     btn.dataset.size = size;
     btn.onclick = () => selectSize(size);
     quickGrid.appendChild(btn);

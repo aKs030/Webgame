@@ -240,7 +240,7 @@ h1 {
 
 .quick-select-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(55px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
   gap: 0.6rem;
 }
 
@@ -248,13 +248,30 @@ h1 {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid transparent;
   color: var(--text-muted);
-  padding: 0.6rem 0;
+  padding: 0.6rem 0.4rem;
   border-radius: 0.6rem;
   cursor: pointer;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
   font-size: 0.9rem;
   font-weight: 600;
   transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.btn-m-part {
+  color: #fff;
+  font-weight: 700;
+}
+
+.btn-sep {
+  opacity: 0.3;
+}
+
+.btn-sw-part {
+  color: var(--primary-color);
+  font-weight: 600;
 }
 
 .size-btn:hover {
@@ -269,6 +286,10 @@ h1 {
   box-shadow: 0 4px 12px var(--primary-glow);
   border-color: rgba(255,255,255,0.2);
   transform: scale(1.05);
+}
+
+.size-btn.active .btn-sw-part {
+  color: #fff; /* White SW text on active button */
 }
 
 
