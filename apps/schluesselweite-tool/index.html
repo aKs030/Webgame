@@ -58,28 +58,36 @@
                     <!-- Populated by JS -->
                 </div>
 
-                <!-- Modern Grid Details -->
-                <div class="tech-details">
-                    <div class="tech-item">
-                        <span class="tech-label">Steigung</span>
-                        <span id="detailPitch" class="tech-value">-</span>
-                        <span class="tech-sub">mm / Umdr.</span>
-                    </div>
-                    <div class="tech-item">
-                        <span class="tech-label">Kernloch</span>
-                        <span id="detailTapDrill" class="tech-value">-</span>
-                        <span class="tech-sub">Vorbohren</span>
-                    </div>
-                    <div class="tech-item">
-                        <span class="tech-label">Bohrung</span>
-                        <span id="detailClearance" class="tech-value">-</span>
-                        <span class="tech-sub">Durchgangsloch</span>
-                    </div>
-                    <!-- Alt Standard (Hidden unless diff) -->
-                    <div id="detailAltContainer" class="tech-item" style="display:none; grid-column: span 2;">
-                        <span id="detailAltLabel" class="tech-label">Alternative (DIN)</span>
-                        <span id="detailAltStandard" class="tech-value" style="color: var(--accent-color);">-</span>
-                    </div>
+                <!-- Modern Data Table -->
+                <div class="data-table-container">
+                    <table class="tech-table">
+                        <tbody>
+                            <tr>
+                                <td class="label-col">Gewinde</td>
+                                <td id="tableMSize" class="value-col">-</td>
+                            </tr>
+                            <tr>
+                                <td class="label-col">Schlüsselweite (SW)</td>
+                                <td id="tableSW" class="value-col">-</td>
+                            </tr>
+                            <tr>
+                                <td class="label-col">Steigung (P)</td>
+                                <td id="tablePitch" class="value-col">-</td>
+                            </tr>
+                            <tr>
+                                <td class="label-col">Kernloch (Bohrer)</td>
+                                <td id="tableTapDrill" class="value-col">-</td>
+                            </tr>
+                            <tr>
+                                <td class="label-col">Durchgangsloch (mittel)</td>
+                                <td id="tableClearance" class="value-col">-</td>
+                            </tr>
+                            <tr id="tableAltRow" style="display:none;">
+                                <td id="tableAltLabel" class="label-col" style="color:var(--accent-color)">Alternative</td>
+                                <td id="tableAltValue" class="value-col" style="color:var(--accent-color)">-</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 

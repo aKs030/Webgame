@@ -43,10 +43,14 @@ const quickGrid = document.getElementById('quickGrid');
 const resultValue = document.getElementById('resultValue');
 const resultMSize = document.getElementById('resultMSize');
 
-const detailPitch = document.getElementById('detailPitch');
-const detailTapDrill = document.getElementById('detailTapDrill');
-const detailClearance = document.getElementById('detailClearance');
-const detailAltStandard = document.getElementById('detailAltStandard');
+const tableMSize = document.getElementById('tableMSize');
+const tableSW = document.getElementById('tableSW');
+const tablePitch = document.getElementById('tablePitch');
+const tableTapDrill = document.getElementById('tableTapDrill');
+const tableClearance = document.getElementById('tableClearance');
+const tableAltRow = document.getElementById('tableAltRow');
+const tableAltLabel = document.getElementById('tableAltLabel');
+const tableAltValue = document.getElementById('tableAltValue');
 
 // SVG Elements
 const hexPath = document.getElementById('hexPath');
@@ -186,10 +190,12 @@ function updateDisplay() {
   // Update M-Label
   resultMSize.textContent = `M${currentSize}`;
 
-  // Update Technical Details
-  detailPitch.textContent = data.pitch;
-  detailClearance.textContent = data.clearance;
-  detailTapDrill.textContent = data.tap_drill;
+  // Update Table Data
+  tableMSize.textContent = `M${currentSize}`;
+  tableSW.textContent = `${targetSw} mm`;
+  tablePitch.textContent = `${data.pitch} mm`;
+  tableTapDrill.textContent = `${data.tap_drill} mm`;
+  tableClearance.textContent = `${data.clearance} mm`;
 
   // Alt Standard logic
   const altStandard = currentStandard === 'iso' ? 'DIN' : 'ISO';
@@ -201,11 +207,11 @@ function updateDisplay() {
     : (data.sw_iso && data.sw_iso !== data.sw_din);
 
   if (altDiffers) {
-      document.getElementById('detailAltContainer').style.display = 'flex';
-      document.getElementById('detailAltLabel').textContent = `${altStandard} - Unterschied!`;
-      detailAltStandard.textContent = `SW ${altValue} mm`;
+      tableAltRow.style.display = 'table-row';
+      tableAltLabel.textContent = `Abweichung (${altStandard})`;
+      tableAltValue.textContent = `SW ${altValue} mm`;
   } else {
-      document.getElementById('detailAltContainer').style.display = 'none';
+      tableAltRow.style.display = 'none';
   }
 
   // Update Visual Hexagon (SVG)

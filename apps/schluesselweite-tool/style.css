@@ -293,51 +293,49 @@ h1 {
 }
 
 
-/* Technical Details - Grid Layout */
-.tech-details {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+/* Technical Details - Modern Data Table */
+.data-table-container {
   width: 100%;
-  margin-top: 1.5rem;
-  padding-top: 1.5rem;
+  margin-top: 2rem;
   border-top: 1px solid var(--glass-border);
+  padding-top: 1rem;
 }
 
-.tech-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background: rgba(255, 255, 255, 0.02);
-  padding: 0.75rem;
-  border-radius: 0.75rem;
-  border: 1px solid transparent;
+.tech-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tech-table tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   transition: background 0.2s;
 }
 
-.tech-item:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: var(--glass-border);
+.tech-table tr:last-child {
+  border-bottom: none;
 }
 
-.tech-label {
-  font-size: 0.75rem;
+.tech-table tr:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.tech-table td {
+  padding: 0.8rem 0.5rem;
+}
+
+.label-col {
   color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 0.25rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  width: 60%;
 }
 
-.tech-value {
-  font-size: 1.1rem;
+.value-col {
+  color: #fff;
   font-weight: 700;
-  color: #e2e8f0;
-}
-
-.tech-sub {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  opacity: 0.7;
+  font-size: 1.1rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
 }
 
 /* Animations */
