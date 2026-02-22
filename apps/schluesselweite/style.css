@@ -307,3 +307,92 @@ main {
     }
     /* Adjust padding logic in JS if needed, but height is key here */
 }
+
+/* Horizontal Strength Wheel */
+.strength-wheel-wrapper {
+    position: relative;
+    height: 60px; /* Compact height */
+    width: 100%;
+    margin: 10px 0;
+    overflow: hidden;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.strength-wheel-container {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+    position: relative;
+    z-index: 2;
+    padding: 0; /* Padding will be set by JS */
+}
+
+.strength-wheel-container::-webkit-scrollbar {
+    display: none;
+}
+
+.strength-item {
+    width: 80px; /* Fixed width for snapping */
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    user-select: none;
+}
+
+.strength-item.active {
+    color: var(--text-primary);
+    font-size: 1.3rem;
+    font-weight: 700;
+    transform: scale(1.1);
+}
+
+/* Horizontal masks and highlight */
+.strength-wheel-highlight {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 80px; /* Must match item width */
+    transform: translateX(-50%);
+    background: var(--highlight-bg);
+    border-left: 1px solid var(--accent-color);
+    border-right: 1px solid var(--accent-color);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.strength-wheel-mask-left,
+.strength-wheel-mask-right {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 40px;
+    z-index: 3;
+    pointer-events: none;
+}
+
+.strength-wheel-mask-left {
+    left: 0;
+    background: linear-gradient(to right, rgba(30, 30, 47, 0.9), transparent);
+}
+
+.strength-wheel-mask-right {
+    right: 0;
+    background: linear-gradient(to left, rgba(30, 30, 47, 0.9), transparent);
+}

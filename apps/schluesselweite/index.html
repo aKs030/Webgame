@@ -76,11 +76,14 @@
                             <!-- Strength Class Selector -->
                             <div class="class-selector">
                                 <span class="selector-label">Festigkeit:</span>
-                                <div class="class-buttons">
-                                    <button class="class-btn" onclick="selectClass('4.6')">4.6</button>
-                                    <button class="class-btn active" onclick="selectClass('8.8')">8.8</button>
-                                    <button class="class-btn" onclick="selectClass('10.9')">10.9</button>
-                                    <button class="class-btn" onclick="selectClass('12.9')">12.9</button>
+
+                                <div class="strength-wheel-wrapper">
+                                    <div class="strength-wheel-mask-left"></div>
+                                    <div class="strength-wheel-mask-right"></div>
+                                    <div class="strength-wheel-highlight"></div>
+                                    <div class="strength-wheel-container" id="strengthWheelContainer">
+                                        <!-- Items injected by JS -->
+                                    </div>
                                 </div>
                             </div>
 
@@ -128,9 +131,13 @@
             "12.9": 1.69
         };
 
+        // Classes to show in wheel
+        const availableClasses = Object.keys(propertyClassFactors).sort((a,b) => parseFloat(a) - parseFloat(b));
+
         let currentPropertyClass = "8.8";
 
         const wheelContainer = document.getElementById('wheelContainer');
+        const strengthWheelContainer = document.getElementById('strengthWheelContainer');
         let ITEM_HEIGHT = 60; // Default, will update
         let isScrolling;
 
@@ -276,17 +283,130 @@
 
         function selectClass(newClass) {
             setStrengthClass(newClass);
-
-            // Update button states
-            document.querySelectorAll('.class-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.textContent.trim() === newClass) {
-                    btn.classList.add('active');
-                }
-            });
+            // Visual update handled by scroll listener or click
         }
 
+        // --- Strength Wheel Logic ---
+        let strengthItemWidth = 80; // Default from CSS
+        let isStrengthScrolling;
+
+        function initStrengthWheel() {
+            // Get actual width
+            const testItem = document.createElement('div');
+            testItem.className = 'strength-item';
+            testItem.style.visibility = 'hidden';
+            testItem.style.position = 'absolute';
+            document.body.appendChild(testItem);
+            // Force layout
+            strengthItemWidth = testItem.offsetWidth || 80;
+            document.body.removeChild(testItem);
+
+            const wrapperWidth = document.querySelector('.strength-wheel-wrapper').clientWidth;
+            // Center padding
+            const padding = (wrapperWidth / 2) - (strengthItemWidth / 2);
+
+            // Padding Left
+            const padLeft = document.createElement('div');
+            padLeft.style.width = padding + 'px';
+            padLeft.style.flexShrink = 0;
+            strengthWheelContainer.appendChild(padLeft);
+
+            availableClasses.forEach((cls, index) => {
+                const el = document.createElement('div');
+                el.className = 'strength-item';
+                el.textContent = cls;
+                el.dataset.index = index;
+                el.dataset.cls = cls;
+                el.onclick = () => scrollToStrength(index);
+                strengthWheelContainer.appendChild(el);
+            });
+
+            // Padding Right
+            const padRight = document.createElement('div');
+            padRight.style.width = padding + 'px';
+            padRight.style.flexShrink = 0;
+            strengthWheelContainer.appendChild(padRight);
+
+            // Initial Scroll to 8.8
+            const initialIndex = availableClasses.indexOf("8.8");
+            if (initialIndex !== -1) {
+                setTimeout(() => {
+                    scrollToStrength(initialIndex);
+                }, 100);
+            }
+        }
+
+        function scrollToStrength(index) {
+            strengthWheelContainer.scrollTo({
+                left: index * strengthItemWidth,
+                behavior: 'smooth'
+            });
+            updateActiveStrength(index);
+            const cls = availableClasses[index];
+            if (cls) {
+                setStrengthClass(cls);
+            }
+        }
+
+        function updateActiveStrength(index) {
+            const items = document.querySelectorAll('.strength-item');
+            items.forEach(item => item.classList.remove('active'));
+            if (items[index]) {
+                items[index].classList.add('active');
+            }
+        }
+
+        strengthWheelContainer.addEventListener('scroll', () => {
+            window.clearTimeout(isStrengthScrolling);
+
+            const scrollLeft = strengthWheelContainer.scrollLeft;
+            let index = Math.round(scrollLeft / strengthItemWidth);
+
+            if (index < 0) index = 0;
+            if (index >= availableClasses.length) index = availableClasses.length - 1;
+
+            updateActiveStrength(index);
+
+            // Snap logic
+            isStrengthScrolling = setTimeout(() => {
+                scrollToStrength(index);
+            }, 150);
+        });
+
+        // Resize handler adjustment
+        window.addEventListener('resize', () => {
+            const newHeight = getItemHeight();
+            const containerHeight = document.querySelector('.wheel-wrapper').clientHeight;
+            const paddingVertical = (containerHeight / 2) - (newHeight / 2);
+
+            if (newHeight !== ITEM_HEIGHT || paddingVertical > 0) {
+                ITEM_HEIGHT = newHeight;
+                // Update padding
+                document.querySelectorAll('.wheel-padding').forEach(p => {
+                    p.style.height = paddingVertical + 'px';
+                });
+                // Re-snap to current active item
+                const active = document.querySelector('.wheel-item.active');
+                if (active) {
+                    scrollToItem(parseInt(active.dataset.index));
+                }
+            }
+
+             // Re-calculate padding for horizontal wheel if needed
+             const wrapperWidth = document.querySelector('.strength-wheel-wrapper').clientWidth;
+             const padding = (wrapperWidth / 2) - (strengthItemWidth / 2);
+             // Update padding divs (first and last children)
+             if(strengthWheelContainer.firstElementChild) strengthWheelContainer.firstElementChild.style.width = padding + 'px';
+             if(strengthWheelContainer.lastElementChild) strengthWheelContainer.lastElementChild.style.width = padding + 'px';
+
+             const activeStrength = document.querySelector('.strength-item.active');
+             if (activeStrength) {
+                 scrollToStrength(parseInt(activeStrength.dataset.index));
+             }
+        });
+
         initWheel();
+        initStrengthWheel();
     </script>
 </body>
 </html>
