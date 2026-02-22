@@ -199,6 +199,63 @@ main {
     padding-bottom: 5px;
 }
 
+/* Strength Class Selector */
+.class-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.selector-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.class-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: space-between;
+}
+
+.class-btn {
+    flex: 1;
+    padding: 10px 0;
+    border: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-secondary);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.class-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-1px);
+}
+
+.class-btn:active {
+    transform: scale(0.96);
+}
+
+.class-btn.active {
+    background: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+    transform: none; /* Keep active button steady unless clicked */
+}
+
+.class-btn.active:hover {
+    transform: none;
+}
+
 .data-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;

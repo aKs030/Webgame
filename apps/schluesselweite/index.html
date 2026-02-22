@@ -71,7 +71,19 @@
 
                         <!-- Torque Section -->
                         <div class="data-section">
-                            <h3>💪 Anzugsmoment (8.8)</h3>
+                            <h3>💪 Anzugsmoment (<span id="torqueClassDisplay">8.8</span>)</h3>
+
+                            <!-- Strength Class Selector -->
+                            <div class="class-selector">
+                                <span class="selector-label">Festigkeit:</span>
+                                <div class="class-buttons">
+                                    <button class="class-btn" onclick="selectClass('4.6')">4.6</button>
+                                    <button class="class-btn active" onclick="selectClass('8.8')">8.8</button>
+                                    <button class="class-btn" onclick="selectClass('10.9')">10.9</button>
+                                    <button class="class-btn" onclick="selectClass('12.9')">12.9</button>
+                                </div>
+                            </div>
+
                             <div class="data-grid single">
                                 <div class="data-item">
                                     <span class="label">Drehmoment</span>
@@ -86,21 +98,37 @@
     </div>
 
     <script>
-        // Data sources: ISO 261, ISO 965, VDI 2230 (for Torque 8.8 approx)
-        // Torque values are approximate for standard friction (0.14) property class 8.8
+        // Data sources: ISO 261, ISO 965, VDI 2230
+        // Torque values are base for 8.8 (standard friction 0.14)
         const threadData = [
-            { m: "M3", p: "0.5", core: "2.5", hex: "5.5", allen: "2.5", torque: "1.3" },
-            { m: "M4", p: "0.7", core: "3.3", hex: "7", allen: "3", torque: "3.0" },
-            { m: "M5", p: "0.8", core: "4.2", hex: "8", allen: "4", torque: "5.9" },
-            { m: "M6", p: "1.0", core: "5.0", hex: "10", allen: "5", torque: "10.1" },
-            { m: "M8", p: "1.25", core: "6.8", hex: "13", allen: "6", torque: "24.6" },
-            { m: "M10", p: "1.5", core: "8.5", hex: "16 (ISO) / 17 (DIN)", allen: "8", torque: "48" },
-            { m: "M12", p: "1.75", core: "10.2", hex: "18 (ISO) / 19 (DIN)", allen: "10", torque: "84" },
-            { m: "M14", p: "2.0", core: "12.0", hex: "21 (ISO) / 22 (DIN)", allen: "12", torque: "133" },
-            { m: "M16", p: "2.0", core: "14.0", hex: "24", allen: "14", torque: "206" },
-            { m: "M20", p: "2.5", core: "17.5", hex: "30", allen: "17", torque: "415" },
-            { m: "M24", p: "3.0", core: "21.0", hex: "36", allen: "19", torque: "714" }
+            { m: "M3", p: "0.5", core: "2.5", hex: "5.5", allen: "2.5", torqueBase: 1.3 },
+            { m: "M4", p: "0.7", core: "3.3", hex: "7", allen: "3", torqueBase: 3.0 },
+            { m: "M5", p: "0.8", core: "4.2", hex: "8", allen: "4", torqueBase: 5.9 },
+            { m: "M6", p: "1.0", core: "5.0", hex: "10", allen: "5", torqueBase: 10.1 },
+            { m: "M8", p: "1.25", core: "6.8", hex: "13", allen: "6", torqueBase: 24.6 },
+            { m: "M10", p: "1.5", core: "8.5", hex: "16 (ISO) / 17 (DIN)", allen: "8", torqueBase: 48 },
+            { m: "M12", p: "1.75", core: "10.2", hex: "18 (ISO) / 19 (DIN)", allen: "10", torqueBase: 84 },
+            { m: "M14", p: "2.0", core: "12.0", hex: "21 (ISO) / 22 (DIN)", allen: "12", torqueBase: 133 },
+            { m: "M16", p: "2.0", core: "14.0", hex: "24", allen: "14", torqueBase: 206 },
+            { m: "M20", p: "2.5", core: "17.5", hex: "30", allen: "17", torqueBase: 415 },
+            { m: "M24", p: "3.0", core: "21.0", hex: "36", allen: "19", torqueBase: 714 }
         ];
+
+        // Property Class Factors (Approximate multipliers relative to 8.8)
+        // 8.8 is base (1.0).
+        // 4.6 ~ 0.35x, 5.6 ~ 0.45x, 5.8 ~ 0.6x, 6.8 ~ 0.75x
+        // 10.9 ~ 1.4x, 12.9 ~ 1.7x
+        const propertyClassFactors = {
+            "4.6": 0.35,
+            "5.6": 0.45,
+            "5.8": 0.62,
+            "6.8": 0.75,
+            "8.8": 1.0,
+            "10.9": 1.41,
+            "12.9": 1.69
+        };
+
+        let currentPropertyClass = "8.8";
 
         const wheelContainer = document.getElementById('wheelContainer');
         let ITEM_HEIGHT = 60; // Default, will update
@@ -216,12 +244,46 @@
 
         function updateDisplay(data) {
             if (!data) return;
+
+            // Store current data index for class updates
+            if (data.m) {
+                 window.currentDataIndex = threadData.indexOf(data);
+            }
+
             document.getElementById('selectedM').textContent = data.m;
             document.getElementById('pitchVal').textContent = data.p + " mm";
             document.getElementById('coreVal').textContent = data.core + " mm";
             document.getElementById('hexVal').textContent = data.hex + (data.hex.includes('/') ? "" : " mm");
             document.getElementById('allenVal').textContent = data.allen + " mm";
-            document.getElementById('torqueVal').textContent = data.torque + " Nm";
+
+            // Calculate Torque based on class
+            const factor = propertyClassFactors[currentPropertyClass];
+            const torque = (data.torqueBase * factor).toFixed(1);
+
+            document.getElementById('torqueVal').textContent = torque + " Nm";
+            document.getElementById('torqueClassDisplay').textContent = currentPropertyClass;
+        }
+
+        // Helper to update class
+        function setStrengthClass(newClass) {
+            if (propertyClassFactors[newClass]) {
+                currentPropertyClass = newClass;
+                if (typeof window.currentDataIndex !== 'undefined') {
+                    updateDisplay(threadData[window.currentDataIndex]);
+                }
+            }
+        }
+
+        function selectClass(newClass) {
+            setStrengthClass(newClass);
+
+            // Update button states
+            document.querySelectorAll('.class-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent.trim() === newClass) {
+                    btn.classList.add('active');
+                }
+            });
         }
 
         initWheel();
