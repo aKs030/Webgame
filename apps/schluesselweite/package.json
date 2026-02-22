@@ -1,0 +1,10 @@
+{
+  "name": "schluesselweite",
+  "version": "1.0.0",
+  "description": "ISO/DIN Schlüsselweite und Gewinde Tabelle",
+  "category": "utility",
+  "keywords": ["mechanic", "tool", "iso", "din", "thread", "bolt", "schlüsselweite", "gewinde", "steigung"],
+  "author": "Abdulkerim Sesli",
+  "homepage": "index.html",
+  "repository": "https://github.com/your-username/your-repo/tree/main/apps/schluesselweite"
+}

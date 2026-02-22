@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schlüsselweite & Gewinde</title>
+    <meta name="author" content="Abdulkerim Sesli">
+    <meta name="keywords" content="mechanic, tool, iso, din, thread, bolt, schlüsselweite, gewinde, steigung, Abdulkerim, Sesli">
+    <meta name="description" content="Interaktive Tabelle für ISO/DIN Gewinde, Schlüsselweiten und Kernlochdurchmesser.">
+    <link rel="stylesheet" href="style.css">
+    <!-- Card Integration -->
+    <link rel="stylesheet" href="../../card-integration.css">
+    <script src="../../card-fit.js" defer></script>
+</head>
+<body>
+    <div id="card-fit-wrapper">
+        <div class="app-container">
+            <header>
+                <h1>🔧 Gewinde Daten</h1>
+                <p>ISO/DIN Standard</p>
+            </header>
+
+            <main>
+                <!-- Number Wheel Scroll Selector -->
+                <div class="wheel-wrapper">
+                    <div class="wheel-mask-top"></div>
+                    <div class="wheel-mask-bottom"></div>
+                    <div class="wheel-highlight"></div>
+                    <div class="wheel-container" id="wheelContainer">
+                        <!-- Items injected by JS -->
+                    </div>
+                </div>
+
+                <!-- Data Display -->
+                <div class="data-card">
+                    <div class="data-header">
+                        <h2 id="selectedM">M6</h2>
+                        <span class="standard-badge">ISO 4014 / DIN 931</span>
+                    </div>
+
+                    <div class="data-sections">
+                        <!-- Thread Section -->
+                        <div class="data-section">
+                            <h3>📏 Gewinde</h3>
+                            <div class="data-grid">
+                                <div class="data-item">
+                                    <span class="label">Steigung (P)</span>
+                                    <span class="value" id="pitchVal">1.0 mm</span>
+                                </div>
+                                <div class="data-item">
+                                    <span class="label">Kernloch Ø</span>
+                                    <span class="value" id="coreVal">5.0 mm</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Wrench Section -->
+                        <div class="data-section">
+                            <h3>🔧 Schlüsselweite</h3>
+                            <div class="data-grid">
+                                <div class="data-item highlight">
+                                    <span class="label">Sechskant</span>
+                                    <span class="value" id="hexVal">10 mm</span>
+                                </div>
+                                <div class="data-item">
+                                    <span class="label">Innensechskant</span>
+                                    <span class="value" id="allenVal">5 mm</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Torque Section -->
+                        <div class="data-section">
+                            <h3>💪 Anzugsmoment (<span id="torqueClassDisplay">8.8</span>)</h3>
+
+                            <!-- Strength Class Selector -->
+                            <div class="class-selector">
+                                <span class="selector-label">Festigkeit:</span>
+
+                                <div class="strength-wheel-wrapper">
+                                    <div class="strength-wheel-mask-left"></div>
+                                    <div class="strength-wheel-mask-right"></div>
+                                    <div class="strength-wheel-highlight"></div>
+                                    <div class="strength-wheel-container" id="strengthWheelContainer">
+                                        <!-- Items injected by JS -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="data-grid single">
+                                <div class="data-item">
+                                    <span class="label">Drehmoment</span>
+                                    <span class="value" id="torqueVal">10.1 Nm</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Data sources: ISO 261, ISO 965, VDI 2230
+        // Torque values are base for 8.8 (standard friction 0.14)
+        const threadData = [
+            { m: "M3", p: "0.5", core: "2.5", hex: "5.5", allen: "2.5", torqueBase: 1.3 },
+            { m: "M4", p: "0.7", core: "3.3", hex: "7", allen: "3", torqueBase: 3.0 },
+            { m: "M5", p: "0.8", core: "4.2", hex: "8", allen: "4", torqueBase: 5.9 },
+            { m: "M6", p: "1.0", core: "5.0", hex: "10", allen: "5", torqueBase: 10.1 },
+            { m: "M8", p: "1.25", core: "6.8", hex: "13", allen: "6", torqueBase: 24.6 },
+            { m: "M10", p: "1.5", core: "8.5", hex: "16 (ISO) / 17 (DIN)", allen: "8", torqueBase: 48 },
+            { m: "M12", p: "1.75", core: "10.2", hex: "18 (ISO) / 19 (DIN)", allen: "10", torqueBase: 84 },
+            { m: "M14", p: "2.0", core: "12.0", hex: "21 (ISO) / 22 (DIN)", allen: "12", torqueBase: 133 },
+            { m: "M16", p: "2.0", core: "14.0", hex: "24", allen: "14", torqueBase: 206 },
+            { m: "M20", p: "2.5", core: "17.5", hex: "30", allen: "17", torqueBase: 415 },
+            { m: "M24", p: "3.0", core: "21.0", hex: "36", allen: "19", torqueBase: 714 }
+        ];
+
+        // Property Class Factors (Approximate multipliers relative to 8.8)
+        // 8.8 is base (1.0).
+        // 4.6 ~ 0.35x, 5.6 ~ 0.45x, 5.8 ~ 0.6x, 6.8 ~ 0.75x
+        // 10.9 ~ 1.4x, 12.9 ~ 1.7x
+        const propertyClassFactors = {
+            "4.6": 0.35,
+            "5.6": 0.45,
+            "5.8": 0.62,
+            "6.8": 0.75,
+            "8.8": 1.0,
+            "10.9": 1.41,
+            "12.9": 1.69
+        };
+
+        // Classes to show in wheel
+        const availableClasses = Object.keys(propertyClassFactors).sort((a,b) => parseFloat(a) - parseFloat(b));
+
+        let currentPropertyClass = "8.8";
+
+        const wheelContainer = document.getElementById('wheelContainer');
+        const strengthWheelContainer = document.getElementById('strengthWheelContainer');
+        let ITEM_HEIGHT = 60; // Default, will update
+        let isScrolling;
+
+        function getItemHeight() {
+            // Create a temporary item to measure height from CSS
+            const testItem = document.createElement('div');
+            testItem.className = 'wheel-item';
+            testItem.style.visibility = 'hidden';
+            testItem.style.position = 'absolute';
+            document.body.appendChild(testItem);
+            const height = testItem.offsetHeight;
+            document.body.removeChild(testItem);
+            return height || 60;
+        }
+
+        function initWheel() {
+            ITEM_HEIGHT = getItemHeight();
+            const containerHeight = document.querySelector('.wheel-wrapper').clientHeight;
+            // Center is containerHeight / 2.
+            // First item starts at top 0. Center of first item is ITEM_HEIGHT/2.
+            // Padding needed = (containerHeight / 2) - (ITEM_HEIGHT / 2)
+            const padding = (containerHeight / 2) - (ITEM_HEIGHT / 2);
+
+            // Padding Top
+            const paddingTop = document.createElement('div');
+            paddingTop.className = 'wheel-padding';
+            paddingTop.style.height = padding + 'px';
+            paddingTop.style.flexShrink = 0;
+            wheelContainer.appendChild(paddingTop);
+
+            threadData.forEach((item, index) => {
+                const el = document.createElement('div');
+                el.className = 'wheel-item';
+                // Show "M... / SW..." in the scroll wheel
+                const hexVal = item.hex.split(" ")[0]; // Take primary hex value (e.g. "16")
+                el.textContent = `${item.m} / ${hexVal}`;
+                el.dataset.index = index;
+                el.onclick = () => scrollToItem(index);
+                wheelContainer.appendChild(el);
+            });
+
+            // Padding Bottom
+            const paddingBottom = document.createElement('div');
+            paddingBottom.className = 'wheel-padding';
+            paddingBottom.style.height = padding + 'px';
+            paddingBottom.style.flexShrink = 0;
+            wheelContainer.appendChild(paddingBottom);
+
+            // Initial selection M6 (index 3)
+            setTimeout(() => {
+                scrollToItem(3);
+                updateDisplay(threadData[3]);
+                updateActiveItem(3);
+            }, 100);
+        }
+
+        function scrollToItem(index) {
+            wheelContainer.scrollTo({
+                top: index * ITEM_HEIGHT,
+                behavior: 'smooth'
+            });
+            updateActiveItem(index);
+            updateDisplay(threadData[index]);
+        }
+
+        wheelContainer.addEventListener('scroll', () => {
+            window.clearTimeout(isScrolling);
+
+            const scrollTop = wheelContainer.scrollTop;
+            let index = Math.round(scrollTop / ITEM_HEIGHT);
+            if (index < 0) index = 0;
+            if (index >= threadData.length) index = threadData.length - 1;
+
+            // Highlight the closest item while scrolling
+            updateActiveItem(index);
+
+            // Snap only after scroll stops
+            isScrolling = setTimeout(() => {
+                scrollToItem(index);
+            }, 150);
+        });
+
+        // Handle resize
+        window.addEventListener('resize', () => {
+            const newHeight = getItemHeight();
+            const containerHeight = document.querySelector('.wheel-wrapper').clientHeight;
+            const padding = (containerHeight / 2) - (newHeight / 2);
+
+            if (newHeight !== ITEM_HEIGHT || padding > 0) {
+                ITEM_HEIGHT = newHeight;
+                // Update padding
+                document.querySelectorAll('.wheel-padding').forEach(p => {
+                    p.style.height = padding + 'px';
+                });
+                // Re-snap to current active item
+                const active = document.querySelector('.wheel-item.active');
+                if (active) {
+                    scrollToItem(parseInt(active.dataset.index));
+                }
+            }
+        });
+
+        function updateActiveItem(index) {
+            const items = document.querySelectorAll('.wheel-item');
+            items.forEach(item => item.classList.remove('active'));
+            // items list contains padding elements? No querySelectorAll('.wheel-item') only selects items.
+            if (items[index]) {
+                items[index].classList.add('active');
+            }
+        }
+
+        function updateDisplay(data) {
+            if (!data) return;
+
+            // Store current data index for class updates
+            if (data.m) {
+                 window.currentDataIndex = threadData.indexOf(data);
+            }
+
+            document.getElementById('selectedM').textContent = data.m;
+            document.getElementById('pitchVal').textContent = data.p + " mm";
+            document.getElementById('coreVal').textContent = data.core + " mm";
+            document.getElementById('hexVal').textContent = data.hex + (data.hex.includes('/') ? "" : " mm");
+            document.getElementById('allenVal').textContent = data.allen + " mm";
+
+            // Calculate Torque based on class
+            const factor = propertyClassFactors[currentPropertyClass];
+            const torque = (data.torqueBase * factor).toFixed(1);
+
+            document.getElementById('torqueVal').textContent = torque + " Nm";
+            document.getElementById('torqueClassDisplay').textContent = currentPropertyClass;
+        }
+
+        // Helper to update class
+        function setStrengthClass(newClass) {
+            if (propertyClassFactors[newClass]) {
+                currentPropertyClass = newClass;
+                if (typeof window.currentDataIndex !== 'undefined') {
+                    updateDisplay(threadData[window.currentDataIndex]);
+                }
+            }
+        }
+
+        function selectClass(newClass) {
+            setStrengthClass(newClass);
+            // Visual update handled by scroll listener or click
+        }
+
+        // --- Strength Wheel Logic ---
+        let strengthItemWidth = 80; // Default from CSS
+        let isStrengthScrolling;
+
+        function initStrengthWheel() {
+            // Get actual width
+            const testItem = document.createElement('div');
+            testItem.className = 'strength-item';
+            testItem.style.visibility = 'hidden';
+            testItem.style.position = 'absolute';
+            document.body.appendChild(testItem);
+            // Force layout
+            strengthItemWidth = testItem.offsetWidth || 80;
+            document.body.removeChild(testItem);
+
+            const wrapperWidth = document.querySelector('.strength-wheel-wrapper').clientWidth;
+            // Center padding
+            const padding = (wrapperWidth / 2) - (strengthItemWidth / 2);
+
+            // Padding Left
+            const padLeft = document.createElement('div');
+            padLeft.style.width = padding + 'px';
+            padLeft.style.flexShrink = 0;
+            strengthWheelContainer.appendChild(padLeft);
+
+            availableClasses.forEach((cls, index) => {
+                const el = document.createElement('div');
+                el.className = 'strength-item';
+                el.textContent = cls;
+                el.dataset.index = index;
+                el.dataset.cls = cls;
+                el.onclick = () => scrollToStrength(index);
+                strengthWheelContainer.appendChild(el);
+            });
+
+            // Padding Right
+            const padRight = document.createElement('div');
+            padRight.style.width = padding + 'px';
+            padRight.style.flexShrink = 0;
+            strengthWheelContainer.appendChild(padRight);
+
+            // Initial Scroll to 8.8
+            const initialIndex = availableClasses.indexOf("8.8");
+            if (initialIndex !== -1) {
+                setTimeout(() => {
+                    scrollToStrength(initialIndex);
+                }, 100);
+            }
+        }
+
+        function scrollToStrength(index) {
+            strengthWheelContainer.scrollTo({
+                left: index * strengthItemWidth,
+                behavior: 'smooth'
+            });
+            updateActiveStrength(index);
+            const cls = availableClasses[index];
+            if (cls) {
+                setStrengthClass(cls);
+            }
+        }
+
+        function updateActiveStrength(index) {
+            const items = document.querySelectorAll('.strength-item');
+            items.forEach(item => item.classList.remove('active'));
+            if (items[index]) {
+                items[index].classList.add('active');
+            }
+        }
+
+        strengthWheelContainer.addEventListener('scroll', () => {
+            window.clearTimeout(isStrengthScrolling);
+
+            const scrollLeft = strengthWheelContainer.scrollLeft;
+            let index = Math.round(scrollLeft / strengthItemWidth);
+
+            if (index < 0) index = 0;
+            if (index >= availableClasses.length) index = availableClasses.length - 1;
+
+            updateActiveStrength(index);
+
+            // Snap logic
+            isStrengthScrolling = setTimeout(() => {
+                scrollToStrength(index);
+            }, 150);
+        });
+
+        // Resize handler adjustment
+        window.addEventListener('resize', () => {
+            const newHeight = getItemHeight();
+            const containerHeight = document.querySelector('.wheel-wrapper').clientHeight;
+            const paddingVertical = (containerHeight / 2) - (newHeight / 2);
+
+            if (newHeight !== ITEM_HEIGHT || paddingVertical > 0) {
+                ITEM_HEIGHT = newHeight;
+                // Update padding
+                document.querySelectorAll('.wheel-padding').forEach(p => {
+                    p.style.height = paddingVertical + 'px';
+                });
+                // Re-snap to current active item
+                const active = document.querySelector('.wheel-item.active');
+                if (active) {
+                    scrollToItem(parseInt(active.dataset.index));
+                }
+            }
+
+             // Re-calculate padding for horizontal wheel if needed
+             const wrapperWidth = document.querySelector('.strength-wheel-wrapper').clientWidth;
+             const padding = (wrapperWidth / 2) - (strengthItemWidth / 2);
+             // Update padding divs (first and last children)
+             if(strengthWheelContainer.firstElementChild) strengthWheelContainer.firstElementChild.style.width = padding + 'px';
+             if(strengthWheelContainer.lastElementChild) strengthWheelContainer.lastElementChild.style.width = padding + 'px';
+
+             const activeStrength = document.querySelector('.strength-item.active');
+             if (activeStrength) {
+                 scrollToStrength(parseInt(activeStrength.dataset.index));
+             }
+        });
+
+        initWheel();
+        initStrengthWheel();
+    </script>
+</body>
+</html>
