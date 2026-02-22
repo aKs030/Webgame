@@ -58,9 +58,9 @@ main {
 /* Wheel Scroll Selector */
 .wheel-wrapper {
     position: relative;
-    height: 200px; /* Reduced height */
-    width: fit-content;
-    min-width: 120px;
+    height: 140px; /* Even smaller height */
+    width: 100%; /* Full width to center nicely */
+    max-width: 250px;
     margin: 0 auto; /* Center horizontally */
     overflow: hidden;
     /* Glassmorphism container for the wheel */
@@ -70,6 +70,7 @@ main {
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     box-shadow: var(--glass-shadow);
+    flex-shrink: 0;
 }
 
 .wheel-container {
@@ -127,7 +128,7 @@ main {
     position: absolute;
     left: 0;
     right: 0;
-    height: 80px; /* Adjusted mask height */
+    height: 40px; /* Adjusted mask height for 140px container */
     z-index: 3;
     pointer-events: none;
 }
@@ -147,28 +148,29 @@ main {
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
     border-radius: 16px;
-    padding: 30px; /* Increased padding */
+    padding: 20px;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     box-shadow: var(--glass-shadow);
-    flex: 2; /* Increased flex grow to make it larger relative to wheel */
+    flex: 3; /* Increased flex to give more room for sections */
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Center content vertically */
+    overflow-y: auto;
 }
 
 .data-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 30px; /* Increased margin */
+    margin-bottom: 20px;
     border-bottom: 1px solid var(--glass-border);
-    padding-bottom: 15px;
+    padding-bottom: 10px;
+    flex-shrink: 0;
 }
 
 .data-header h2 {
     margin: 0;
-    font-size: 3rem; /* Increased font size */
+    font-size: 2.5rem;
     color: var(--accent-color);
 }
 
@@ -180,33 +182,59 @@ main {
     color: var(--text-secondary);
 }
 
+/* Sections */
+.data-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.data-section h3 {
+    margin: 0 0 10px 0;
+    font-size: 1rem;
+    color: var(--accent-color);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    padding-bottom: 5px;
+}
+
 .data-grid {
     display: grid;
-    gap: 15px;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
 }
 
-.data-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 0;
+.data-grid.single {
+    grid-template-columns: 1fr;
 }
 
-.data-row.highlight {
-    background: rgba(79, 70, 229, 0.1);
+.data-item {
+    background: rgba(255, 255, 255, 0.05);
     border-radius: 8px;
-    padding: 8px 10px;
-    margin: 0 -10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.data-item.highlight {
+    background: rgba(79, 70, 229, 0.2);
+    border: 1px solid rgba(79, 70, 229, 0.4);
 }
 
 .label {
     color: var(--text-secondary);
-    font-size: 1.1rem; /* Increased font size */
+    font-size: 0.8rem;
+    margin-bottom: 4px;
 }
 
 .value {
-    font-weight: 600;
-    font-size: 1.4rem; /* Increased font size */
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--text-primary);
 }
 
 /* Responsive adjustments */
