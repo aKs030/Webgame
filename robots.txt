@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /projekte/apps/
+Sitemap: https://www.abdulkerimsesli.de/projekte/sitemap.xml
