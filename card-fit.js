@@ -1,5 +1,35 @@
 // card-fit.js — adaptive embed engine
 (function () {
+
+  // Inject Speculative Rules API for intelligent pre-rendering globally
+  function injectSpeculativeRules() {
+    if (HTMLScriptElement.supports && HTMLScriptElement.supports('speculationrules')) {
+      if (!document.querySelector('script[type="speculationrules"]')) {
+        const script = document.createElement('script');
+        script.type = 'speculationrules';
+        script.textContent = JSON.stringify({
+          prerender: [{
+            source: 'document',
+            where: {
+              and: [
+                { href_matches: '/*' }
+              ]
+            },
+            eagerness: 'moderate'
+          }]
+        });
+        document.head.appendChild(script);
+      }
+    }
+  }
+
+  // Call it immediately so it applies to all pages regardless of iframe context
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", injectSpeculativeRules, { once: true });
+  } else {
+    injectSpeculativeRules();
+  }
+
   const params = new URLSearchParams(location.search);
   const force = params.get("card") === "1";
   const popupMode = params.get("popup") === "1";
@@ -290,7 +320,9 @@
     fit();
   }
 
-  function init() {
+
+
+function init() {
     markMode();
     if (popupMode) wrapForPopup();
     fit();
