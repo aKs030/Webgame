@@ -98,6 +98,7 @@
 
           // Game state
           this.snake = [{ x: 10, y: 10 }];
+          this.snakeSet = new Set([this.snake[0].x * this.tileCount + this.snake[0].y]);
           this.food = { x: 15, y: 15 };
           this.dx = 0;
           this.dy = 0;
@@ -285,6 +286,7 @@
 
           // Reset game state
           this.snake = [{ x: 10, y: 10 }];
+          this.snakeSet = new Set([this.snake[0].x * this.tileCount + this.snake[0].y]);
           this.dx = 0;
           this.dy = 0;
           this.score = 0;
@@ -319,12 +321,17 @@
             x: this.snake[0].x + this.dx,
             y: this.snake[0].y + this.dy,
           };
+          const headPos = head.x * this.tileCount + head.y;
+
           this.snake.unshift(head);
 
           // Remove tail if no food eaten
           if (!this.foodEaten) {
-            this.snake.pop();
+            const tail = this.snake.pop();
+            this.snakeSet.delete(tail.x * this.tileCount + tail.y);
           }
+          this.snakeSet.add(headPos);
+
           this.foodEaten = false;
         }
 
@@ -342,13 +349,7 @@
           }
 
           // Self collision
-          for (let i = 1; i < this.snake.length; i++) {
-            if (head.x === this.snake[i].x && head.y === this.snake[i].y) {
-              return true;
-            }
-          }
-
-          return false;
+          return this.snakeSet.size !== this.snake.length;
         }
 
         checkFoodCollision() {
@@ -377,11 +378,7 @@
               x: Math.floor(Math.random() * this.tileCount),
               y: Math.floor(Math.random() * this.tileCount),
             };
-          } while (
-            this.snake.some(
-              (segment) => segment.x === newFood.x && segment.y === newFood.y,
-            )
-          );
+          } while (this.snakeSet.has(newFood.x * this.tileCount + newFood.y));
 
           this.food = newFood;
         }
